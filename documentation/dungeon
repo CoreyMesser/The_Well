@@ -1,0 +1,130 @@
+coordinates
+
+x - lateral
+y - depth
+z - height/level
+
+counter to record the persons movement through the grid
+z, x, y
+
+6x6 grid
+
+level_1 = [[1, 1, 0, 0, 0, 0], [0, 1, 1, 0, 0, 0], [0, 0, 1, 0, 0, 0], [0, 0, 1, 0, 0, 0], [0, 0, 1, 1, 1, 1], [0, 0, 0, 0, 0, 0]]
+X X X X X X
+S X - - - -
+S S - X X X
+X X - X X X
+X - - X X X
+- - X X X X
+
+
+
+basic commands
+
+look - 		general description (also used when you move)
+search - 	dc, based off serach skill to reveal items/objects/secrets if applicable
+			- each time you fail a search the dc goes up by a set amount
+use - 		will use an object nearby that you are facing, if an item is stated after use, the item will be used
+			- use torch
+take - 		picks up object/item
+compass - 	you are facing N/S/E/W
+turn L/R or 
+	N/S/E/W - N is incremental in the poitive on y, South is negative on y, E is positive on x, W is negative on x
+move - 		increment in a direction 
+			- move turn - combination move, move E 1 will turn the PC E and move them 1 step
+inventory 	- lists inventory 
+equip **kwargs - equips item to hand/finger/etc
+unequip **kwargs - unequips item and returns it to inventory
+
+
+canned responses based on your surroundings
+- you are facing a wall, to the N is ~ to the S is ~
+
+- "You are facing {determined on the direction you were moving}, {nearest, free move working counter clockwise}, {secondary free move cc}, {} "
+
+
+starting at 1, 1, 1
+PC >>>look
+"you see a wall before you a hall way leading east with an imediate corner going North"
+PC >>> turn E
+increment is now based on x+
+"you turn East"
+PC >>> move 1
+increment x += 1
+1, 2, 1
+"you are facing a wall, to the N is a short hallway. to the West is the hall way from which you came."
+PC >>> move 1
+collision detection, can no longer move east
+"you stop before you head into a wall"
+PC >>> turn N
+increment on y+
+"you turn N, there is a short hallway with a corner headed east"
+PC >>> move 1
+increment y += 1
+1, 2, 2
+"you are facing a wall, to the E is a short hall that turns N"
+PC >>> move E 1
+increment on x+
+increment x += 1
+1, 3, 2
+"you are facing a wall, to the N is a long dark hallway."
+PC >>> move N 2
+increment on y+
+incremtne y += 2
+1, 3, 4
+"you stand in a dark hallway that continues to the N"
+PC >>> search
+random roll against search/int stat
+rnd20+skill mod+2 vs dc15
+16+2 = 17 vs 15
+"set into the west wall is a cold torch"
+PC >>> take torch
+turns PC W
+increment on x-
+"the torch is stuck"
+PC >>> take torch
+"the torch comes loose and the torch ring falls from the wall with a clatter and grinding of stone.  Before you a doorway opens in the dark hall, beyond is pitch black."
+PC >>> use torch
+torch is equipped and lit
+"the opening before you leads into a small room dense with cobwebs"
+PC >>> move W 1
+increments x -= 1
+1, 2, 4
+"the cobwebs part before you and smolder in the flame of your torch revealing a small room that once held a small armory that has long ago rotted and rusted to junk."
+PC >>> search
+rnd 20 + sk2 vs 10
+15+2 = 17 vs 10
+"under a table long ago rotted and sagged into a formless heap you spot the glint of something that escaped the forgotten decades"
+PC >>> search table
+"you clear the rotted wood away to refeal a small chest made of a dull but untarnished metal."
+PC >>> search chest
+rnd20 + sk2 vs dc15
+13 + 2 = 15 vs 15
+"you find no discernable keyhole or hinge"
+PC >>> search chest
+rnd20 + sk2 vs dc15
+10 + 2 = 12 vs 16
+"you find no discernable keyhole or hinge"
+rnd20 + sk2 vs dc15
+14 + 2 = 16 vs 20
+"you find no discernable keyhole or hinge, you may need to inspect the box later when you are more skilled"
+PC >>> take chest
+"The chest will not fit in your pack but you can carry it under one arm. Will you un-equip/drop L-Hand: {item1} or R-Hand: {item2}" (dagger, torch)
+PC >>> un-equip dagger
+"Your dagger has been returned to your belt"
+PC >>> take chest
+"You pick up the chest and tuck it under your arm"
+PC >>> move E 2
+increment on x+
+increment x += 2
+1, 3, 4
+
+
+
+
+
+
+
+
+
+
