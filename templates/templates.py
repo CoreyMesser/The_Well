@@ -161,8 +161,8 @@ class Templates(object):
 
 
         skills_sheet = self.print_char_skills(character_dict=character_dict)
-        merits_sheet = "[MERITS]  MERITS:\n{merits}\n"
-        flaws_sheet = "[FLAWS]   FLAWS:\n{flaws}\n \n"
+        merits_sheet = "\n[MERITS]  MERITS:\n{merits}\n"
+        flaws_sheet = "\n[FLAWS]   FLAWS:\n{flaws}\n \n"
         exp_sheet = "ᗘᗘᗘ XP POINTS TOTAL {exp_total} ᗛᗛᗛ\n" \
                     "ᗘᗘᗘ XP POINTS REMAINING {exp_remaining} ᗛᗛᗛ\n".format(**character_dict)
 
@@ -173,10 +173,12 @@ class Templates(object):
         if len(character_dict['skills']) > 0:
             skills_sheet = ["[SKILLS]  SKILLS:\n", ]
             skills = character_dict['skills']
-            for l, j in sorted(skills.items()):
+            for l, j in skills.items():
+                skills_sheet_a = []
                 skills_sheet.append('\nᗘᗘ{} :\n'.format(l))
                 for k in j.items():
-                    skills_sheet.append('ᗘᗘᗘ{}\n'.format(k))
+                    skills_sheet_a.append('ᗘᗘᗘ{}\n'.format(k))
+                skills_sheet.append("".join(sorted(skills_sheet_a)))
 
             return "".join(skills_sheet)
         else:

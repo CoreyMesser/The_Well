@@ -1,0 +1,2 @@
+DROP TABLE main.inventory_pc
+DROP TABLE main.character

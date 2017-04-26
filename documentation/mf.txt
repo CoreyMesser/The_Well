@@ -1,0 +1,170 @@
+MERITS
+
+Mind 
+(-3) Danger Sense 
+(-3) Encyclopedic Knowledge 
+(-3) Iron Mind (+1 to Concentration checks, Psi only) 
+(-3) Speed Reader
+(-3) Puzzle Solver 
+(-3) Unseen Sense 
+(-4) Diamond Mind (+2 to Concentration checks, Psi only) 
+(-4) Evil Eye (+1 Intimidate check)
+(-4) Linguist 
+(-4) Lucky (+1 to rolls GM determines luck)
+(-4) Mathematics Savant (+2 to all math checks) 
+(-4) Photographic Mem 
+(-4) Quick Stitch
+(-4) Quick Thinker (+2 knowledge checks) 
+(-4) Spell Prodigy (+2 to Concentration checks, Magicians only) 
+(-4) Tech Savvy 
+(-6) The Brain (+2 INT checks)
+(-6) Cypher Cracker (+2 INT check towards cyphers/codes) 
+(-6) Silver Tongue (+2 Cha checks towards communication, not applicable on casting)  
+
+Physical
+(-3) Ambidex (no penalty for offhand) 
+(-3) Brawler (+1 brawl checks) 
+(-3) Iron Will (+2 hp) 
+(-3) Quick Draw 
+(-3) Quick Healer 
+(-3) Quick Load
+(-4) Dirty Mouth (if plush bites another there is a 50/50 chance the wound will become infected.) 
+(-4) High Alcohol Tolerance (+2 to alch checks) 
+(-4) Nimble (+1 to athletics and DEX checks vs dodge or acrobatics, (only one, not applicable to ranges atks)) 
+(-4) Throw Anything 
+(-6) Ariel Acrobat (+2 to all flight checks, only applies to self-propulsion) 
+(-6) Blind Fighting (If you are blinded by darkness, sand or naturally blind skill checks are reduced to -1) 
+(-6) Constrict (if wrapped around a target you gain a bonus to grapple checks +2 on 1st rnd, +4 on 3rd rnd, +6 on 5th rnd, you also do STR +1 dmg/rnd) 
+(-6) Cool Under Pressure (+2 to checks made under extreme conditions, GM determined) 
+(-6) Echo Location (use sound to see, bats get this for free) 
+(-6) Heighten Sense (choose only ONE Stat at creation, +1 to all checks vs that stat) 
+(-6) Hard Worker (+1 to CON checks vs work) 
+(-6) Hard Scales (+1 Natural SOAK) (-6) Heat Sense (Replaces the use of visual sight, ability to see thermal energy in LOS, -2 to visual checks) 
+(-6) High Jumper (doubles the height of a standard jump) 
+(-6) High Pain Threshold (+1 natural soak) 
+(-6) Iron Marrow - (Avian only) - Negates the -1 hollow bone penalty and adds an additional +1hp. 
+(-6) Master of Disguise (+2 to all disguise/bluff checks) 
+(-6) Night Vision (can see well during night) 
+(-6) Quick Shot (fire x2/round, second shot is at -2 to hit) 
+(-6) Physical Prowess (+2 to all STR checks) 
+(-6) Prehensile Tail (able to grasp things with your tail, has 1/2 STR (round down,) 1dmg) 
+(-6) Parkour/Free Running (+2 to athletics checks vs hazardous terrain and climbing.) 
+(-6) Stunt Driver (+2 to Drive checks) 
+(-6) Sprinter (+2 to athletics checks vs sprinting/running) 
+(-6) Sticky Paws (Paws will adhere to most surfaces, 1/4 movement rate while climbing) 
+(-6) Tolerance to Poison OR Venom (must choose only one) (+1 SOAK vs poison/venom) 
+(-6) Temperature Resistant (choose at creation hot or cold and you get a +2 check in those instances) 
+(-6) Temperate Blood (Reptile only: Doubles time for Cold-blooded effects to take place.) 
+(-6) Utilitarian (always seem to have the right tool object (simple) for the job) 
+(-6) Weapon Type Spec (+2 to hit with spec weap) 
+(-8) Jack of all Trades (+1 check to all Skills)
+(-8) Resistance to Poison OR Venom (Pre req Tolerance to Poison OR Venom: +2 SOAK vs poison/venom) 
+(-8) Serpent's Gut (Serpentine only: Can go up to one week w/o food after eating a sufficient meal. This MERIT is negated by heavy action, this MERIT is tripled if inactive.) 
+(-8) Unbreakable - (Avian only, pre req Iron Marrow) - +1hp, +1 Soak, +1 Fly check 
+(-8) Warm Blood (Reptile only: Immunity to Cold-Blooded effects. Prerequisite: Temperate Blood) 
+(-10) Concentrated Poison OR Venom (must choose only one)(this MERIT can be taken multiple times, each time it adds +1dmg to the first rnd) 
+(-10) Highly Resistant to Poison OR Venom (Pre req Resistance to Poison OR Venom: +3 SOAK vs poison/venom) 
+(-10) Regenerate (+1 additional HP is regenerated/rnd outside of combat, loss of limb can be regenerated over a time determined by the GM) 
+(-10) Survivor (you will survive... GM determined, only works once, use it well) 
+(-10) Tough as Nails (Pre req Tough as Nails: +2 natural soak) (??) Poisonous Hide (See Poison Table) (??) Venomous Fangs (See Venom Table)
+
+Social 
+(-3) Charismatic
+(-3) Dance Fiend (+2 to all dance checks, +1 addition if opposite sex) 
+(-3) Friend (important higher up friend) 
+(-3) Network 
+(-3) Singer (+2 to all singing checks, +1 addition if opposite sex) 
+(-4) Actor/Actress (+1 CHA check vs social, not applicable for spell use) 
+(-4) Alluring patterns (Alluring skin patterns grant a +2 to persuasion checks)
+(-4) Body Language (+2 Persuasion checks) 
+(-4) Good Looking/Beautiful (+1 vs Social checks) 
+(-4) Good Listener (+1 vs Social checks) 
+(-4) Money 
+(-4) Prominent Fangs (+2 to Intimidation Checks) 
+(-6) Resources (You have a ready source for most things you need.)
+(-6) Witty (+2 to social checks) 
+(-8) Loaded (You’re outright rich, buy your way to victory!) 
+(-10) Most Interesting Man/Woman in the World (You are known everywhere. Your fame opens many doors; GM discretion. -6 to all disguise checks.) 
+
+Other 
+(-8) Blood Sacrifice (Use up to half HP to temporarily increase strength for the duration of the encounter or 10 rounds [after which, the power will start reducing each round; a bonus of +5 at round 10 will be +4 on the 11th, and etc until the effect is gone], whichever comes first. This damage cannot be cured via healing feats or medicine, as it effects the spirit. The lost HP will return after 2 days, after the body rests.) 
+
+FLAWS  
+
+Mental
+(3) Curiosity - (your natural curiosity will draw you into unforeseen situations, GM decides when you will be drawn and whether to apply a -2 penalty or +2 to check for any rolls)  
+(3) Hydrophobia (anything concerning water large then a bathtub you are afraid of, suffer -2 to all actions) (3) Naive (3) Prude (3) Phobia I - (suffer -2 to all actions when around the object of phobia)
+(3) Stutter 
+(4) Afraid of Combat (freezes up in combat situations and will not fight) 
+(4) Combat Rage (when fighting a target you will fight it until it is dead and only it, enemies and companions may suffer your wrath if they interfere -2 to any action not directed at target) 
+(4) Dead-inside (-1 to Empathy and -1 Social checks) 
+(4) Delusional/Paranoid (4) Eisoptrophobia (You have a fear of mirrors and reflective surfaces, and suffer -2 to all actions in their presence. Cannot take your eyes off your own image in fear.) 
+(4) Honor bound (has an over whelming sense of duty and honor that often gets in the way -1 to checks when it opposes honor) 
+(4) Memory Loss (short term memory is toast -1 INT checks) 
+(4) Mental Scars (Baggage -1 to social checks) 
+(4) Obsessed (cannot perform any other action when your chosen obsession is near) 
+(4) OCD (must choose an OCD, -2 to all rolls when active)
+(4) Primitive Heritage (gets a -2 to all knowledge\use checks regarding technology) 
+(4) Schizo (suffers from Schizophrenia, will often cry out or be distracted) 
+(4) Short Temper (smallest things set you off -1 to all checks)
+(6) Curiosity - (your natural curiosity will draw you into unforeseen situations, GM decides when you will be drawn and whether to apply a -4 penalty or +4 to check for any rolls.) 
+(6) Epileptic/Cataleptic (you may fall into seizures at certain movements/colors -4 to all checks) 
+(6) Hero Complex (Good Only, will always act the hero danger or no, leap in front of a bus to save someone) 
+(6) Hydrophobia II (paralyzed when near water suffer a -4 to all actions) 
+(6) Nyctophobia (Afraid of darkness, -2 to all rolls in notable darkness.)
+(6) Phobia II - (paralyzed when near the object of phobia and suffer a -4 to all actions)
+(6) Species Racist (-3 to all rolls when chosen species is near) 
+(6) Superiority Complex (-3 to all rolls, player must state Complex i.e. Status, Wealth, Species etc., proximity to others (>3) of same status negates)
+(6) Villain Complex (Evil Only, Will always act the villain danger or no, kills because he thinks it appropriate) 
+(8) Mirror Mirror (If you see your reflected image you will be immobilized, frozen with fear, and cannot move until the image is disturbed or interrupted. Once free of the image you will suffer a -1 penalty to all actions) 
+
+Physical 
+(3) Allergies (mild) 
+(3) Clutz 
+(3) Facial/Body Tick (-1 to DEX checks when under stress.) 
+(3) Glutton 
+(3) Hyperactive (cannot sit still, must move) 
+(3) One Eye (-1 to hit) 
+(3) Odious Personal Habit (i.e. BO, spitting, sweating, gas etc.) 
+(3) Near/Far sighted (-1 to ranged rolls)
+(3) Sluggish (-1 to DEX checks as if you’ve just woken up.) 
+(3) Ugly 
+(4) Addiction (low addiction -1 to all rolls if not taking fix for 5 hours) 
+(4) Blood Frenzy (sight/smell of blood triggers rage effect) 
+(4) Body Tremor (specify to hand/leg/foot/etc -1 dex checks) 
+(4) Cold Blooded (Reptile only: See Cold Blooded Table) 
+(4) Low Alcohol Tolerance (-2 to alcohol checks) 
+(4) Mute 
+(4) Sickly (cannot run, can jog for very short distances) 
+(4) Predatory Hunger (need to eat other plush-being every 72 hrs) 
+(4) Weak/Fragile (+1 dmg every time you are damged) 
+(6) Alcoholic (-2 to checks, also serves as lv1 addiction) 
+(6) Allergies (potentially deadly) 
+(6) Addiction (low addiction -2 to all rolls if not taking fix for 5 hours) 
+(6) Blind (also a good way to piss off your GM) 
+(6) De-Fanged (Serpentine plush only: Loss of fangs and Venom glands) 
+(6) Missing Limb (-1 Stuffing) 
+(6) Naturally low stuffing (birth defect -1 Stuffing and prone to losing more) 
+(6) No Alcohol Tolerance (-4 to alcohol checks) 
+(6) Patchy (Reptile Plush only: hide/scales is cracked/missing -2 social checks)
+(8) Brittle Bones (you take double damage) 
+(8) Frigid Blood (Reptile only, Pre Req Cold Blooded: Doubles the penalty of Cold Blooded) 
+(8) No Limbs (Cannot carry/use weapons that require moving parts. -6 to all checks involving fine manipulation) 
+(8) Patchwork (-3 Stuffing, critter has been patched so many times that it is nearly unrecognizable)
+(8) Thermal Blind (Serpentine plush only: Unable to use their thermal vision) 
+(10) Phantasm (You are being stalked by something horrible, something only you can see and no one can fight. They tell you it’s in your mind, but illusions don’t do what it does. GM discretion. Base -2 to most checks. If Phantasm "appears" PC loses control and will attempt to flee/fight. Will not recognize friends.) 
+
+Social 
+(3) Sensitive (+1 empathy -1 concentration) 
+(3) Stubborn 
+(4) Socially Inept (-1 to CHA rolls) 
+(4) Pervert (-1 to social checks, -1 to checks against object of desire) 
+
+Other 
+(3) MisTech (you tend to have bad luck with machines) 
+(3) Sexist (-1 to rolls vs the opposite sex) 
+(4) Hunted (1 mild enemy after you of equal skill and level) 
+(4) Dark Visions (suffers from side effects of Dark Magic or PSI, is incapacitated while having them, often miscasts) 
+(4) Spell/Psi Failure (-1 to all casting rolls) (4) Unlucky (-1 to all rolls GM determines unlucky instances) 
+(6) Hunted (2 medium enemies after you of equal skill and level) 
+(8) Hunted (1 extreme enemy after you of higher skill and level)

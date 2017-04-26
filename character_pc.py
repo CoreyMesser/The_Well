@@ -40,6 +40,10 @@ class PlayerCharacter(object):
         return roll
 
     def get_species(self):
+        '''
+        species selection and updates character_dict
+        :return: 
+        '''
         species = input(self.template.SPECIES).upper()
         self.template.print_species_list(species)
         species_l = self.species_dict[species]
@@ -60,6 +64,11 @@ class PlayerCharacter(object):
             return return_menu
 
     def switch_species(self, species):
+        '''
+        switches species dict
+        :param species: str passed in from get_species
+        :return: str var for dict
+        '''
         if species == 'LAND':
             species = 'AIR'
         else:
@@ -67,11 +76,19 @@ class PlayerCharacter(object):
         return species
 
     def update_hp(self):
+        '''
+        updates hp in case a skill or stat adds a bonus
+        :return: 
+        '''
         current_hp = self.character_dict['hp']
-        con_bonus = self.character_dict['con']
-        self.character_dict['hp'] = current_hp + con_bonus
+        bonus = self.hp_bonuses()
+        self.character_dict['hp'] = current_hp + bonus
 
     def hp_bonuses(self):
+        '''
+        calculates bonus to hp based on skills and CON stat
+        :return: int
+        '''
         con_bonus = self.character_dict['con']
         try:
             athletics_bonus = self.character_dict['skills']['PHYSICAL']['athletics']
@@ -84,9 +101,12 @@ class PlayerCharacter(object):
         bonus = con_bonus + athletics_bonus + survival_bonus
         return bonus
 
-
-
     def get_hp(self):
+        '''
+        generates the hp
+        subtracts/adds exp appropriately
+        :return: 
+        '''
         hp_cost = 4
         hp_cost_total = 4
         current_hp = self.character_dict['hp']
@@ -120,6 +140,11 @@ class PlayerCharacter(object):
         pass
 
     def get_stats(self, player_choice):
+        '''
+        gets stat #
+        :param player_choice: str passed in from views 
+        :return: Stat + int to character_dict
+        '''
         stat = player_choice
         print(self.template.STATS)
         stat_adjust = int(input('Enter a number [1 - 5]: '))
