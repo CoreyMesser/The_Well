@@ -17,7 +17,32 @@ class Templates(object):
  \____/_| |_|\__,_|_|  \__,_|\___|\__\___|_|    \____/|_| |_|\___|\___|\__|  \____/\___|_| |_|\___|_|  \__,_|\__\___/|_|   
 ᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛ"""
 
-    INTRO = "\n \nᗘᗘᗘ Each player starts with 42 points. As they progress through the game they will earn more points to put into \n" \
+    INTRO = "\n \nᗘᗘᗘ The Plush and Blood Roleplaying system was designed around two core concepts, story telling and immersed player characters.\n" \
+            "Any RP’r out there reading this is right about now tallying up how they can manipulate and twink the system.  That is not\n" \
+            "the purpose of the PB:RP.  The purpose of the PB:RP is to play a character within a well constructed story.  Abuse and \n" \
+            "manipulation of the system is a sign of a player that is not mature enough to put aside their ego and allow themselves \n" \
+            "to be absorbed into the world for good or bad.  The point here is not get the best rolls, the highest stat or the most\n" \
+            "powerful character.  \n \n" \
+            "        The point here is to play. Storytelling is a core feature and GM’s should be ready for the players\n" \
+            "to wreck all sorts of mischief within their well-outlined story.  I for one speaking as a seasoned GM can tell you that\n" \
+            "no matter how well the story is planned ahead of time the players will almost certainly derail the train, set fire to it\n" \
+            "and kill themselves in a cave-in... *AHEM*... \n" \
+            "When all they needed to do was follow the tracks.  GM’s should be quick of wit and mighty in their imagination. Players\n" \
+            "should respect the story for the most part but at the same time play their characters.  Mary-sue and God-mode are not RP. \n" \
+            "Being cool, dark, and edged with angst are not RP. We’d all love to run around in black leather, high kicking light switches,\n" \
+            "and shooting flies from the air, but we are not our characters.  A mature player should play their character with \n" \
+            "conviction no matter their own personal feelings.  A Lawful Good character should NEVER agree with a Lawful Evil one.  \n" \
+            "A character with an INT of 2 cannot figure out the trap even though it is clear to you.  A character of low CHA is never\n" \
+            "going to woo.  A character with the Blind FLAW is surely going to infuriate the GM… \n \n" \
+            "        Whether you are a Player or a GM the main goal is to have fun.  Enjoy the story, enjoy the actions that cause it \n" \
+            "to develop down paths never considered, enjoy the relationships built within and without. \n \n" \
+            "And as I have always said, a GM will never kill their players, but will allow the players to kill themselves. When I ask\n" \
+            " you “Are you sure?” this is a non too subtle hint that you may want to think on your actions one more time.  Doesn’t\n" \
+            " mean that you are wrong, but those words are a reprise.  \n \n" \
+            "        You are stuffed animals in a world on the brink of collapse.  Whether you live in Utopia, serve the Broken Circle,\n" \
+            "fight to remain free, prowl the wastes, or are just trying to survive, always remember who you are.\n \n" \
+            "Welcome to Plush and Blood.\n \n-Corey “TiredOrangeCat” Messer ᗛᗛᗛ\n \n" \
+            "ᗘᗘᗘ Each player starts with 42 points. As they progress through the game they will earn more points to put into \n" \
             "various stats/skills.  There is no traditional level system, rather as points are distributed to the player. The player \n" \
             "can then spend these points on their characters to enhance skills, stats, or in cases the GM deems acceptable, \n" \
             "purchase MERITS. ᗛᗛᗛ\n \n"
@@ -100,36 +125,65 @@ class Templates(object):
                 "[CE] Chaotic Evil - Evil for evils sake, crazy and will go out of their way to torture and maim (Psychopath).ᗛᗛᗛ \n \n" \
                 "ᗘᗘᗘ Enter your Alignment: "
 
+    SKILLS = "This is a large part of what makes your character unique.  A character’s skill set can ultimately determine their \n" \
+             "success or failure during a scenario.  One will never find what they are looking for without a successful Investigation\n" \
+             " check.  One will never peacefully haggle a price without Persuasion.  One will not come out of a bar fight without\n " \
+             "Brawl.  These Skills are an extension of your POCC/SOCC and your character’s personality.   Choose them wisely but at \n" \
+             "the same time keep your character in mind.  You are not playing to win the mainipulate-the-skill-tree game, you are\n" \
+             "RPing your character.  Do you have useless skills? I know I do, maybe your character has her fair share as well.\n \n Much" \
+             "like the STATS, SKILLS are purchased in the same manor, however you will always have to buy your first point in a skill.\n \n" \
+             "ᗘᗘᗘ Enter Skill you'd like to adjust: "
+
     def print_char_sheet(self, character_dict):
-        sheet = "[NAME]    NAME:  {name} \n" \
-                "[SPECIES] SPECIES:  {species} \n" \
-                "          SPECIES SZIE:  {species_size} \n" \
-                "[SEX]     SEX: {sex} \n" \
-                "[ FACTION] FACTION:  {faction} \n" \
-                "[ALG]     ALIGNMENT:  {alg} \n" \
-                "[POCC]    PRIMARY OCCUPATION: {pocc} \n" \
-                " [SOCC]    SECOND OCCUPATION:  {socc} \n" \
-                "\n" \
-                "  [HP]      HP: {hp} \n" \
-                "[STUFF]   STUFFING: {stuffing} \n" \
-                "          SANITY: {sanity} \n" \
-                "          SOAK: {soak} \n" \
-                "\n" \
-                "  ᗘᗘᗘ STATS:  ᗛᗛᗛ\n" \
-                "[STR]     STR: {str} \n" \
-                " [INT]     INT: {int} \n" \
-                "[DEX]     DEX: {dex} \n" \
-                " [CON]     CON: {con} \n" \
-                " [WIS]     WIS: {wis} \n" \
-                " [CHA]     CHA: {cha} \n" \
-                "\n" \
-                "  ᗘᗘᗘ SKILLS:  ᗛᗛᗛ\n" \
-                "   [SKILLS]  SKILLS: {skills}\n" \
-                "[MERITS]  MERITS: {merits}\n" \
-                "[FLAWS]   FLAWS: {flaws}\n \n" \
-                "ᗘᗘᗘ XP POINTS TOTAL {exp_total} ᗛᗛᗛ\n" \
-                "ᗘᗘᗘ XP POINTS REMAINING {exp_remaining} ᗛᗛᗛ\n".format(**character_dict)
+        main_sheet = "[NAME]    NAME:  {name} \n" \
+                     "[SPECIES] SPECIES:  {species} \n" \
+                     "          SPECIES SZIE:  {species_size} \n" \
+                     "[SEX]     SEX: {sex} \n" \
+                     "[ FACTION] FACTION:  {faction} \n" \
+                     "[ALG]     ALIGNMENT:  {alg} \n" \
+                     "[POCC]    PRIMARY OCCUPATION: {pocc} \n" \
+                     " [SOCC]    SECOND OCCUPATION:  {socc} \n" \
+                     "\n" \
+                     "  [HP]      HP: {hp} \n" \
+                     "[STUFF]   STUFFING: {stuffing} \n" \
+                     "          SANITY: {sanity} \n" \
+                     "          SOAK: {soak} \n" \
+                     "\n" \
+                     "  ᗘᗘᗘ STATS:  ᗛᗛᗛ\n" \
+                     "[STR]     STR: {str} \n" \
+                     " [INT]     INT: {int} \n" \
+                     "[DEX]     DEX: {dex} \n" \
+                     " [CON]     CON: {con} \n" \
+                     " [WIS]     WIS: {wis} \n" \
+                     " [CHA]     CHA: {cha} \n" \
+                     "  ᗘᗘᗘ SKILLS:  ᗛᗛᗛ\n" \
+                     "\n".format(**character_dict)
+
+
+        skills_sheet = self.print_char_skills(character_dict=character_dict)
+        merits_sheet = "[MERITS]  MERITS:\n{merits}\n"
+        flaws_sheet = "[FLAWS]   FLAWS:\n{flaws}\n \n"
+        exp_sheet = "ᗘᗘᗘ XP POINTS TOTAL {exp_total} ᗛᗛᗛ\n" \
+                    "ᗘᗘᗘ XP POINTS REMAINING {exp_remaining} ᗛᗛᗛ\n".format(**character_dict)
+
+        sheet = main_sheet + skills_sheet + merits_sheet + flaws_sheet + exp_sheet
         return sheet
+
+    def print_char_skills(self, character_dict):
+        if len(character_dict['skills']) > 0:
+            skills_sheet = ["[SKILLS]  SKILLS:\n", ]
+            skills = character_dict['skills']
+            for l, j in sorted(skills.items()):
+                skills_sheet.append('\nᗘᗘ{} :\n'.format(l))
+                for k in j.items():
+                    skills_sheet.append('ᗘᗘᗘ{}\n'.format(k))
+
+            return "".join(skills_sheet)
+        else:
+            skills_sheet = "   [SKILLS]  SKILLS: \n"
+            return skills_sheet
+
+
 
     def print_species_list(self, species):
         species_class = self.species_dict[species]
@@ -216,37 +270,37 @@ class Templates(object):
                             }
                     }
 
-    skills_dict = {"MENTAL ": {"Academics ": 0,
-                               "Computer ": 0,
-                               "Concentration ": 0,
-                               "Crafting ": 0,
-                               "Investigation ": 0,
-                               "Medicine ": 0,
-                               "Occult ": 0,
-                               "Politics ": 0,
-                               "Science  ": 0
+    skills_dict = {"MENTAL": {"academics": 0,
+                               "computer": 0,
+                               "concentration": 0,
+                               "crafting": 0,
+                               "investigation": 0,
+                               "medicine": 0,
+                               "occult": 0,
+                               "politics": 0,
+                               "science ": 0
                                },
-                   "PHYSICAL ": {"Athletics": 0,
-                                 "Brawl ": 0,
-                                 "Demolitions ": 0,
-                                 "Drive ": 0,
-                                 "Firearms ": 0,
-                                 "Larceny ": 0,
-                                 "Ranged Weaponry ": 0,
-                                 "Ride ": 0,
-                                 "Stealth ": 0,
-                                 "Survival": 0,
-                                 "Weaponry  ": 0
+                   "PHYSICAL": {"athletics": 0,
+                                 "brawl": 0,
+                                 "demolitions": 0,
+                                 "drive": 0,
+                                 "firearms": 0,
+                                 "larceny": 0,
+                                 "ranged weaponry": 0,
+                                 "ride": 0,
+                                 "stealth": 0,
+                                 "survival": 0,
+                                 "weaponry ": 0
                                  },
-                   "SOCIAL ": {"Animal Kinship ": 0,
-                               "Bluff ": 0,
-                               "Empathy ": 0,
-                               "Expression ": 0,
-                               "Intimidate ": 0,
-                               "Persuasion ": 0,
-                               "Social Contacts ": 0,
-                               "Streetwise ": 0,
-                               "Subterfuge ": 0
+                   "SOCIAL": {"animal kinship": 0,
+                               "bluff": 0,
+                               "empathy": 0,
+                               "expression": 0,
+                               "intimidate": 0,
+                               "persuasion": 0,
+                               "social contacts": 0,
+                               "streetwise": 0,
+                               "subterfuge": 0
                                }
                    }
 

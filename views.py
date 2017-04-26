@@ -34,8 +34,8 @@ class CharacterCreation(object):
             if player_choice == 'sex':
                 self.character_dict['sex'] = input(self.template.SEX)
             if player_choice == 'species':
-                while self.character_dict['species'] is None or return_menu is True:
-                    self.pc.get_species()
+                while self.character_dict['species'] is None or return_menu is False:
+                    return_menu = self.pc.get_species()
             if player_choice == 'faction':
                 self.character_dict['faction'] = input(self.template.FACTIONS)
             if player_choice == 'alg':
@@ -51,10 +51,18 @@ class CharacterCreation(object):
             if player_choice in self.pc.character_stats:
                 self.pc.get_stats(player_choice)
             if player_choice == 'skills':
-                self.pc.get_skills()
+                while return_menu is False:
+                    return_menu = self.pc.get_skills()
             if player_choice == 'merits':
                 self.pc.get_merits()
+            if player_choice == 'finished':
+                finished = True
 
+            self.store_session()
+
+    def store_session(self):
+        #write to db each loop
+        pass
 
 if __name__ == '__main__':
     ch = CharacterCreation()

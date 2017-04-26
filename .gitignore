@@ -6,3 +6,7 @@
 .idea/modules.xml
 .idea/workspace.xml
 thewell/
+__pycache__/character_pc.cpython-36.pyc
+__pycache__/views.cpython-36.pyc
+documentation/flaws_merits
+templates/__pycache__/templates.cpython-36.pyc
