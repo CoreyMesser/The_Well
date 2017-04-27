@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="PB_DB.sqlite" uuid="be2b77d0-13e9-4deb-9e88-fc4254b7382c">
-      <driver-ref>sqlite.xerial</driver-ref>
+    <data-source source="LOCAL" name="pb_db@localhost" uuid="84a15ae7-8b78-464a-a0a7-3aeb593645ac">
+      <driver-ref>postgresql</driver-ref>
       <synchronize>true</synchronize>
-      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
-      <jdbc-url>jdbc:sqlite:identifier.sqlite</jdbc-url>
-      <driver-properties>
-        <property name="enable_load_extension" value="true" />
-      </driver-properties>
+      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
+      <jdbc-url>jdbc:postgresql://localhost:5432/pb_db</jdbc-url>
+      <vm-options>-Duser.timezone=UTC</vm-options>
     </data-source>
   </component>
 </project>

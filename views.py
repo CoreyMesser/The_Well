@@ -1,6 +1,8 @@
 import random, os
 from character_pc import PlayerCharacter
 from templates.templates import Templates
+from database_service import Database
+from models import Character, CharacterCode
 
 
 class CharacterCreation(object):
@@ -61,10 +63,36 @@ class CharacterCreation(object):
             self.store_session()
 
     def store_session(self):
-        #write to db each loop
-        pass
-
-if __name__ == '__main__':
-    ch = CharacterCreation()
-    ch.__init__()
+        db = Database
+        db.get_db()
+        cc = PlayerCharacter()
+        db_char = Character()
+        db_char_code = CharacterCode()
+        db_char.name = cc.character_dict['name']
+        db_char.species = cc.character_dict['species']
+        db_char.species_size = cc.character_dict['species_size']
+        db_char.sex = cc.character_dict['sex']
+        db_char.faction = cc.character_dict['faction']
+        db_char.alg = cc.character_dict['alg']
+        db_char.pocc = cc.character_dict['pocc']
+        db_char.socc = cc.character_dict['socc']
+        db_char.exp_total = cc.character_dict['exp_total']
+        db_char.exp_remaining = cc.character_dict['exp_remaining']
+        db_char.hp = cc.character_dict['hp']
+        db_char.soak = cc.character_dict['soak']
+        db_char.stuffing = cc.character_dict['stuffing']
+        db_char.sanity = cc.character_dict['sanity']
+        db_char.str = cc.character_dict['str']
+        db_char.int = cc.character_dict['int']
+        db_char.dex = cc.character_dict['dex']
+        db_char.con = cc.character_dict['con']
+        db_char.wis = cc.character_dict['wis']
+        db_char.cha = cc.character_dict['cha']
+        db_char.skills = cc.character_dict['skills']
+        db_char.merits = cc.character_dict['merits']
+        db_char.flaws = cc.character_dict['flaws']
+        db_char_code.code = 1
+        db.add(db_char)
+        db.add(db_char_code)
+        db.commit()
 

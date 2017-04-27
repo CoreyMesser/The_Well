@@ -1,0 +1,3 @@
+DROP TABLE public.character_code;
+DROP TABLE public.inventory_pc;
+DROP TABLE public.character

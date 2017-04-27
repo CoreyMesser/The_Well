@@ -1,0 +1,8 @@
+-- INSERT INTO "character" ("code", "name", "species", "species_size", "sex", "faction", "alg", "pocc", "socc", "exp_total", "exp_remaining",
+-- "hp", "soak", "stuffing", "sanity", "str", "int", "dex", "con", "wis", "cha", "skills", "merits", "flaws")
+-- VALUES
+INSERT INTO "character_code" ("code", "display_name")
+    VALUES
+      ('1', 'player_character'),
+      ('2', 'non_player_character');
+
