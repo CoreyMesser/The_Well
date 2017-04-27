@@ -1,7 +1,7 @@
 import random, os
 from character_pc import PlayerCharacter
 from templates.templates import Templates
-from database_service import Database
+from database_service import db_session
 from models import Character, CharacterCode
 
 
@@ -60,14 +60,12 @@ class CharacterCreation(object):
             if player_choice == 'finished':
                 finished = True
 
-            self.store_session()
+        self.store_session()
 
     def store_session(self):
-        db = Database
-        db.get_db()
+        db = db_session()
         cc = PlayerCharacter()
         db_char = Character()
-        db_char_code = CharacterCode()
         db_char.name = cc.character_dict['name']
         db_char.species = cc.character_dict['species']
         db_char.species_size = cc.character_dict['species_size']
@@ -91,8 +89,9 @@ class CharacterCreation(object):
         db_char.skills = cc.character_dict['skills']
         db_char.merits = cc.character_dict['merits']
         db_char.flaws = cc.character_dict['flaws']
-        db_char_code.code = 1
+        db_char.code = 1
         db.add(db_char)
-        db.add(db_char_code)
         db.commit()
+
+        #STORE SKILLS AS OWN TABLE!!  DO THE SAME WITH MERITS AND FLAWS
 

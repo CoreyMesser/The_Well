@@ -1,7 +1,8 @@
 import os
 
 import logging
-
+from config import Config
+from system_constants import SystemConstants
 # import flask
 # from flask import Flask
 
@@ -16,6 +17,8 @@ def get_app():
         #     SECRET_KEY='dev_key',
         # ))
         # app.config.from_envvar('PB', silent=True)
+        # config = Config()
+        # app.config.from_object(config)
         _app_ = app
     return _app_
 
