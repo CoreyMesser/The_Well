@@ -148,3 +148,46 @@ class InventoryPc(Base):
     id = Column(Integer, primary_key=True, server_default=text("nextval('inventory_pc_id_seq'::regclass)"))
     code = Column(Text, nullable=False)
     character_id = Column(Text, nullable=False)
+
+
+class Skill(Base):
+    __tablename__ = 'skills'
+    __table_args__ = (
+        CheckConstraint("date_part('timezone'::text, created_at) = '0'::double precision"),
+        CheckConstraint("date_part('timezone'::text, updated_at) = '0'::double precision")
+    )
+
+    id = Column(Integer, primary_key=True, server_default=text("nextval('skills_id_seq'::regclass)"))
+    code = Column(Text)
+    academics = Column(Integer)
+    computer = Column(Integer)
+    concentration = Column(Integer)
+    crafting = Column(Integer)
+    investigation = Column(Integer)
+    medicine = Column(Integer)
+    occult = Column(Integer)
+    politics = Column(Integer)
+    science_ = Column(Integer)
+    athletics = Column(Integer)
+    brawl = Column(Integer)
+    demolitions = Column(Integer)
+    drive = Column(Integer)
+    firearms = Column(Integer)
+    larceny = Column(Integer)
+    ranged_weaponry = Column(Integer)
+    ride = Column(Integer)
+    stealth = Column(Integer)
+    survival = Column(Integer)
+    weaponry_ = Column(Integer)
+    animal_kinship = Column(Integer)
+    bluff = Column(Integer)
+    empathy = Column(Integer)
+    expression = Column(Integer)
+    intimidate = Column(Integer)
+    persuasion = Column(Integer)
+    social_contacts = Column(Integer)
+    streetwise = Column(Integer)
+    subterfuge = Column(Integer)
+    updated_at = Column(DateTime(True), nullable=False, server_default=text("now_utc()"))
+    created_at = Column(DateTime(True), nullable=False, server_default=text("now_utc()"))
+

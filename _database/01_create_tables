@@ -18,7 +18,7 @@ CREATE TABLE skills
   medicine        INT                      NULL,
   occult          INT                      NULL,
   politics        INT                      NULL,
-  science          INT                      NULL,
+  science         INT                      NULL,
   athletics       INT                      NULL,
   brawl           INT                      NULL,
   demolitions     INT                      NULL,
@@ -29,7 +29,7 @@ CREATE TABLE skills
   ride            INT                      NULL,
   stealth         INT                      NULL,
   survival        INT                      NULL,
-  weaponry         INT                      NULL,
+  weaponry        INT                      NULL,
   animal_kinship  INT                      NULL,
   bluff           INT                      NULL,
   empathy         INT                      NULL,

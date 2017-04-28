@@ -136,6 +136,10 @@ class PlayerCharacter(object):
                 hp = (hp_cost_total / hp_cost) + self.hp_bonuses()
                 self.character_dict['hp'] = hp
 
+    def get_soak_check(self):
+        # check hp and calculate potential soak
+        pass
+
     def get_stuffing(self):
         pass
 
@@ -197,8 +201,9 @@ class PlayerCharacter(object):
                     current_skill = skills[skill_select]
                 print('\n{}: {}'.format(skill_select, current_skill))
                 skill_mini_dict = self.get_skill_adjust(current_skill, skill_dict_key, skill_select)
+
                 if skill_mini_dict != 'cancel':
-                    return_menu = self.get_skill_cost(skill_mini_dict=skill_mini_dict)
+                    self.get_skill_cost(skill_mini_dict=skill_mini_dict)
                 else:
                     return_menu = True
                     return return_menu
