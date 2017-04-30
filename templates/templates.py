@@ -132,7 +132,14 @@ class Templates(object):
              "the same time keep your character in mind.  You are not playing to win the mainipulate-the-skill-tree game, you are\n" \
              "RPing your character.  Do you have useless skills? I know I do, maybe your character has her fair share as well.\n \n Much" \
              "like the STATS, SKILLS are purchased in the same manor, however you will always have to buy your first point in a skill.\n \n" \
-             "ᗘᗘᗘ Enter Skill you'd like to adjust: "
+             "ᗘᗘᗘ Enter Skill you'd like to adjust: (Enter 'cancel' to exit skills)"
+
+    GET_MERITS = 'Please select a Merits list to view [MIND] [PHYSICAL] [SOCIAL] [CANCEL]: '
+    SELECT_MERITS = "\nᗘᗘ [CHANGE LIST], [CANCEL] or Enter Merit:"
+
+    NO_EXP_MSG = "You do not have sufficient experience points remaining. Press ENTER to continue."
+
+    VALID_ENTRY = "Please enter a valid entry."
 
     def print_char_sheet(self, character_dict):
         main_sheet = "[NAME]    NAME:  {name} \n" \
@@ -144,7 +151,7 @@ class Templates(object):
                      "[POCC]    PRIMARY OCCUPATION: {pocc} \n" \
                      " [SOCC]    SECOND OCCUPATION:  {socc} \n" \
                      "\n" \
-                     "  [HP]      HP: {hp} \n" \
+                     "  [HP]      HP: {natural_hp} + {bonus_hp} = {hp} \n" \
                      "[STUFF]   STUFFING: {stuffing} \n" \
                      "          SANITY: {sanity} \n" \
                      "          SOAK: {soak} \n" \
@@ -161,7 +168,7 @@ class Templates(object):
 
 
         skills_sheet = self.print_char_skills(character_dict=character_dict)
-        merits_sheet = "\n[MERITS]  MERITS:\n{merits}\n"
+        merits_sheet = self.print_char_merits(character_dict=character_dict)
         flaws_sheet = "\n[FLAWS]   FLAWS:\n{flaws}\n \n"
         exp_sheet = "ᗘᗘᗘ XP POINTS TOTAL {exp_total} ᗛᗛᗛ\n" \
                     "ᗘᗘᗘ XP POINTS REMAINING {exp_remaining} ᗛᗛᗛ\n".format(**character_dict)
@@ -184,6 +191,17 @@ class Templates(object):
         else:
             skills_sheet = "   [SKILLS]  SKILLS: \n"
             return skills_sheet
+        
+    def print_char_merits(self, character_dict):
+        if len(character_dict['merits']) > 0:
+            merits_sheet = ["\n[MERITS]  MERITS:", ]
+            merits = character_dict['merits']
+            for l, j in merits.items():
+                merits_sheet.append('\nᗘᗘ{}: {}\n'.format(l, j))
+            return "".join(merits_sheet)
+        else:
+            merits_sheet = "   [MERITS]  MERITS: \n"
+            return merits_sheet
 
 
 
@@ -305,6 +323,158 @@ class Templates(object):
                                "subterfuge": 0
                                }
                    }
+
+    MERITS = {'MIND': {'danger sense': [3, 'perception', 1],
+                       'encyclopedic knowledge': [3, 'academics', 1],
+                       'iron mind': [3, 'concentration', 1],
+                       'speed reader': [3, 'academics', 1],
+                       'puzzle solver': [3, 'search', 1],
+                       'unseen sense': [3, 'perception', 1],
+                       'diamond mind': [4, 'concentration', 2],
+                       'evil eye': [4, 'intimidate', 1],
+                       'linguist': [4, 'academics', 1],
+                       'lucky': [4, 'probability', 2],
+                       'math savant': [4, 'science', 2],
+                       'photographic memory': [4, 'perception', 2],
+                       'quick stitch': [4, 'medicine', 1],
+                       'quick thinker': [4, 'knowledge', 2],
+                       'spell prodigy': [4, 'concentration', 2],
+                       'tech savvy': [4, 'computer', 2],
+                       'the brain': [6, 'int', 2],
+                       'cypher cracker': [6, 'computer', 3],
+                       'silver tongue': [6, 'cha', 2]
+                       },
+              'PHYSICAL': {'ambidexterous': [3, 'offhand', 2],
+                           'brawler': [3, 'brawl', 1],
+                           'iron will': [3, 'hp', 1],
+                           'quick draw': [3, 'inititive', 2],
+                           'quick healer': [3, 'medicine', 1],
+                           'quick load': [3, 'inititive', 1],
+                           'dirty mouth': [4, 'brawl', 1],
+                           'high alcohol tolerance': [4, 'poison resistance', 2],
+                           'nimble': [4, 'dex', 1],
+                           'throw anything': [4, 'weaponry', 2],
+                           'ariel acrobat': [6, 'fly', 2],
+                           'blind fighting': [6, 'brawl', 2],
+                           'cool under pressure': [6, 'inititive', 3],
+                           'echo location': [6, 'darkness', 2],
+                           'heighten sense': [6, 'stat', 1],
+                           'hard worker': [6, 'con', 1],
+                           'hard scales': [6, 'soak', 1],
+                           'high jumper': [6, 'athletics', 2],
+                           'high pain threshold': [6, 'soak', 1],
+                           'iron marrow': [6, 'hollow bone', 1],
+                           'master of disguise': [6, 'bluff', 2],
+                           'night vision': [6, 'darkness', 2],
+                           'quick shot': [6, 'firearms', 2],
+                           'physical prowess': [6, 'str', 2],
+                           'prehensile tail': [6, 'dex', 1],
+                           'parkour': [6, 'athletics', 2],
+                           'stunt driver': [6, 'drive', 2],
+                           'sprinter': [6, 'athletics', 2],
+                           'sticky paws': [6, 'climb', 2],
+                           'poison tollerance': [6, 'poison resistance', 3],
+                           'utilitarian': [6, 'crafting', 3],
+                           'weapon specialty': [6, 'weapon spec', 2],
+                           'jack of all trades': [8, 'skills', 1],
+                           'poison resistance 2': [8, 'poison resistance', 4],
+                           'unbreakable': [8, 'soak', 2],
+                           'poison resistance 3': [10, 'poison resistance', 6],
+                           'regenerate': [10, 'hp', 1],
+                           'only survivor': [10, 'hp', 1]
+                           },
+              'SOCIAL': {'charasmatic': [3, 'cha', 1],
+                         'dance fiend': [3, 'expression', 2],
+                         'friend': [3, 'social contacts', 1],
+                         'network': [3, 'social contacts', 1],
+                         'singer': [3, 'expression', 2],
+                         'actor actress': [3, 'cha', 1],
+                         'alluring': [4, 'persuasion', 2],
+                         'body language': [4, 'persuasion', 2],
+                         'beautiful handsome': [4, 'cha', 1],
+                         'money': [4, 'money', 2],
+                         'prominant fangs': [4, 'intimidate', 2],
+                         'resources': [6, 'streetwise', 3],
+                         'sneaky': [6, 'subterfuge', 2],
+                         'witty': [6, 'bluff', 2],
+                         'loaded': [8, 'money', 5],
+                         'most interesting plush in the world': [10, 'cha', 3]}
+              }
+
+    FLAWS = {'MENTAL': {'curiosity': [3, 'search', 2],
+                        'hydrophobia': [3, 'water', 2],
+                        'naive': [3, 'academics', 1],
+                        'prude': [3, 'persuasion', 1],
+                        'phobia': [3, '', 2],
+                        'stutter': [3, 'cha', 1],
+                        'afraid of combat': [4, 'initiative', 2],
+                        'combat rage': [4, 'atk', 2],
+                        'dead inside': [4, 'empathy', 1],
+                        'delusional paranoia': [4, 'cha', 1],
+                        'memory loss': [4, 'int', 1],
+                        'mental scars': [4, 'empathy', 1],
+                        'obsessed': [4, 'distracted', 2],
+                        'ocd': [4, 'distracted', 2],
+                        'primitive heritage': [4, 'knowledge', 2],
+                        'short temper': [4, 'rage', 2],
+                        'curiosity 2': [6, 'search', 4],
+                        'epileptic cataleptic': [6, 'mental', 4],
+                        'hero complex': [6, 'alg', 4],
+                        'hydrophobia 2': [6, 'water', 4],
+                        'nyctophobia': [6, 'darkness', 4],
+                        'phobia 2': [6, '', 4],
+                        'species racist': [6, 'species', 4],
+                        'superiority complex': [6, 'social', 4],
+                        'villain complex': [6, 'alg', 4],
+                        },
+             'PHYSICAL': {'allergies': [3, 'athletics', 1],
+                          'clutz': [3, 'athletics', 1],
+                          'facial body tick': [3, 'dex', 1],
+                          'glutton': [3, 'survival', 1],
+                          'one eye': [3, 'atk', 1],
+                          'odious habit': [3, 'persuasion', 1],
+                          'near far sighted': [3, 'ranged', 1],
+                          'sluggish': [3, 'dex', 1],
+                          'ugly': [3, 'cha', 1],
+                          'addiction': [4, 'addiction', 1],
+                          'blood frenzy': [4, 'rage', 1],
+                          'body tremor': [4, 'dex', 1],
+                          'low alcohol tolerance': [4, 'alcohol', 1],
+                          'mute': [4, 'social', 1],
+                          'sickly': [4, 'survival', 1],
+                          'weak fragile': [4, 'dmg', 1],
+                          'alcoholic': [6, 'social', 2],
+                          'allergies 2': [6, 'athletics', 2],
+                          'addiction 2': [6, 'addiction', 2],
+                          'blind': [6, 'physical', 4],
+                          'missing limb': [6, 'stuffing', 1],
+                          'naturally low stuffing': [6, 'stufing', 1],
+                          'no alcohol tolerance': [6, 'alcohol', 2],
+                          'patchy': [6, 'social', 2],
+                          'brittle bones': [8, 'dmg', 2],
+                          'patchwork': [8, 'stuffing', 3],
+                          'no limbs': [10, 'physical', 6]
+                          },
+             'STATS': {'dumb': [4, 'int', 1],
+                       'low IQ': [6, 'int', 2],
+                       'mental handicap': [8, 'int', 3],
+                       'weak': [4, 'str', 1],
+                       'feeble': [6, 'str', 2],
+                       'powerless': [8, 'str', 3],
+                       'lame': [4, 'con', 1],
+                       'decrepit': [6, 'con', 2],
+                       'debilitated': [8, 'con', 3],
+                       'slow': [4, 'dex', 1],
+                       'sluggish': [6, 'dex', 2],
+                       'torpid': [8, 'dex', 3],
+                       'ignorant': [4, 'wis', 1],
+                       'obtuse': [6, 'wis', 2],
+                       'bewlidered': [8, 'wis', 3],
+                       'foul': [4, 'cha', 1],
+                       'homely': [6, 'cha', 2],
+                       'grotesque': [8, 'cha', 3]
+                       }
+             }
 
     PRIMARY_OCC = []
     SECONDARY_OCC = []

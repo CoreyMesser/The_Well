@@ -1,0 +1,15 @@
+INSERT INTO "skills" ("code", "academics", "animal_kinship", "athletics", "bluff", "brawl", "computer", "concentration", "crafting", "demolitions", "drive", "empathy", "expression", "firearms", "intimidate", "investigation", "larceny", "medicine", "occult", "persuasion", "politics", "ranged_weaponry", "ride", "science ", "social_contacts", "stealth", "streetwise", "subterfuge", "survival", "weaponry ")
+    VALUES
+      (0, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5);
+
+INSERT INTO "character" ("code", "name", "species", "species_size", "sex", "faction", "alg", "pocc", "socc", "exp_total", "exp_remaining",
+                         "natural_hp", "hp", "soak", "stuffing", "sanity", "str", "int", "dex", "con", "wis", "cha", "skills_id", "merits_id", "flaws_id")
+VALUES
+  ('1', 'Lucy', 'dog', 'M/C', 'Female', 'Loom', 'CG', 'Artist', 'None', 42, 0, 4, 1, 5, 0, 10, 5, 1, 3, 4, 1, 3, 4,
+   1 , 1, 1);
+
+INSERT INTO "character_code" ("code", "display_name")
+VALUES
+  ('1', 'player_character'),
+  ('2', 'non_player_character');
+
