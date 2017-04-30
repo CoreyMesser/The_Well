@@ -56,7 +56,11 @@ class CharacterCreation(object):
                 while return_menu is False:
                     return_menu = self.pc.get_skills()
             if player_choice == 'merits':
-                self.pc.get_merits()
+                while return_menu is False:
+                    return_menu = self.pc.get_merits()
+            if player_choice == 'flaws':
+                while return_menu is False:
+                    return_menu = self.pc.get_flaws()
             if player_choice == 'finished':
                 finished = True
 
@@ -76,6 +80,7 @@ class CharacterCreation(object):
         db_char.socc = cc.character_dict['socc']
         db_char.exp_total = cc.character_dict['exp_total']
         db_char.exp_remaining = cc.character_dict['exp_remaining']
+        db_char.natural_hp = cc.character_dict['natural_hp']
         db_char.hp = cc.character_dict['hp']
         db_char.soak = cc.character_dict['soak']
         db_char.stuffing = cc.character_dict['stuffing']
