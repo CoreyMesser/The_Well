@@ -134,8 +134,26 @@ class Templates(object):
              "like the STATS, SKILLS are purchased in the same manor, however you will always have to buy your first point in a skill.\n \n" \
              "ᗘᗘᗘ Enter Skill you'd like to adjust: (Enter 'cancel' to exit skills)"
 
+    POCC = "ᗘᗘPRIMARY OCCUPATIONS : (bonuses are added directly to your skills) \n" \
+           "ᗘᗘᗘ[SOLDIER] -(+1 Fire +1 Sur)\n" \
+           "ᗘᗘᗘ[MEDIC] -(+1 Med +1 Academics)\n" \
+           "ᗘᗘᗘ[TECH] -(+1 Computers +1 Sci)\n" \
+           "ᗘᗘᗘ[LAW ENFORCEMENT] -(+1 Fire +1 Investigation)\n" \
+           "ᗘᗘᗘ[CRIMINAL] -(+1 Larceny +1 Streetwise)\n" \
+           "ᗘᗘᗘ[OCCULTISTS] -(+1 Occult +1 Investigation)\n" \
+           "ᗘᗘᗘ[SCHOLAR] -(+1 Academics +1 Science)\n" \
+           "ᗘᗘᗘ[PSI] -(+1 Concentration +1 Empathy)\n" \
+           "ᗘᗘᗘ[MAGE] -(+1 Concentration +1 Academics)\n" \
+           "ᗘᗘᗘ[ATHLETE] -(+2 Athletics)"
+
+    SELECT_POCC = "\nᗘᗘᗘ Please select a Primary Occupation or [CANCEL] ᗘᗘ "
+    SELECT_SOCC = "\nᗘᗘᗘ Please select a Specialist Occupation or [CANCEL] ᗘᗘ "
+
+
     GET_MERITS = 'Please select a Merits list to view [MIND] [PHYSICAL] [SOCIAL] [CANCEL]: '
-    SELECT_MERITS = "\nᗘᗘ [CHANGE LIST], [CANCEL] or Enter Merit:"
+    GET_FLAWS = 'Please select a Flaws list to view [MENTAL] [PHYSICAL] [STATS] [CANCEL]: '
+
+    SELECT_MF = "\nᗘᗘ [CHANGE LIST], [CANCEL] or Enter Merit:"
 
     NO_EXP_MSG = "You do not have sufficient experience points remaining. Press ENTER to continue."
 
@@ -169,8 +187,8 @@ class Templates(object):
 
         skills_sheet = self.print_char_skills(character_dict=character_dict)
         merits_sheet = self.print_char_merits(character_dict=character_dict)
-        flaws_sheet = "\n[FLAWS]   FLAWS:\n{flaws}\n \n"
-        exp_sheet = "ᗘᗘᗘ XP POINTS TOTAL {exp_total} ᗛᗛᗛ\n" \
+        flaws_sheet = self.print_char_flaws(character_dict=character_dict)
+        exp_sheet = "\n \nᗘᗘᗘ XP POINTS TOTAL {exp_total} ᗛᗛᗛ\n" \
                     "ᗘᗘᗘ XP POINTS REMAINING {exp_remaining} ᗛᗛᗛ\n".format(**character_dict)
 
         sheet = main_sheet + skills_sheet + merits_sheet + flaws_sheet + exp_sheet
@@ -202,8 +220,17 @@ class Templates(object):
         else:
             merits_sheet = "   [MERITS]  MERITS: \n"
             return merits_sheet
-
-
+        
+    def print_char_flaws(self, character_dict):
+        if len(character_dict['flaws']) > 0:
+            flaws_sheet = ["\n[FLAWS]  FLAWS:", ]
+            flaws = character_dict['flaws']
+            for l, j in flaws.items():
+                flaws_sheet.append('\nᗘᗘ{}: {}\n'.format(l, j))
+            return "".join(flaws_sheet)
+        else:
+            flaws_sheet = "   [FLAWS]  FLAWS: \n"
+            return flaws_sheet
 
     def print_species_list(self, species):
         species_class = self.species_dict[species]
@@ -331,7 +358,6 @@ class Templates(object):
                        'puzzle solver': [3, 'search', 1],
                        'unseen sense': [3, 'perception', 1],
                        'diamond mind': [4, 'concentration', 2],
-                       'evil eye': [4, 'intimidate', 1],
                        'linguist': [4, 'academics', 1],
                        'lucky': [4, 'probability', 2],
                        'math savant': [4, 'science', 2],
@@ -340,42 +366,46 @@ class Templates(object):
                        'quick thinker': [4, 'knowledge', 2],
                        'spell prodigy': [4, 'concentration', 2],
                        'tech savvy': [4, 'computer', 2],
-                       'the brain': [6, 'int', 2],
+                       'the brain': [6, 'int', 1],
                        'cypher cracker': [6, 'computer', 3],
-                       'silver tongue': [6, 'cha', 2]
+                       'silver tongue': [6, 'cha', 1],
+                       'weaver': [6, 'medicine', 2]
                        },
-              'PHYSICAL': {'ambidexterous': [3, 'offhand', 2],
+              'PHYSICAL': {'ambidextrous': [3, 'offhand', 2],
                            'brawler': [3, 'brawl', 1],
+                           'dodge': [3, 'dodge', 1],
                            'iron will': [3, 'hp', 1],
-                           'quick draw': [3, 'inititive', 2],
+                           'quick draw': [3, 'initiative', 2],
                            'quick healer': [3, 'medicine', 1],
-                           'quick load': [3, 'inititive', 1],
+                           'quick load': [3, 'initiative', 1],
                            'dirty mouth': [4, 'brawl', 1],
                            'high alcohol tolerance': [4, 'poison resistance', 2],
                            'nimble': [4, 'dex', 1],
                            'throw anything': [4, 'weaponry', 2],
                            'ariel acrobat': [6, 'fly', 2],
                            'blind fighting': [6, 'brawl', 2],
-                           'cool under pressure': [6, 'inititive', 3],
+                           'cool under pressure': [6, 'initiative', 3],
+                           'dodge 2': [6, 'dodge', 2],
                            'echo location': [6, 'darkness', 2],
+                           'endurance': [6, 'athletics', 2],
                            'heighten sense': [6, 'stat', 1],
                            'hard worker': [6, 'con', 1],
                            'hard scales': [6, 'soak', 1],
-                           'high jumper': [6, 'athletics', 2],
+                           'high jumper': [6, 'physical', 2],
                            'high pain threshold': [6, 'soak', 1],
                            'iron marrow': [6, 'hollow bone', 1],
-                           'master of disguise': [6, 'bluff', 2],
                            'night vision': [6, 'darkness', 2],
                            'quick shot': [6, 'firearms', 2],
                            'physical prowess': [6, 'str', 2],
                            'prehensile tail': [6, 'dex', 1],
-                           'parkour': [6, 'athletics', 2],
+                           'parkour': [6, 'physical', 2],
                            'stunt driver': [6, 'drive', 2],
-                           'sprinter': [6, 'athletics', 2],
-                           'sticky paws': [6, 'climb', 2],
-                           'poison tollerance': [6, 'poison resistance', 3],
+                           'sprinter': [6, 'physical', 2],
+                           'sticky paws': [6, 'physical', 2],
+                           'poison tolerance': [6, 'poison resistance', 3],
                            'utilitarian': [6, 'crafting', 3],
                            'weapon specialty': [6, 'weapon spec', 2],
+                           'dodge 3': [8, 'dodge', 3],
                            'jack of all trades': [8, 'skills', 1],
                            'poison resistance 2': [8, 'poison resistance', 4],
                            'unbreakable': [8, 'soak', 2],
@@ -383,8 +413,9 @@ class Templates(object):
                            'regenerate': [10, 'hp', 1],
                            'only survivor': [10, 'hp', 1]
                            },
-              'SOCIAL': {'charasmatic': [3, 'cha', 1],
+              'SOCIAL': {'charismatic': [3, 'cha', 1],
                          'dance fiend': [3, 'expression', 2],
+                         'evil eye': [4, 'intimidate', 1],
                          'friend': [3, 'social contacts', 1],
                          'network': [3, 'social contacts', 1],
                          'singer': [3, 'expression', 2],
@@ -393,7 +424,8 @@ class Templates(object):
                          'body language': [4, 'persuasion', 2],
                          'beautiful handsome': [4, 'cha', 1],
                          'money': [4, 'money', 2],
-                         'prominant fangs': [4, 'intimidate', 2],
+                         'prominent fangs': [4, 'intimidate', 2],
+                         'master of disguise': [6, 'bluff', 2],
                          'resources': [6, 'streetwise', 3],
                          'sneaky': [6, 'subterfuge', 2],
                          'witty': [6, 'bluff', 2],
@@ -405,59 +437,69 @@ class Templates(object):
                         'hydrophobia': [3, 'water', 2],
                         'naive': [3, 'academics', 1],
                         'prude': [3, 'persuasion', 1],
-                        'phobia': [3, '', 2],
+                        'phobia': [3, 'mental', 2],
                         'stutter': [3, 'cha', 1],
                         'afraid of combat': [4, 'initiative', 2],
-                        'combat rage': [4, 'atk', 2],
+                        'combat rage': [4, 'rage', 2],
                         'dead inside': [4, 'empathy', 1],
                         'delusional paranoia': [4, 'cha', 1],
+                        'inept': [4, 'knowledge', 2],
                         'memory loss': [4, 'int', 1],
                         'mental scars': [4, 'empathy', 1],
                         'obsessed': [4, 'distracted', 2],
                         'ocd': [4, 'distracted', 2],
+                        'over confident': [4, 'social', 2],
                         'primitive heritage': [4, 'knowledge', 2],
+                        'short circuit': [4, 'computer', 2],
                         'short temper': [4, 'rage', 2],
                         'curiosity 2': [6, 'search', 4],
                         'epileptic cataleptic': [6, 'mental', 4],
+                        'anti-science': [6, 'science', 4],
                         'hero complex': [6, 'alg', 4],
                         'hydrophobia 2': [6, 'water', 4],
+                        'quack': [6, 'medicine', 4],
                         'nyctophobia': [6, 'darkness', 4],
-                        'phobia 2': [6, '', 4],
+                        'phobia 2': [6, 'mental', 4],
                         'species racist': [6, 'species', 4],
                         'superiority complex': [6, 'social', 4],
                         'villain complex': [6, 'alg', 4],
+                        'blind': [8, 'perception', 4],
+                        'jinx': [8, 'probability', 6]
                         },
-             'PHYSICAL': {'allergies': [3, 'athletics', 1],
-                          'clutz': [3, 'athletics', 1],
+             'PHYSICAL': {'allergies': [3, 'physical', 1],
+                          'clutz': [3, 'physical', 1],
                           'facial body tick': [3, 'dex', 1],
                           'glutton': [3, 'survival', 1],
-                          'one eye': [3, 'atk', 1],
+                          'one eye': [3, 'attack_power', 1],
                           'odious habit': [3, 'persuasion', 1],
-                          'near far sighted': [3, 'ranged', 1],
-                          'sluggish': [3, 'dex', 1],
-                          'ugly': [3, 'cha', 1],
+                          'sluggish': [3, 'vitality', 1],
+                          'ugly': [3, 'social', 1],
                           'addiction': [4, 'addiction', 1],
                           'blood frenzy': [4, 'rage', 1],
-                          'body tremor': [4, 'dex', 1],
+                          'body tremor': [4, 'physical', 1],
+                          'combat fear': [4, 'attack_power', 2],
+                          'fragile': [4, 'vitality', 1],
                           'low alcohol tolerance': [4, 'alcohol', 1],
                           'mute': [4, 'social', 1],
+                          'near far sighted': [4, 'ranged_attack_power', 1],
                           'sickly': [4, 'survival', 1],
                           'weak fragile': [4, 'dmg', 1],
                           'alcoholic': [6, 'social', 2],
-                          'allergies 2': [6, 'athletics', 2],
+                          'allergies 2': [6, 'physical', 2],
                           'addiction 2': [6, 'addiction', 2],
-                          'blind': [6, 'physical', 4],
+                          'combat terror': [6, 'attack_power', 3],
                           'missing limb': [6, 'stuffing', 1],
-                          'naturally low stuffing': [6, 'stufing', 1],
+                          'lazy': [6, 'con', 2],
+                          'naturally low stuffing': [6, 'stuffing', 1],
                           'no alcohol tolerance': [6, 'alcohol', 2],
                           'patchy': [6, 'social', 2],
                           'brittle bones': [8, 'dmg', 2],
                           'patchwork': [8, 'stuffing', 3],
                           'no limbs': [10, 'physical', 6]
                           },
-             'STATS': {'dumb': [4, 'int', 1],
-                       'low IQ': [6, 'int', 2],
-                       'mental handicap': [8, 'int', 3],
+             'STATS': {'imbecile': [4, 'int', 1],
+                       'nit-wit': [6, 'int', 2],
+                       'wit-less': [8, 'int', 3],
                        'weak': [4, 'str', 1],
                        'feeble': [6, 'str', 2],
                        'powerless': [8, 'str', 3],
@@ -469,12 +511,42 @@ class Templates(object):
                        'torpid': [8, 'dex', 3],
                        'ignorant': [4, 'wis', 1],
                        'obtuse': [6, 'wis', 2],
-                       'bewlidered': [8, 'wis', 3],
+                       'bewildered': [8, 'wis', 3],
                        'foul': [4, 'cha', 1],
                        'homely': [6, 'cha', 2],
                        'grotesque': [8, 'cha', 3]
                        }
              }
 
-    PRIMARY_OCC = []
-    SECONDARY_OCC = []
+    PRIMARY_OCC = {'soldier': [1, 'firearms', 1, 'survival'],
+                   'medic': [1, 'medicine', 1, 'academics'],
+                   'tech': [1, 'computers', 1, 'science'],
+                   'law enforement': [1, 'firearms', 1, 'investigation'],
+                   'criminal': [1, 'larceny', 1, 'streetwise'],
+                   'occultist': [1, 'occult', 1, 'investigation'],
+                   'scholar': [1, 'academics', 1, 'science'],
+                   'PSI': [1, 'concentration', 1, 'empathy'],
+                   'mage': [1, 'concentration', 1, 'academics'],
+                   'athlete': [2, 'athletics', 0, 'athletics']
+                   }
+    SECONDARY_OCC = {
+                    'SOLDIER': {'recon': [2, 'investigation'], 'brute': [2, 'brawl'], 'sniper': [2, 'aim'], 'weapon specialist': [2, 'weaponry'],
+                                'motor specialist': [2, 'drive'], 'air specialist': [2, 'fly'], 'combat medic': [2, 'medicine'],
+                                'demolitions': [2, 'demolitions']},
+                    'MEDIC': {'surgeon': [2, 'medicine'], 'weaver': [2, 'crafting'], 'stuffist': [2, 'science'], 'chemist': [2, 'crafting']},
+                    'TECH': {'programmer': [2, 'computer'], 'hacker': [2, 'subterfuge'], 'IT Specialist': [2, 'crafting'],
+                             'Security Specialist': [2, 'investigation']},
+                    'LAW ENFORCEMENT': {'swat': [2, 'survival'], 'weapon specialist': [2, 'firearms'], 'vice': [2, 'streetwise'],
+                                        'detective': [2, 'investigation'], 'private eye': [2, 'social contacts']},
+                    'CRIMINAL': {'safe cracker': [2, 'demolitions'], 'nightwalker': [2, 'stealth'], 'thief': [2, 'larceny'],
+                                 'smuggler': [2, 'subterfuge'], 'drug dealer': [1, 'social contacts'], 'mob enforcer': [2, 'intimidation'],
+                                 'con artist': [2, 'persuasion']},
+                    'OCCULTIST': {'ancient lore': [2, 'academics'], 'demonologist': [2, 'occult'], 'ancient catographer': [2, 'crafting'],
+                                  'treasure hunter': [2, 'investigation']},
+                    'SCHOLAR': {'historian': [2, 'academics'], 'journalist': [2, 'persuasion'], 'investigative reporter': [2, 'investigation'],
+                                'information': [2, 'subterfuge']},
+                    'MAGICIAN': {},
+                    'PSI': {},
+                    'ATHLETE': {'marathoner': [2, 'athletics'], 'swimmer': [2, 'swim'], 'Football-NFL': [2, 'brawl'],
+                                'Football-FIFA': [2, 'dodge'], 'boxer': [2, 'brawl'], 'olympian': [1, 'str']}
+                    }
