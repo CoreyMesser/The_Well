@@ -102,6 +102,10 @@ class PCSlots(object):
 
 class Character(Base):
     __tablename__ = 'character'
+    __table_args__ = (
+        CheckConstraint("date_part('timezone'::text, created_at) = '0'::double precision"),
+        CheckConstraint("date_part('timezone'::text, updated_at) = '0'::double precision")
+    )
 
     id = Column(Integer, primary_key=True, server_default=text("nextval('character_id_seq'::regclass)"))
     code = Column(Text, nullable=False)
@@ -115,6 +119,7 @@ class Character(Base):
     socc = Column(Text)
     exp_total = Column(Integer, nullable=False)
     exp_remaining = Column(Integer, nullable=False)
+    nartural_hp = Column(Integer, nullable=False)
     hp = Column(Integer, nullable=False)
     soak = Column(Integer, nullable=False)
     stuffing = Column(Integer, nullable=False)
@@ -125,29 +130,41 @@ class Character(Base):
     con = Column(Integer, nullable=False)
     wis = Column(Integer, nullable=False)
     cha = Column(Integer, nullable=False)
-    skills = Column(Text)
-    merits = Column(Text)
-    flaws = Column(Text)
-    updated_at = Column(DateTime, nullable=False)
-    created_at = Column(DateTime, nullable=False)
+    skills_id = Column(ForeignKey('skills.id'), nullable=False)
+    merits_id = Column(Integer, nullable=False)
+    flaws_id = Column(Integer, nullable=False)
+    updated_at = Column(DateTime(True), nullable=False, server_default=text("now_utc()"))
+    created_at = Column(DateTime(True), nullable=False, server_default=text("now_utc()"))
+
+    skills = relationship('Skill')
 
 
 class CharacterCode(Base):
     __tablename__ = 'character_code'
+    __table_args__ = (
+        CheckConstraint("date_part('timezone'::text, created_at) = '0'::double precision"),
+        CheckConstraint("date_part('timezone'::text, updated_at) = '0'::double precision")
+    )
 
     id = Column(Integer, primary_key=True, server_default=text("nextval('character_code_id_seq'::regclass)"))
     code = Column(Text, nullable=False)
     display_name = Column(Text)
-    updated_at = Column(DateTime, nullable=False)
-    created_at = Column(DateTime, nullable=False)
+    updated_at = Column(DateTime(True), nullable=False, server_default=text("now_utc()"))
+    created_at = Column(DateTime(True), nullable=False, server_default=text("now_utc()"))
 
 
 class InventoryPc(Base):
     __tablename__ = 'inventory_pc'
+    __table_args__ = (
+        CheckConstraint("date_part('timezone'::text, created_at) = '0'::double precision"),
+        CheckConstraint("date_part('timezone'::text, updated_at) = '0'::double precision")
+    )
 
     id = Column(Integer, primary_key=True, server_default=text("nextval('inventory_pc_id_seq'::regclass)"))
     code = Column(Text, nullable=False)
     character_id = Column(Text, nullable=False)
+    updated_at = Column(DateTime(True), nullable=False, server_default=text("now_utc()"))
+    created_at = Column(DateTime(True), nullable=False, server_default=text("now_utc()"))
 
 
 class Skill(Base):
@@ -167,7 +184,7 @@ class Skill(Base):
     medicine = Column(Integer)
     occult = Column(Integer)
     politics = Column(Integer)
-    science_ = Column(Integer)
+    science = Column(Integer)
     athletics = Column(Integer)
     brawl = Column(Integer)
     demolitions = Column(Integer)
@@ -178,7 +195,7 @@ class Skill(Base):
     ride = Column(Integer)
     stealth = Column(Integer)
     survival = Column(Integer)
-    weaponry_ = Column(Integer)
+    weaponry = Column(Integer)
     animal_kinship = Column(Integer)
     bluff = Column(Integer)
     empathy = Column(Integer)
@@ -190,4 +207,5 @@ class Skill(Base):
     subterfuge = Column(Integer)
     updated_at = Column(DateTime(True), nullable=False, server_default=text("now_utc()"))
     created_at = Column(DateTime(True), nullable=False, server_default=text("now_utc()"))
+
 

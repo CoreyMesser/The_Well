@@ -8,6 +8,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from system_constants import SystemConstants
 from config import Config
 
+
 Base = declarative_base()
 # Base.query = db_session.query_property()
 
