@@ -1,5 +1,8 @@
 import random, os
 from templates.templates import Templates
+from models import SpeciesDict, MeritsFlawsDicts, OCCs
+from services import PrinterServices
+
 
 class PlayerCharacter(object):
     character_dict = {'name': None,
@@ -81,7 +84,7 @@ class PlayerCharacter(object):
                    'vitality': 0}
 
     template = Templates()
-    species_dict = template.SPECIES_DICT
+    # species_dict = template.SPECIES_DICT
     # return_to_menu = return_to_menu()
 
 
@@ -94,9 +97,10 @@ class PCCombat(object):
         pass
 
 
-class Species(object):
+class Species(SpeciesDict):
     template = Templates()
-    species_dict = template.SPECIES_DICT
+    printer_services = PrinterServices()
+    species_dict = SpeciesDict.SPECIES_DICT
     character_dict = PlayerCharacter.character_dict
     
     def get_species(self):
@@ -105,7 +109,7 @@ class Species(object):
         :return: 
         """
         species = input(self.template.SPECIES).upper()
-        self.template.print_species_list(species)
+        self.printer_services.print_species_list(species)
         species_l = self.species_dict[species]
         species_l_choice = input(self.template.SPECIES_SELECT).upper()
         if species_l_choice == 'SWITCH':
@@ -265,12 +269,13 @@ class Stats(object):
 
 class Skills(object):
     template = Templates()
+    printer_services = PrinterServices()
     character_dict = PlayerCharacter.character_dict
     skills_dict = PlayerCharacter.skills_dict
 
     def print_skills(self):
         print("\n", "=" * 5, ">>> SKILLS <<<", "=" * 5)
-        skill_list = self.template.print_char_skills(skills_dict=self.skills_dict)
+        skill_list = self.printer_services.print_char_skills(skills_dict=self.skills_dict)
         print(skill_list)
 
     def get_skills(self):
@@ -341,9 +346,10 @@ class Skills(object):
                 # self.character_dict['skills'] = {skill_select: skill_adjust}
 
 
-class MeritsFlaws(object):
+class MeritsFlaws(MeritsFlawsDicts):
     template = Templates()
     character_dict = PlayerCharacter.character_dict
+    merits_flaws_dicts = MeritsFlawsDicts()
 
     def print_merits_flaws(self, select, mf_dict, mf):
         print('\nᗘᗘ {} :\n'.format(select))
@@ -374,7 +380,7 @@ class MeritsFlaws(object):
                 if merits_list_select == 'CANCEL':
                     merits_end = True
                 else:
-                    merits_dict = self.template.MERITS
+                    merits_dict = self.merits_flaws_dicts.MERITS
                     self.print_merits_flaws(select=merits_list_select, mf_dict=merits_dict, mf=mf)
                     print(exp.exp_current())
                     merits_select = input(self.template.SELECT_MF).lower()
@@ -410,7 +416,7 @@ class MeritsFlaws(object):
                 if flaws_list_select == 'CANCEL':
                     flaws_end = True
                 else:
-                    flaws_dict = self.template.FLAWS
+                    flaws_dict = self.merits_flaws_dicts.FLAWS
                     self.print_merits_flaws(select=flaws_list_select, mf_dict=flaws_dict, mf=mf)
                     print(exp.exp_current())
                     flaws_select = input(self.template.GET_FLAWS).lower()
@@ -434,6 +440,7 @@ class MeritsFlaws(object):
 
 
 class POCC(object):
+    occ = OCCs()
     template = Templates()
     character_dict = PlayerCharacter.character_dict
     skills_dict = PlayerCharacter.skills_dict
@@ -446,7 +453,7 @@ class POCC(object):
         while pocc_end is False:
             self.print_pocc()
             select_pocc = input(self.template.SELECT_POCC).lower()
-            selected_pocc = self.template.PRIMARY_OCC.keys()
+            selected_pocc = self.occ.PRIMARY_OCC.keys()
             if select_pocc in selected_pocc:
                 pocc = self.template.POCC[select_pocc]
                 self.character_dict['pocc'] = pocc
@@ -460,15 +467,16 @@ class POCC(object):
                 pocc_end = True
 
 
-class SOCC(object):
+class SOCC(OCCs):
+    occ = OCCs()
     template = Templates()
     character_dict = PlayerCharacter.character_dict
     skills_dict = PlayerCharacter.skills_dict
 
     def print_socc(self, socc_req):
-        socc = self.template.SECONDARY_OCC[socc_req]
+        socc = self.occ.SECONDARY_OCC[socc_req]
         for entry in socc:
-            print(self.template.SECONDARY_OCC)
+            print(self.occ.SECONDARY_OCC)
 
     def get_socc(self):
         socc_req = self.character_dict['pocc']
@@ -476,8 +484,8 @@ class SOCC(object):
         while socc_end is False:
             self.print_socc(socc_req=socc_req)
             select_socc = input(self.template.SELECT_SOCC).lower()
-            if select_socc in self.template.SECONDARY_OCC:
-                socc = self.template.SECONDARY_OCC[select_socc]
+            if select_socc in self.occ.SECONDARY_OCC:
+                socc = self.occ.SECONDARY_OCC[select_socc]
                 bonus_attributes = socc[1]
                 bonus_adjust = int(socc[0])
                 self.skills_dict[bonus_attributes] += bonus_adjust

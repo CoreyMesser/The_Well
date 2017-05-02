@@ -1,11 +1,11 @@
 import random, os
-from character_pc import PlayerCharacter, Species, HealthPoints, Stats, Skills, MeritsFlaws, POCC
+from character_pc import PlayerCharacter, Species, HealthPoints, Stats, Skills, MeritsFlaws, POCC, SOCC
 from templates.templates import Templates
-from services import CharacterStoreSession
-from models import Character, CharacterCode, Skill
+from services import PrinterServices
 
 
 class CharacterCreation(object):
+
     def setup(self):
         print(self.template.BANNER)
         print(self.template.INTRO)
@@ -16,14 +16,16 @@ class CharacterCreation(object):
 
     def __init__(self):
         self.template = Templates()
-        self.pc = PlayerCharacter()
         self.hp = HealthPoints()
+        self.pc = PlayerCharacter()
         self.sp = Species()
         self.sts = Stats()
         self.sk = Skills()
         self.mf = MeritsFlaws()
         self.po = POCC()
-        self.db_cs = CharacterStoreSession()
+        self.so = SOCC()
+        # self.db_cs = CharacterStoreSession()
+        self.ps = PrinterServices()
         self.character_dict = self.pc.character_dict
         self.skills_dict = self.pc.skills_dict
         self.setup()
@@ -36,7 +38,7 @@ class CharacterCreation(object):
             return_menu = False
             self.clear_screen()
             self.hp.update_hp()
-            print(self.template.print_char_sheet(self.character_dict, self.skills_dict))
+            print(self.ps.print_char_sheet(self.character_dict, self.skills_dict))
             print('\n'+'\/'*20+'\n \n')
             player_choice = input("ᗘᗘᗘ Please Enter the stat you would like to adjust: \n >> ").lower()
             if player_choice == 'name':
@@ -53,7 +55,7 @@ class CharacterCreation(object):
             if player_choice == 'pocc':
                 self.po.get_pocc()
             if player_choice == 'socc':
-                self.character_dict['socc'] = input(self.template.SECONDARY_OCC)
+                self.so.get_socc()
             if player_choice == 'hp':
                 self.hp.get_hp()
             if player_choice == 'stuff':
@@ -72,4 +74,4 @@ class CharacterCreation(object):
             if player_choice == 'finished':
                 finished = True
 
-        self.db_cs.store_character_session()
+        # self.db_cs.store_character_session()
