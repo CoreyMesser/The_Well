@@ -24,59 +24,90 @@ class PlayerCharacter(object):
                       'con': 1,
                       'wis': 1,
                       'cha': 1,
-                      'skills': {'MENTAL': {}, 'PHYSICAL': {}, 'SOCIAL': {}},
+                      # 'skills': {},
                       'merits': {},
                       'flaws': {}
                       }
     # 'flaws_counter': 3
     character_stats = ['str', 'int', 'dex', 'con', 'wis', 'cha']
 
-    character_checks = {'aim': 0,
-                        'attack_power': 0,
-                        'concentration': 0,
-                        'dodge': 0,
-                        'initiative': 0,
-                        'knowledge': 0,
-                        'mental': 0,
-                        'money': 0,
-                        'social': 0,
-                        'perception': 0,
-                        'physical': 0,
-                        'poison_resistance': 0,
-                        'rage': 0,
-                        'ranged_attack_power': 0,
-                        'resistance': 0,
-                        'search': 0,
-                        'vitality': 0}
+    skills_dict = {"academics": 0,
+                   "computer": 0,
+                   "concentration": 0,
+                   "crafting": 0,
+                   "investigation": 0,
+                   "medicine": 0,
+                   "occult": 0,
+                   "politics": 0,
+                   "science": 0,
+                   "athletics": 0,
+                   "brawl": 0,
+                   "demolitions": 0,
+                   "drive": 0,
+                   "firearms": 0,
+                   "larceny": 0,
+                   "ranged weaponry": 0,
+                   "ride": 0,
+                   "stealth": 0,
+                   "survival": 0,
+                   "weaponry": 0,
+                   "animal kinship": 0,
+                   "bluff": 0,
+                   "empathy": 0,
+                   "expression": 0,
+                   "intimidate": 0,
+                   "persuasion": 0,
+                   "social contacts": 0,
+                   "streetwise": 0,
+                   "subterfuge": 0
+                   }
+
+    checks_dict = {'aim': 0,
+                   'attack_power': 0,
+                   'concentration': 0,
+                   'dodge': 0,
+                   'initiative': 0,
+                   'knowledge': 0,
+                   'mental': 0,
+                   'money': 0,
+                   'social': 0,
+                   'perception': 0,
+                   'physical': 0,
+                   'poison_resistance': 0,
+                   'rage': 0,
+                   'ranged_attack_power': 0,
+                   'resistance': 0,
+                   'search': 0,
+                   'vitality': 0}
 
     template = Templates()
-    species_dict = template.species_dict
+    species_dict = template.SPECIES_DICT
     # return_to_menu = return_to_menu()
 
 
 class PCCombat(object):
     def attack(self):
-        roll = random.randint(1, self.attack_limit)
-        # if self.weapon == 'sword':
-        #     roll += 1
-        return roll
+        # roll = random.randint(1, self.attack_limit)
+        # # if self.weapon == 'sword':
+        # #     roll += 1
+        # return roll
+        pass
 
 
 class Species(object):
     template = Templates()
-    species_dict = template.species_dict
+    species_dict = template.SPECIES_DICT
     character_dict = PlayerCharacter.character_dict
     
     def get_species(self):
-        '''
-        species selection and updates character_dict
+        """
+        
         :return: 
-        '''
+        """
         species = input(self.template.SPECIES).upper()
         self.template.print_species_list(species)
         species_l = self.species_dict[species]
-        species_l_choice = input('Please enter a species name, \n or [SWITCH] to switch Species Lists, '
-                                 '\n or [SHEET] to return to you character sheet. \n \n >>>: ').upper()
+        species_l_choice = input(self.template.SPECIES_SELECT).upper()
         if species_l_choice == 'SWITCH':
             self.switch_species(species)
         elif species_l_choice == 'SHEET':
@@ -92,11 +123,11 @@ class Species(object):
             return return_menu
 
     def switch_species(self, species):
-        '''
-        switches species dict
-        :param species: str passed in from get_species
-        :return: str var for dict
-        '''
+        """
+        switches species list
+        :param species: 
+        :return: 
+        """
         if species == 'LAND':
             species = 'AIR'
         else:
@@ -109,10 +140,10 @@ class HealthPoints(object):
     character_dict = PlayerCharacter.character_dict
 
     def update_hp(self):
-        '''
-        updates hp in case a skill or stat adds a bonus
+        """
+        updates hp with bonuses
         :return: 
-        '''
+        """
         natural_hp = self.character_dict['natural_hp']
         bonus_hp = self.hp_bonuses()
         current_hp = natural_hp + bonus_hp
@@ -120,29 +151,30 @@ class HealthPoints(object):
         self.character_dict['hp'] = current_hp
 
     def hp_bonuses(self):
-        '''
+        """
         calculates bonus to hp based on skills and CON stat
-        :return: int
-        '''
+        :return: 
+        """
+        pc = PlayerCharacter()
         con_bonus = self.character_dict['con']
         try:
-            athletics_bonus = self.character_dict['skills']['PHYSICAL']['athletics']
-        except KeyError:
+            athletics_bonus = pc.skills_dict['athletics']
+        except Exception:
             athletics_bonus = 0
         try:
-            survival_bonus = self.character_dict['skills']['PHYSICAL']['survival']
-        except KeyError:
+            survival_bonus = pc.skills_dict['survival']
+        except Exception:
             survival_bonus = 0
         bonus = con_bonus + athletics_bonus + survival_bonus
         self.character_dict['bonus_hp'] = bonus
         return bonus
 
     def get_hp(self):
-        '''
-        generates the hp
+        """
+        generates the hp based off natural hp so bonuses do not cost the player more than they should
         subtracts/adds exp appropriately
         :return: 
-        '''
+        """
         hp_cost = 4
         bonus_hp = self.hp_bonuses()
         current_hp = self.character_dict['hp']
@@ -150,8 +182,8 @@ class HealthPoints(object):
         exp = ExperienceCheck()
 
         print(self.template.HEALTH_POINTS)
-        print("\nᗘᗘᗘHit Point Cost is based on your Natural HP. Please adjust accordingly.\nNatural HP: {} \nCurrent Bonus: {} \nTotal HP: {}".format(natural_hp, bonus_hp, current_hp))
-
+        print("\nNatural HP: {} \nCurrent Bonus: {} \nTotal HP: {}".format(natural_hp, bonus_hp, current_hp))
+        print(exp.exp_current())
         hp_adjust = input("\nᗘᗘᗘ Health Points: ")
         hp_adjusted = int(hp_adjust) - natural_hp
         exp_cost = hp_adjusted * hp_cost
@@ -195,14 +227,14 @@ class Stats(object):
     character_dict = PlayerCharacter.character_dict
 
     def get_stats(self, player_choice):
-        '''
-        gets stat #
-        :param player_choice: str passed in from views 
-        :return: Stat + int to character_dict
-        '''
+        """
+        
+        :param player_choice: 
+        :return: 
+        """
         stat = player_choice
         print(self.template.STATS)
-        stat_adjust = int(input('Enter a number [1 - 5]: '))
+        stat_adjust = int(input(self.template.SKILLS_STATS_ADJUST))
         self.get_stat_cost(stat=stat, stat_adjust=stat_adjust)
 
     def get_stat_cost(self, stat, stat_adjust):
@@ -234,62 +266,53 @@ class Stats(object):
 class Skills(object):
     template = Templates()
     character_dict = PlayerCharacter.character_dict
+    skills_dict = PlayerCharacter.skills_dict
 
     def print_skills(self):
-        skills = self.template.skills_dict
         print("\n", "=" * 5, ">>> SKILLS <<<", "=" * 5)
-        for l, j in skills.items():
-            print('\n{} : \n'.format(l))
-            for k, v in j.items():
-                if k in self.character_dict['skills'][l]:
-                    char_skill = self.character_dict['skills'][l][k]
-                    print('   {}: {}'.format(k, char_skill).upper())
-                else:
-                    print('   {} : {}'.format(k, v).upper())
+        skill_list = self.template.print_char_skills(skills_dict=self.skills_dict)
+        print(skill_list)
 
     def get_skills(self):
+        """
+        
+        :return: 
+        """
+        exp = ExperienceCheck()
         skills_end = False
         print(self.template.SKILLS)
         while skills_end is False:
             self.print_skills()
-            skill_select = input('ᗘᗘᗘ Enter Skill you\'d like to adjust: (Enter \'cancel\' to exit skills)').lower()
-            skills_dict = self.template.skills_dict
-            skills = self.character_dict['skills']
+            print(exp.exp_current())
+            skill_select = input(self.template.SKILLS_SELECT).lower()
+            skills_dict = self.skills_dict
             if skill_select == 'cancel':
                 skills_end = True
                 return skills_end
             else:
-                for l, j in skills_dict.items():
-                    if skill_select in j.keys():
-                        skill_dict_key = l
-                        if skill_select not in skills[l]:
-                            current_skill = j[skill_select]
-                        else:
-                            current_skill = skills[l][skill_select]
-                        print('\n{}: {}'.format(skill_select, current_skill))
-                        skill_mini_dict = self.get_skill_adjust(current_skill, skill_dict_key, skill_select)
-
-                        if skill_mini_dict != 'cancel':
-                            self.get_skill_cost(skill_mini_dict=skill_mini_dict)
-                        else:
-                            skills_end = True
-                            return skills_end
+                if skill_select in skills_dict.keys():
+                    current_skill = skills_dict[skill_select]
+                    skill_mini_dict = self.get_skill_adjust(current_skill, skill_select)
+                    if skill_mini_dict != 'cancel':
+                        self.get_skill_cost(skill_mini_dict=skill_mini_dict)
+                    else:
+                        skills_end = True
+                        return skills_end
         return_menu = True
         return return_menu
 
-    def get_skill_adjust(self, current_skill, skill_dict_key, skill_select):
+    def get_skill_adjust(self, current_skill, skill_select):
         while True:
             try:
-                skill_adjust = int(input('\nEnter a number [1 - 5]: '))
+                skill_adjust = int(input(self.template.SKILLS_STATS_ADJUST))
                 if 0 < skill_adjust <= 5:
-                    skill_mini_dict = {'key': skill_dict_key, 'skill': skill_select, 'points': current_skill, 'adjust': skill_adjust}
+                    skill_mini_dict = {'skill': skill_select, 'points': current_skill, 'adjust': skill_adjust}
                     return skill_mini_dict
             except ValueError:
                 print(self.template.VALID_ENTRY)
 
     def get_skill_cost(self, skill_mini_dict):
         exp = ExperienceCheck()
-        skill_key = skill_mini_dict['key']
         skill_select = skill_mini_dict['skill']
         current_skill = skill_mini_dict['points']
         skill_adjust = skill_mini_dict['adjust']
@@ -304,9 +327,8 @@ class Skills(object):
             exp_check = exp.exp_remaining_check(exp_cost=skill_cost_add)
             if exp_check is True:
                 self.character_dict['exp_remaining'] -= skill_cost_add
-                skills = self.character_dict['skills']
-                skill_sub_dict = skills[skill_key]
-                skill_sub_dict[skill_select] = skill_adjust
+                self.skills_dict[skill_select] = skill_adjust
+                # self.character_dict['skills'] = {skill_select: skill_adjust}
         elif skill_climb < 0 and current_skill >= 1:
             while skill_climb < 0:
                 skill_cost_add = skill_cost[current_skill - 1] + skill_cost_add
@@ -315,9 +337,8 @@ class Skills(object):
             exp_check = exp.exp_remaining_check(exp_cost=skill_cost_add)
             if exp_check is True:
                 self.character_dict['exp_remaining'] += skill_cost_add
-                skills = self.character_dict['skills']
-                skill_sub_dict = skills[skill_key]
-                skill_sub_dict[skill_select] = skill_adjust
+                self.skills_dict[skill_select] = skill_adjust
+                # self.character_dict['skills'] = {skill_select: skill_adjust}
 
 
 class MeritsFlaws(object):
@@ -355,6 +376,7 @@ class MeritsFlaws(object):
                 else:
                     merits_dict = self.template.MERITS
                     self.print_merits_flaws(select=merits_list_select, mf_dict=merits_dict, mf=mf)
+                    print(exp.exp_current())
                     merits_select = input(self.template.SELECT_MF).lower()
                     if merits_select == 'cancel':
                         merits_end = True
@@ -390,6 +412,7 @@ class MeritsFlaws(object):
                 else:
                     flaws_dict = self.template.FLAWS
                     self.print_merits_flaws(select=flaws_list_select, mf_dict=flaws_dict, mf=mf)
+                    print(exp.exp_current())
                     flaws_select = input(self.template.GET_FLAWS).lower()
                     if flaws_select == 'cancel':
                         flaws_end = True
@@ -399,13 +422,11 @@ class MeritsFlaws(object):
                         if flaws_select in flaws_dict[flaws_list_select]:
                             merit_values = flaws_dict[flaws_list_select][flaws_select]
                             exp_cost = merit_values[0]
-                            exp_check = exp.exp_remaining_check(exp_cost=exp_cost)
-                            if exp_check is True:
-                                flaws_mini_dict = {flaws_select: flaws_dict[flaws_list_select][flaws_select]}
-                                flaws = self.character_dict['flaws']
-                                flaws.update(flaws_mini_dict)
-                                self.character_dict['exp_remaining'] += exp_cost
-                                flaws_limit += 1
+                            flaws_mini_dict = {flaws_select: flaws_dict[flaws_list_select][flaws_select]}
+                            flaws = self.character_dict['flaws']
+                            flaws.update(flaws_mini_dict)
+                            self.character_dict['exp_remaining'] += exp_cost
+                            flaws_limit += 1
                         else:
                             print(self.template.VALID_ENTRY)
             else:
@@ -415,6 +436,7 @@ class MeritsFlaws(object):
 class POCC(object):
     template = Templates()
     character_dict = PlayerCharacter.character_dict
+    skills_dict = PlayerCharacter.skills_dict
 
     def print_pocc(self):
         print(self.template.POCC)
@@ -432,8 +454,8 @@ class POCC(object):
                 bonus_attribute_sk1 = pocc[1]
                 bonus_adjust_sk2 = pocc[2]
                 bonus_attribute_sk2 = pocc[3]
-                self.character_dict['skills'][bonus_attribute_sk1] = bonus_adjust_sk1
-                self.character_dict['skills'][bonus_attribute_sk2] = bonus_adjust_sk2
+                self.skills_dict[bonus_attribute_sk1] = bonus_adjust_sk1
+                self.skills_dict[bonus_attribute_sk2] = bonus_adjust_sk2
 
                 pocc_end = True
 
@@ -441,6 +463,7 @@ class POCC(object):
 class SOCC(object):
     template = Templates()
     character_dict = PlayerCharacter.character_dict
+    skills_dict = PlayerCharacter.skills_dict
 
     def print_socc(self, socc_req):
         socc = self.template.SECONDARY_OCC[socc_req]
@@ -457,7 +480,7 @@ class SOCC(object):
                 socc = self.template.SECONDARY_OCC[select_socc]
                 bonus_attributes = socc[1]
                 bonus_adjust = int(socc[0])
-                self.character_dict['skills'][bonus_attributes] += bonus_adjust
+                self.skills_dict[bonus_attributes] += bonus_adjust
 
 
 
@@ -479,6 +502,10 @@ class ExperienceCheck(object):
             return is_valid
         else:
             return is_valid
+
+    def exp_current(self):
+        current_exp = "\nᗘᗘᗘ Experience Points Remaining : {}\n".format(self.character_dict['exp_remaining'])
+        return current_exp
 
     # def __str__(self):
     #     return '{}, HP: {}, XP: {}'.format(self.name, self.hp, self.exp)

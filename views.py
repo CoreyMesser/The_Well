@@ -25,6 +25,7 @@ class CharacterCreation(object):
         self.po = POCC()
         self.db_cs = CharacterStoreSession()
         self.character_dict = self.pc.character_dict
+        self.skills_dict = self.pc.skills_dict
         self.setup()
         self.character_creation()
 
@@ -35,7 +36,7 @@ class CharacterCreation(object):
             return_menu = False
             self.clear_screen()
             self.hp.update_hp()
-            print(self.template.print_char_sheet(self.character_dict))
+            print(self.template.print_char_sheet(self.character_dict, self.skills_dict))
             print('\n'+'\/'*20+'\n \n')
             player_choice = input("ᗘᗘᗘ Please Enter the stat you would like to adjust: \n >> ").lower()
             if player_choice == 'name':
