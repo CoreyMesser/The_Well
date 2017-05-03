@@ -350,6 +350,8 @@ class MeritsFlaws(MeritsFlawsDicts):
     template = Templates()
     character_dict = PlayerCharacter.character_dict
     merits_flaws_dicts = MeritsFlawsDicts()
+    skills_dict =PlayerCharacter.skills_dict
+    checks_dict = PlayerCharacter.checks_dict
 
     def print_merits_flaws(self, select, mf_dict, mf):
         print('\nᗘᗘ {} :\n'.format(select))
@@ -360,13 +362,32 @@ class MeritsFlaws(MeritsFlawsDicts):
                 pm = '-'
             else:
                 pm = '+'
-            print('ᗘᗘᗘ {}:   [Cost: {}{}, Attribute Affected: {}, Modifier: +{}]'.format(keys, pm, cost, check, modifier))
+            print('ᗘᗘᗘ {}:   [[COST ᗘᗘ {}{}] [ATTRIBUTE ᗘᗘ {}] [MODIFIER ᗘᗘ +{}]'.format(keys, pm, cost, check, modifier))
             
     def get_current_merits_flaws(self, mf):
         current_mf = self.character_dict[mf]
         print('Current {}: '.format(mf.upper()))
         for merit_flaw in current_mf:
             print('{}'.format(merit_flaw))
+
+    def get_bonus_attribute(self, mf, values):
+        mf_a = mf
+        bonus_attribute = values[1]
+        bonus_attribute_adjust = values[2]
+        if mf_a == 'merits':
+            if bonus_attribute in self.skills_dict:
+                self.skills_dict[bonus_attribute] = bonus_attribute_adjust
+            elif bonus_attribute in self.character_dict:
+                self.character_dict[bonus_attribute] = bonus_attribute_adjust
+            else:
+                self.checks_dict[bonus_attribute] = bonus_attribute_adjust
+        else:
+            if bonus_attribute in self.skills_dict:
+                self.skills_dict[bonus_attribute] -= bonus_attribute_adjust
+            elif bonus_attribute in self.character_dict:
+                self.character_dict[bonus_attribute] -= bonus_attribute_adjust
+            else:
+                self.checks_dict[bonus_attribute] -= bonus_attribute_adjust
 
     def get_merits(self):
         exp = ExperienceCheck()
@@ -397,6 +418,7 @@ class MeritsFlaws(MeritsFlawsDicts):
                                 merits_mini_dict = {merits_select: merits_dict[merits_list_select][merits_select]}
                                 merits = self.character_dict['merits']
                                 merits.update(merits_mini_dict)
+                                self.get_bonus_attribute(mf=mf, values=merit_values)
                                 self.character_dict['exp_remaining'] -= exp_cost
                                 merits_limit += 1
                         else:
@@ -426,11 +448,12 @@ class MeritsFlaws(MeritsFlawsDicts):
                         continue
                     else:
                         if flaws_select in flaws_dict[flaws_list_select]:
-                            merit_values = flaws_dict[flaws_list_select][flaws_select]
-                            exp_cost = merit_values[0]
+                            flaws_values = flaws_dict[flaws_list_select][flaws_select]
+                            exp_cost = flaws_values[0]
                             flaws_mini_dict = {flaws_select: flaws_dict[flaws_list_select][flaws_select]}
                             flaws = self.character_dict['flaws']
                             flaws.update(flaws_mini_dict)
+                            self.get_bonus_attribute(mf=mf, values=flaws_values)
                             self.character_dict['exp_remaining'] += exp_cost
                             flaws_limit += 1
                         else:
@@ -444,26 +467,40 @@ class POCC(object):
     template = Templates()
     character_dict = PlayerCharacter.character_dict
     skills_dict = PlayerCharacter.skills_dict
+    checks_dict = PlayerCharacter.checks_dict
 
     def print_pocc(self):
         print(self.template.POCC)
+
+    def get_bonus_attribute(self, adjust, attribute):
+        bonus_attribute = attribute
+        bonus_attribute_adjust = adjust
+        if bonus_attribute in self.skills_dict:
+            self.skills_dict[bonus_attribute] = bonus_attribute_adjust
+        elif bonus_attribute in self.character_dict:
+            self.character_dict[bonus_attribute] = bonus_attribute_adjust
+        else:
+            self.checks_dict[bonus_attribute] = bonus_attribute_adjust
 
     def get_pocc(self):
         pocc_end = False
         while pocc_end is False:
             self.print_pocc()
             select_pocc = input(self.template.SELECT_POCC).lower()
-            selected_pocc = self.occ.PRIMARY_OCC.keys()
-            if select_pocc in selected_pocc:
-                pocc = self.template.POCC[select_pocc]
-                self.character_dict['pocc'] = pocc
-                bonus_adjust_sk1 = pocc[0]
-                bonus_attribute_sk1 = pocc[1]
-                bonus_adjust_sk2 = pocc[2]
-                bonus_attribute_sk2 = pocc[3]
-                self.skills_dict[bonus_attribute_sk1] = bonus_adjust_sk1
-                self.skills_dict[bonus_attribute_sk2] = bonus_adjust_sk2
+            pocc_list = self.occ.PRIMARY_OCC.keys()
+            if select_pocc != 'cancel':
+                if select_pocc in pocc_list:
+                    pocc = self.occ.PRIMARY_OCC[select_pocc]
+                    self.character_dict['pocc'] = {select_pocc:pocc}
+                    bonus_adjust_sk1 = pocc[0]
+                    bonus_attribute_sk1 = pocc[1]
+                    self.get_bonus_attribute(adjust=bonus_adjust_sk1, attribute=bonus_attribute_sk1)
+                    bonus_adjust_sk2 = pocc[2]
+                    bonus_attribute_sk2 = pocc[3]
+                    self.get_bonus_attribute(adjust=bonus_adjust_sk2, attribute=bonus_attribute_sk2)
 
+                    pocc_end = True
+            else:
                 pocc_end = True
 
 
@@ -472,24 +509,32 @@ class SOCC(OCCs):
     template = Templates()
     character_dict = PlayerCharacter.character_dict
     skills_dict = PlayerCharacter.skills_dict
+    pocc = POCC()
 
     def print_socc(self, socc_req):
         socc = self.occ.SECONDARY_OCC[socc_req]
-        for entry in socc:
-            print(self.occ.SECONDARY_OCC)
+        for key, value in socc.items():
+            print(key, value)
 
     def get_socc(self):
-        socc_req = self.character_dict['pocc']
+        pocc = self.character_dict['pocc']
+        socc_req = "".join(pocc.keys()).upper()
         socc_end = False
         while socc_end is False:
             self.print_socc(socc_req=socc_req)
             select_socc = input(self.template.SELECT_SOCC).lower()
-            if select_socc in self.occ.SECONDARY_OCC:
-                socc = self.occ.SECONDARY_OCC[select_socc]
-                bonus_attributes = socc[1]
-                bonus_adjust = int(socc[0])
-                self.skills_dict[bonus_attributes] += bonus_adjust
+            socc_list = self.occ.SECONDARY_OCC[socc_req].keys()
+            if select_socc != 'cancel':
+                if select_socc in socc_list:
+                    socc = self.occ.SECONDARY_OCC[socc_req][select_socc]
+                    bonus_attributes = socc[1]
+                    bonus_adjust = socc[0]
+                    self.pocc.get_bonus_attribute(adjust=bonus_adjust, attribute=bonus_attributes)
+                    self.skills_dict[bonus_attributes] += bonus_adjust
 
+                    socc_end = True
+            else:
+                socc_end = True
 
 
 class BonusChecks(object):
