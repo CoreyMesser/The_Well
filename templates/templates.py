@@ -65,7 +65,7 @@ class Templates(object):
               "each species enter [LAND] or [AIR] ᗛᗛᗛ \n \n" \
               "ᗘᗘᗘ Species List: "
 
-    SPECIES_SELECT = 'ᗘᗘᗘPlease enter a species, \n [SWITCH] to switch Species Lists,\n [SHEET] to return to you character sheet. \n \n ᗘᗘᗘ '
+    SPECIES_SELECT = 'ᗘᗘᗘPlease enter a species, \n [SWITCH] to switch Species Lists,\n [CANCEL] to return to you character sheet. \n \n ᗘᗘᗘ '
 
     HEALTH_POINTS = "\n \nᗘᗘᗘ This is generated primarily by your Con score. Your Health starts off as a direct copy of your Con score. \n" \
                     "3 Con = 3 Health. This can be raised by various merits/skills or by spending extra points to raise your health. \n" \
@@ -158,6 +158,9 @@ class Templates(object):
 
     SELECT_POCC = "\nᗘᗘᗘ Please select a Primary Occupation or [CANCEL] ᗘᗘ "
     SELECT_SOCC = "\nᗘᗘᗘ Please select a Specialist Occupation or [CANCEL] ᗘᗘ "
+    SELECT_SOCC_ERROR = "\nᗘᗘᗘ No Primary Occupation [POCC] has been selected.\n  " \
+                        "Please select a POCC before selecting a Specialist Occupation.\n" \
+                        "Press [ENTER] to return to the character sheet."
 
 
     GET_MERITS = '\nᗘᗘᗘ Please select a Merits list to view [MIND] [PHYSICAL] [SOCIAL] [CANCEL]: '

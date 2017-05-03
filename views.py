@@ -4,12 +4,16 @@ from templates.templates import Templates
 from services import PrinterServices
 
 
-class CharacterCreation(object):
-
-    def setup(self):
-        print(self.template.BANNER)
-        print(self.template.INTRO)
+class Introduction(object):
+    def intro(self):
+        print(Templates.BANNER)
+        print(Templates.INTRO)
         input('ᗛᗛᗛ Press Return to continue ᗘᗘᗘ')
+        cc = CharacterCreation()
+        cc.__init__()
+
+
+class CharacterCreation(object):
 
     def clear_screen(self):
         os.system('cls' if os.name == 'nt' else 'clear')
@@ -28,7 +32,6 @@ class CharacterCreation(object):
         self.ps = PrinterServices()
         self.character_dict = self.pc.character_dict
         self.skills_dict = self.pc.skills_dict
-        self.setup()
         self.character_creation()
 
     def character_creation(self):
@@ -55,11 +58,9 @@ class CharacterCreation(object):
             if player_choice == 'pocc':
                 self.po.get_pocc()
             if player_choice == 'socc':
-                self.so.get_socc()
+                self.so.check_required_pocc()
             if player_choice == 'hp':
                 self.hp.get_hp()
-            if player_choice == 'stuff':
-                print(self.template.STUFFING)
             if player_choice in self.pc.character_stats:
                 self.sts.get_stats(player_choice)
             if player_choice == 'skills':

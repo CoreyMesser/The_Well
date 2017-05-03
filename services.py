@@ -74,6 +74,12 @@ from database_service import db_session
 class PrinterServices(SpeciesDict):
 
     def print_char_sheet(self, character_dict, skills_dict):
+        """
+        prints main character sheet with updated parameters passed in by player
+        :param character_dict: 
+        :param skills_dict: 
+        :return: 
+        """
         main_sheet = "[NAME]    NAME:  {name} \n" \
                      "[SPECIES] SPECIES:  {species} \n" \
                      "          SPECIES SZIE:  {species_size} \n" \
@@ -108,6 +114,11 @@ class PrinterServices(SpeciesDict):
         return sheet
 
     def print_char_skills(self, skills_dict):
+        """
+        skills template for character sheet
+        :param skills_dict: 
+        :return: 
+        """
         skills_sheet = ['\nᗘᗘᗘ SKILLS  ᗛᗛᗛ\n',
                         'ᗘᗘ MENTAL ᗛᗛ\n',
                         'ᗘ {academics} : [Academics]\n'.format(**skills_dict),
@@ -144,6 +155,11 @@ class PrinterServices(SpeciesDict):
         return ''.join(skills_sheet)
 
     def print_char_merits(self, character_dict):
+        """
+        prints merits list for character sheet
+        :param character_dict: 
+        :return: 
+        """
         if len(character_dict['merits']) > 0:
             merits_sheet = ["\n[MERITS]  MERITS:", ]
             merits = character_dict['merits']
@@ -155,6 +171,11 @@ class PrinterServices(SpeciesDict):
             return merits_sheet
 
     def print_char_flaws(self, character_dict):
+        """
+        prints flaws list for character sheet
+        :param character_dict: 
+        :return: 
+        """
         if len(character_dict['flaws']) > 0:
             flaws_sheet = ["\n[FLAWS]  FLAWS:", ]
             flaws = character_dict['flaws']

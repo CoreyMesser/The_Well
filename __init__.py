@@ -1,8 +1,8 @@
 from app import get_app
-from views import CharacterCreation
+from views import Introduction
 
 app = get_app()
 
 if __name__ == '__main__':
-    ch = CharacterCreation()
-    ch.__init__()
+    ch = Introduction()
+    ch.intro()
