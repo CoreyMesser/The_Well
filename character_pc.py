@@ -31,7 +31,6 @@ class PlayerCharacter(object):
                       'merits': {},
                       'flaws': {}
                       }
-    # 'flaws_counter': 3
     character_stats = ['str', 'int', 'dex', 'con', 'wis', 'cha']
 
     skills_dict = {"academics": 0,
@@ -83,11 +82,16 @@ class PlayerCharacter(object):
                    'search': 0,
                    'vitality': 0}
 
-    combat_dict = {'attack_power': 0,
-                   'initiative': 0,
+    combat_dict = {'attacks_per_round': 0,
+                   'aim': 0,
                    'armor_class': 0,
+                   'initiative': 0,
+                   'attack_power': 0,
                    'ranged_attack_power': 0,
-                   'dodge': 0}
+                   'block': 0,
+                   'dodge': 0,
+                   'parry': 0,
+                   'move': 10}
 
     template = Templates()
 
@@ -136,7 +140,7 @@ class Species(SpeciesDict):
         return species
 
 
-class HealthPoints(object):
+class HealthPoints(PlayerCharacter):
     template = Templates()
     character_dict = PlayerCharacter.character_dict
 
@@ -145,7 +149,7 @@ class HealthPoints(object):
         updates hp with bonuses
         :return: 
         """
-        natural_hp = self.character_dict['natural_hp']
+        natural_hp = PlayerCharacter.character_dict['natural_hp']
         bonus_hp = self.hp_bonuses()
         current_hp = natural_hp + bonus_hp
 
@@ -156,18 +160,17 @@ class HealthPoints(object):
         calculates bonus to hp based on skills and CON stat
         :return: 
         """
-        pc = PlayerCharacter()
-        con_bonus = self.character_dict['con']
+        con_bonus = PlayerCharacter.character_dict['con']
         try:
-            athletics_bonus = pc.skills_dict['athletics']
+            athletics_bonus = PlayerCharacter.skills_dict['athletics']
         except Exception:
             athletics_bonus = 0
         try:
-            survival_bonus = pc.skills_dict['survival']
+            survival_bonus = PlayerCharacter.skills_dict['survival']
         except Exception:
             survival_bonus = 0
         bonus = con_bonus + athletics_bonus + survival_bonus
-        self.character_dict['bonus_hp'] = bonus
+        PlayerCharacter.character_dict['bonus_hp'] = bonus
         return bonus
 
     def get_hp(self):
@@ -178,8 +181,8 @@ class HealthPoints(object):
         """
         hp_cost = 4
         bonus_hp = self.hp_bonuses()
-        current_hp = self.character_dict['hp']
-        natural_hp = self.character_dict['natural_hp']
+        current_hp = PlayerCharacter.character_dict['hp']
+        natural_hp = PlayerCharacter.character_dict['natural_hp']
         exp = ExperienceCheck()
 
         print(self.template.HEALTH_POINTS)
@@ -192,27 +195,27 @@ class HealthPoints(object):
 
         if exp_check is True:
             if int(hp_adjust) > natural_hp:
-                self.character_dict['exp_remaining'] -= exp_cost
-                self.character_dict['natural_hp'] = int(hp_adjust)
+                PlayerCharacter.character_dict['exp_remaining'] -= exp_cost
+                PlayerCharacter.character_dict['natural_hp'] = int(hp_adjust)
                 hp_total = int(hp_adjust) + bonus_hp
                 if hp_total > 10:
                     self.get_soak_check(hp_total=hp_total)
                 else:
-                    self.character_dict['hp'] = hp_total
+                    PlayerCharacter.character_dict['hp'] = hp_total
             else:
                 hp_adjusted = natural_hp - int(hp_adjust)
                 exp_cost = hp_adjusted * hp_cost
-                self.character_dict['exp_remaining'] += exp_cost
-                self.character_dict['natural_hp'] = int(hp_adjust)
+                PlayerCharacter.character_dict['exp_remaining'] += exp_cost
+                PlayerCharacter.character_dict['natural_hp'] = int(hp_adjust)
                 hp_total = int(hp_adjust) + bonus_hp
-                self.character_dict['hp'] = hp_total
+                PlayerCharacter.character_dict['hp'] = hp_total
 
     def get_soak_check(self, hp_total):
         soak_check = (hp_total - 10)
         if soak_check >= 1:
             soak = soak_check / 3
-            self.character_dict['hp'] = 10
-            self.character_dict['soak'] = int(soak)
+            PlayerCharacter.character_dict['hp'] = 10
+            PlayerCharacter.character_dict['soak'] = int(soak)
 
 
 class Stuffing(object):
