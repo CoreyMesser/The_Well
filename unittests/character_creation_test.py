@@ -39,30 +39,23 @@ class MockCharacterData(unittest.TestCase):
                       # 'flaws': {{'one eye': [3, 'attack_power', 1]}, {'clutz': [3, 'physical', 1]}, {'weak': [4, 'str', 1]}}
                       }
 
-class HealthPointsUT(MockCharacterData):
-    # # @patch('character_pc.HealthPoints.get_hp', 'hp_adjust', sentinel.hp_adjust)
-    # @patch('character_pc.HealthPoints', 'HealthPoints')
-    # @patch('character_pc.HealthPoints.character_dict', 'character_dict', sentinel.character_dict)
-    # def test_get_hp(self, m):
-    #     sentinel.character_dict = MockCharacterData.character_dict
-    #     m.hp_adjust = 5
-    #     HealthPoints.get_hp('HealthPoints_mock')
-    #     assert MockCharacterData.character_dict['hp'] == 6
-    #
-    @patch('character_pc.HealthPoints')
-    # @patch('character_pc.HealthPoints.character_dict')
-    def test_bonus_hp(self, mock_health_points):
+class HealthPointsUT(unittest.TestCase):
+    def some_return(self):
+        return [1, 2, 3]
 
-        mock_health_points.get_hp.return_value = 3
+    def other_return(self):
+        return [4, 5, 6]
 
+    @patch('__main__.ProductionClass.something')
+    @patch('__main__.ProductionClass.otherthing')
+    def test_production_class(self, other_mock, some_mock):
+        some_mock.return_value = self.some_return()
+        other_mock.return_value = self.other_return()
 
+        p = ProductionClass()
 
-
-
-    # def test_bonus_hp(self):
-    #     hp_test = HealthPoints(MockCharacterData)
-    #     result = hp_test.hp_bonuses()
-    #     print(result)
+        z = p.method()
+        print('done: {}'.format(str(z)))
 
 
 

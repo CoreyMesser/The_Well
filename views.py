@@ -49,18 +49,23 @@ class CharacterCreation(object):
             if player_choice == 'sex':
                 self.character_dict['sex'] = input(self.template.SEX)
             if player_choice == 'species':
-                while self.character_dict['species'] is None or return_menu is False:
-                    return_menu = self.sp.get_species()
+                species = input(self.template.SPECIES).upper()
+                self.ps.print_species_list(species)
+                species_l_choice = input(self.template.SPECIES_SELECT).upper()
+                return_menu = self.sp.get_species(species=species, species_l_choice=species_l_choice)
             if player_choice == 'faction':
                 self.character_dict['faction'] = input(self.template.FACTIONS)
             if player_choice == 'alg':
                 self.character_dict['alg'] = input(self.template.ALIGNMENT)
             if player_choice == 'pocc':
-                self.po.get_pocc()
+                self.po.print_pocc()
+                select_pocc = input(self.template.SELECT_POCC).lower()
+                self.po.get_pocc(select_pocc=select_pocc)
             if player_choice == 'socc':
                 self.so.check_required_pocc()
             if player_choice == 'hp':
-                self.hp.get_hp()
+                hp_adjust = self.hp.get_hp_player_choice()
+                self.hp.get_hp(hp_adjust=hp_adjust)
             if player_choice in self.pc.character_stats:
                 self.sts.get_stats(player_choice)
             if player_choice == 'skills':

@@ -41,6 +41,11 @@ class MyTest(unittest.TestCase):
         z = p.method()
         print('done: {}'.format(str(z)))
 
+        # with self.assertE
+
 if __name__ == '__main__':
     print('{}'.format(__name__))
     unittest.main()
+
+
+

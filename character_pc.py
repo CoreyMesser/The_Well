@@ -102,30 +102,30 @@ class Species(SpeciesDict):
     species_dict = SpeciesDict.SPECIES_DICT
     character_dict = PlayerCharacter.character_dict
     
-    def get_species(self):
+    def get_species(self, species, species_l_choice):
         """
         allows player to switch lists
         allows player to return to the character sheet
         gets species and adds appropriate bonus to stats
         :return: 
         """
-        species = input(self.template.SPECIES).upper()
-        self.printer_services.print_species_list(species)
-        species_l = self.species_dict[species]
-        species_l_choice = input(self.template.SPECIES_SELECT).upper()
-        if species_l_choice == 'SWITCH':
-            self.switch_species(species)
-        elif species_l_choice == 'CANCEL':
-            return_menu = True
-            return return_menu
-        else:
-            species_a = species_l[species_l_choice]
-            species_size, species_bonus, species_bonus_type = species_a
-            self.character_dict['species_size'] = species_size
-            self.character_dict[species_bonus_type] += species_bonus
-            self.character_dict['species'] = species_l_choice
-            return_menu = True
-            return return_menu
+        species_end = False
+        while species_end is False:
+            species_l = self.species_dict[species]
+            if species_l_choice == 'SWITCH':
+                self.switch_species(species)
+            elif species_l_choice == 'CANCEL':
+                return_menu = True
+                return return_menu
+            else:
+                species_a = species_l[species_l_choice]
+                species_size, species_bonus, species_bonus_type = species_a
+                self.character_dict['species_size'] = species_size
+                self.character_dict[species_bonus_type] += species_bonus
+                self.character_dict['species'] = species_l_choice
+                species_end = True
+        return_menu = True
+        return return_menu
 
     def switch_species(self, species):
         """
@@ -173,7 +173,20 @@ class HealthPoints(PlayerCharacter):
         PlayerCharacter.character_dict['bonus_hp'] = bonus
         return bonus
 
-    def get_hp(self):
+    def get_hp_player_choice(self):
+        exp = ExperienceCheck()
+        bonus_hp = self.hp_bonuses()
+        natural_hp = PlayerCharacter.character_dict['natural_hp']
+        current_hp = PlayerCharacter.character_dict['hp']
+
+        print(self.template.HEALTH_POINTS)
+        print("\nNatural HP: {} \nCurrent Bonus: {} \nTotal HP: {}".format(natural_hp, bonus_hp, current_hp))
+        print(exp.exp_current())
+        hp_adjust = input("\nᗘᗘᗘ Health Points: ")
+
+        return hp_adjust
+
+    def get_hp(self, hp_adjust):
         """
         generates the hp based off natural hp so bonuses do not cost the player more than they should
         subtracts/adds exp appropriately
@@ -181,14 +194,9 @@ class HealthPoints(PlayerCharacter):
         """
         hp_cost = 4
         bonus_hp = self.hp_bonuses()
-        current_hp = PlayerCharacter.character_dict['hp']
         natural_hp = PlayerCharacter.character_dict['natural_hp']
         exp = ExperienceCheck()
 
-        print(self.template.HEALTH_POINTS)
-        print("\nNatural HP: {} \nCurrent Bonus: {} \nTotal HP: {}".format(natural_hp, bonus_hp, current_hp))
-        print(exp.exp_current())
-        hp_adjust = input("\nᗘᗘᗘ Health Points: ")
         hp_adjusted = int(hp_adjust) - natural_hp
         exp_cost = hp_adjusted * hp_cost
         exp_check = exp.exp_remaining_check(exp_cost=exp_cost)
@@ -402,11 +410,11 @@ class MeritsFlaws(MeritsFlawsDicts):
         bonus_attribute_adjust = values[2]
         if mf_a == 'merits':
             if bonus_attribute in self.skills_dict:
-                self.skills_dict[bonus_attribute] = bonus_attribute_adjust
+                self.skills_dict[bonus_attribute] += bonus_attribute_adjust
             elif bonus_attribute in self.character_dict:
-                self.character_dict[bonus_attribute] = bonus_attribute_adjust
+                self.character_dict[bonus_attribute] += bonus_attribute_adjust
             else:
-                self.checks_dict[bonus_attribute] = bonus_attribute_adjust
+                self.checks_dict[bonus_attribute] += bonus_attribute_adjust
         else:
             if bonus_attribute in self.skills_dict:
                 self.skills_dict[bonus_attribute] -= bonus_attribute_adjust
@@ -530,15 +538,13 @@ class POCC(OCCs, BonusChecks):
     def print_pocc(self):
         print(self.template.POCC)
 
-    def get_pocc(self):
+    def get_pocc(self, select_pocc):
         """
         gets player input and adjusts attributes/skills accorndingly
         :return: 
         """
         pocc_end = False
         while pocc_end is False:
-            self.print_pocc()
-            select_pocc = input(self.template.SELECT_POCC).lower()
             pocc_list = OCCs.PRIMARY_OCC.keys()
             if select_pocc != 'cancel':
                 if select_pocc in pocc_list:
@@ -585,15 +591,17 @@ class SOCC(OCCs, BonusChecks):
             socc_list = OCCs.SECONDARY_OCC[socc_req].keys()
             if select_socc != 'cancel':
                 if select_socc in socc_list:
-                    socc = OCCs.SECONDARY_OCC[socc_req][select_socc]
-                    bonus_attributes = socc[1]
-                    bonus_adjust = socc[0]
-                    BonusChecks.get_bonus_attribute(self, adjust=bonus_adjust, attribute=bonus_attributes)
-                    self.skills_dict[bonus_attributes] += bonus_adjust
-
+                    self.add_socc(select_socc, socc_req)
                     socc_end = True
             else:
                 socc_end = True
+
+    def add_socc(self, select_socc, socc_req):
+        socc = OCCs.SECONDARY_OCC[socc_req][select_socc]
+        bonus_attributes = socc[1]
+        bonus_adjust = socc[0]
+        BonusChecks.get_bonus_attribute(self, adjust=bonus_adjust, attribute=bonus_attributes)
+        self.skills_dict[bonus_attributes] += bonus_adjust
 
     def check_required_pocc(self):
         """

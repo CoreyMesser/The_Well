@@ -190,3 +190,7 @@ class PrinterServices(SpeciesDict):
         species_class = self.SPECIES_DICT[species]
         for k in species_class:
             print(k, species_class[k])
+
+
+class CharacterCreationServices(object):
+    pass
