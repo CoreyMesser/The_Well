@@ -6,7 +6,7 @@ SELECT now();
 $$ LANGUAGE SQL;
 
 -- regular table structure
-CREATE TABLE skills
+CREATE TABLE character_skills
 (
   id              SERIAL PRIMARY KEY       NOT NULL,
   code            TEXT                     NULL,
@@ -47,6 +47,37 @@ CREATE TABLE skills
 
 );
 
+
+CREATE TABLE merits_flaws_type
+(
+  id         SERIAL PRIMARY KEY       NOT NULL,
+  type       TEXT                     NOT NULL,
+  type_id    INT                      NOT NULL,
+  updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now_utc(),
+  created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now_utc(),
+
+  CHECK (EXTRACT(TIMEZONE FROM updated_at) = '0'),
+  CHECK (EXTRACT(TIMEZONE FROM created_at) = '0')
+);
+
+CREATE TABLE merits_flaws
+(
+  id                   SERIAL PRIMARY KEY       NOT NULL,
+  merits_flaws         TEXT                     NOT NULL,
+  merits_flaws_type_id INT                      NOT NULL,
+  merits_flaws_cost    INT                      NOT NULL,
+  attribute            TEXT                     NOT NULL,
+  attribute_modifier   INT                      NOT NULL,
+  updated_at           TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now_utc(),
+  created_at           TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now_utc(),
+
+  CHECK (EXTRACT(TIMEZONE FROM updated_at) = '0'),
+  CHECK (EXTRACT(TIMEZONE FROM created_at) = '0'),
+
+  FOREIGN KEY (merits_flaws_type_id) REFERENCES merits_flaws_type (id)
+
+);
+
 CREATE TABLE character
 (
   id            SERIAL PRIMARY KEY       NOT NULL,
@@ -81,8 +112,42 @@ CREATE TABLE character
   CHECK (EXTRACT(TIMEZONE FROM updated_at) = '0'),
   CHECK (EXTRACT(TIMEZONE FROM created_at) = '0'),
 
-  FOREIGN KEY (skills_id) REFERENCES skills (id)
+  FOREIGN KEY (skills_id) REFERENCES character_skills (id)
 
+);
+
+CREATE TABLE character_merits_flaws
+(
+  id           SERIAL PRIMARY KEY       NOT NULL,
+  code         TEXT                     NULL,
+  character_id INT                      NOT NULL,
+  merits_01    INT                      NULL,
+  merits_02    INT                      NULL,
+  merits_03    INT                      NULL,
+  merits_04    INT                      NULL,
+  merits_05    INT                      NULL,
+  flaws_01     INT                      NULL,
+  flaws_02     INT                      NULL,
+  flaws_03     INT                      NULL,
+  flaws_04     INT                      NULL,
+  flaws_05     INT                      NULL,
+  updated_at   TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now_utc(),
+  created_at   TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now_utc(),
+
+  FOREIGN KEY (character_id) REFERENCES character (id),
+  FOREIGN KEY (merits_01) REFERENCES merits_flaws (id),
+  FOREIGN KEY (merits_02) REFERENCES merits_flaws (id),
+  FOREIGN KEY (merits_03) REFERENCES merits_flaws (id),
+  FOREIGN KEY (merits_04) REFERENCES merits_flaws (id),
+  FOREIGN KEY (merits_05) REFERENCES merits_flaws (id),
+  FOREIGN KEY (flaws_01) REFERENCES merits_flaws (id),
+  FOREIGN KEY (flaws_02) REFERENCES merits_flaws (id),
+  FOREIGN KEY (flaws_03) REFERENCES merits_flaws (id),
+  FOREIGN KEY (flaws_04) REFERENCES merits_flaws (id),
+  FOREIGN KEY (flaws_05) REFERENCES merits_flaws (id),
+
+  CHECK (EXTRACT(TIMEZONE FROM updated_at) = '0'),
+  CHECK (EXTRACT(TIMEZONE FROM created_at) = '0')
 );
 
 CREATE TABLE character_code

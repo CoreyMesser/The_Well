@@ -1,5 +1,8 @@
+DROP TABLE public.merits_flaws_type;
+DROP TABLE public.character_merits_flaws;
+DROP TABLE public.merits_flaws;
 DROP TABLE public.character_code;
 DROP TABLE public.inventory_pc;
 DROP TABLE public.character;
-DROP TABLE public.skills
+DROP TABLE public.character_skills
 
