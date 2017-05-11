@@ -1,7 +1,8 @@
 import random, os
 from templates.templates import Templates
-from models import SpeciesDict, MeritsFlawsDicts, OCCs
+from models import Character, CharacterMeritsFlaws, CharacterSkills, SpeciesDict, MeritsFlawsDicts, OCCs, MeritsFlaws
 from services import PrinterServices
+from database_service import db_session
 
 
 class PlayerCharacter(object):
@@ -27,7 +28,6 @@ class PlayerCharacter(object):
                       'con': 1,
                       'wis': 1,
                       'cha': 1,
-                      # 'skills': {},
                       'merits': {},
                       'flaws': {}
                       }
@@ -76,6 +76,7 @@ class PlayerCharacter(object):
                    'perception': 0,
                    'physical': 0,
                    'poison_resistance': 0,
+                   'probability': 0,
                    'rage': 0,
                    'ranged_attack_power': 0,
                    'resistance': 0,
@@ -275,7 +276,7 @@ class Stats(object):
                 self.character_dict[stat] = stat_adjust
 
 
-class Skills(object):
+class CharacterSkillsGenerator(object):
     template = Templates()
     printer_services = PrinterServices()
     character_dict = PlayerCharacter.character_dict
@@ -362,7 +363,7 @@ class Skills(object):
                 self.skills_dict[skill_select] = skill_adjust
 
 
-class MeritsFlaws(MeritsFlawsDicts):
+class MeritsFlawsGenerator(MeritsFlawsDicts):
     template = Templates()
     character_dict = PlayerCharacter.character_dict
     skills_dict = PlayerCharacter.skills_dict
@@ -438,7 +439,7 @@ class MeritsFlaws(MeritsFlawsDicts):
                 merits_list_select = input(self.template.GET_MERITS).upper()
                 if merits_list_select == 'CANCEL':
                     merits_end = True
-                else:
+                elif merits_list_select == 'MENTAL' or merits_list_select == 'PHYSICAL' or merits_list_select == 'SOCIAL':
                     merits_dict = self.merits_flaws_dicts.MERITS
                     self.print_merits_flaws(select=merits_list_select, mf_dict=merits_dict, mf=mf)
                     print(exp.exp_current())
@@ -447,20 +448,21 @@ class MeritsFlaws(MeritsFlawsDicts):
                         merits_end = True
                     elif merits_select == 'change list':
                         continue
+                    elif merits_select in merits_dict[merits_list_select]:
+                        merit_values = merits_dict[merits_list_select][merits_select]
+                        exp_cost = merit_values[0]
+                        exp_check = exp.exp_remaining_check(exp_cost=exp_cost)
+                        if exp_check is True:
+                            merits_mini_dict = {merits_select: merits_dict[merits_list_select][merits_select]}
+                            merits = self.character_dict['merits']
+                            merits.update(merits_mini_dict)
+                            self.get_bonus_attribute(mf=mf, values=merit_values)
+                            self.character_dict['exp_remaining'] -= exp_cost
+                            merits_limit += 1
                     else:
-                        if merits_select in merits_dict[merits_list_select]:
-                            merit_values = merits_dict[merits_list_select][merits_select]
-                            exp_cost = merit_values[0]
-                            exp_check = exp.exp_remaining_check(exp_cost=exp_cost)
-                            if exp_check is True:
-                                merits_mini_dict = {merits_select: merits_dict[merits_list_select][merits_select]}
-                                merits = self.character_dict['merits']
-                                merits.update(merits_mini_dict)
-                                self.get_bonus_attribute(mf=mf, values=merit_values)
-                                self.character_dict['exp_remaining'] -= exp_cost
-                                merits_limit += 1
-                        else:
-                            print(self.template.VALID_ENTRY)
+                        print(self.template.VALID_ENTRY)
+                else:
+                    print(self.template.VALID_ENTRY)
             else:
                 merits_end = True
 
@@ -479,7 +481,7 @@ class MeritsFlaws(MeritsFlawsDicts):
                 flaws_list_select = input(self.template.GET_FLAWS).upper()
                 if flaws_list_select == 'CANCEL':
                     flaws_end = True
-                else:
+                elif flaws_list_select == 'MENTAL' or flaws_list_select == 'PHYSICAL' or flaws_list_select == 'STATS':
                     flaws_dict = self.merits_flaws_dicts.FLAWS
                     self.print_merits_flaws(select=flaws_list_select, mf_dict=flaws_dict, mf=mf)
                     print(exp.exp_current())
@@ -488,18 +490,19 @@ class MeritsFlaws(MeritsFlawsDicts):
                         flaws_end = True
                     elif flaws_select == 'change list':
                         continue
+                    elif flaws_select in flaws_dict[flaws_list_select]:
+                        flaws_values = flaws_dict[flaws_list_select][flaws_select]
+                        exp_cost = flaws_values[0]
+                        flaws_mini_dict = {flaws_select: flaws_dict[flaws_list_select][flaws_select]}
+                        flaws = self.character_dict['flaws']
+                        flaws.update(flaws_mini_dict)
+                        self.get_bonus_attribute(mf=mf, values=flaws_values)
+                        self.character_dict['exp_remaining'] += exp_cost
+                        flaws_limit += 1
                     else:
-                        if flaws_select in flaws_dict[flaws_list_select]:
-                            flaws_values = flaws_dict[flaws_list_select][flaws_select]
-                            exp_cost = flaws_values[0]
-                            flaws_mini_dict = {flaws_select: flaws_dict[flaws_list_select][flaws_select]}
-                            flaws = self.character_dict['flaws']
-                            flaws.update(flaws_mini_dict)
-                            self.get_bonus_attribute(mf=mf, values=flaws_values)
-                            self.character_dict['exp_remaining'] += exp_cost
-                            flaws_limit += 1
-                        else:
-                            print(self.template.VALID_ENTRY)
+                        print(self.template.VALID_ENTRY)
+                else:
+                    print(self.template.VALID_ENTRY)
             else:
                 flaws_end = True
 
@@ -669,3 +672,106 @@ class PCCombat(object):
     #     elif self.exp == '15':
     #         self.level += 1
     #     print('Level {}! You\'ve leveled up!! Power courses through you'.format(self.level))
+
+
+class CharacterStoreSession(object):
+    cc = PlayerCharacter()
+    db = db_session()
+
+    def store_character_session(self):
+        db_char = Character()
+        db_char.name = self.cc.character_dict['name']
+        db_char.species = self.cc.character_dict['species']
+        db_char.species_size = self.cc.character_dict['species_size']
+        db_char.sex = self.cc.character_dict['sex']
+        db_char.faction = self.cc.character_dict['faction']
+        db_char.alg = self.cc.character_dict['alg']
+        db_char.pocc = self.cc.character_dict['pocc']
+        db_char.socc = self.cc.character_dict['socc']
+        db_char.exp_total = self.cc.character_dict['exp_total']
+        db_char.exp_remaining = self.cc.character_dict['exp_remaining']
+        db_char.natural_hp = self.cc.character_dict['natural_hp']
+        db_char.hp = self.cc.character_dict['hp']
+        db_char.soak = self.cc.character_dict['soak']
+        db_char.stuffing = self.cc.character_dict['stuffing']
+        db_char.sanity = self.cc.character_dict['sanity']
+        db_char.str = self.cc.character_dict['str']
+        db_char.int = self.cc.character_dict['int']
+        db_char.dex = self.cc.character_dict['dex']
+        db_char.con = self.cc.character_dict['con']
+        db_char.wis = self.cc.character_dict['wis']
+        db_char.cha = self.cc.character_dict['cha']
+        db_char.code = 1
+        self.db.add(db_char)
+        db_scs = self.store_character_skills_session()
+        # db_smf = self.store_merits_flaws()
+        self.db.commit()
+
+    def store_character_skills_session(self):
+        db_sk = CharacterSkills()
+        db_sk.character_id = Character.id
+        db_sk.academics = self.cc.skills_dict['academics']
+        db_sk.computer = self.cc.skills_dict['computer']
+        db_sk.concentration = self.cc.skills_dict['concentration']
+        db_sk.crafting = self.cc.skills_dict['crafting']
+        db_sk.investigation = self.cc.skills_dict['investigation']
+        db_sk.medicine = self.cc.skills_dict['medicine']
+        db_sk.occult = self.cc.skills_dict['occult']
+        db_sk.politics = self.cc.skills_dict['politics']
+        db_sk.science = self.cc.skills_dict['science']
+        db_sk.athletics = self.cc.skills_dict['athletics']
+        db_sk.brawl = self.cc.skills_dict['brawl']
+        db_sk.demolitions = self.cc.skills_dict['demolitions']
+        db_sk.drive = self.cc.skills_dict['drive']
+        db_sk.firearms = self.cc.skills_dict['firearms']
+        db_sk.larceny = self.cc.skills_dict['larceny']
+        db_sk.ranged_weaponry = self.cc.skills_dict['ranged weaponry']
+        db_sk.ride = self.cc.skills_dict['ride']
+        db_sk.stealth = self.cc.skills_dict['stealth']
+        db_sk.survival = self.cc.skills_dict['survival']
+        db_sk.weaponry = self.cc.skills_dict['weaponry']
+        db_sk.animal_kinship = self.cc.skills_dict['animal kinship']
+        db_sk.bluff = self.cc.skills_dict['bluff']
+        db_sk.empathy = self.cc.skills_dict['empathy']
+        db_sk.expression = self.cc.skills_dict['expression']
+        db_sk.intimidate = self.cc.skills_dict['intimidate']
+        db_sk.persuasion = self.cc.skills_dict['persuasion']
+        db_sk.social_contacts = self.cc.skills_dict['social contacts']
+        db_sk.streetwise = self.cc.skills_dict['streetwise']
+        db_sk.subterfuge = self.cc.skills_dict['subterfuge']
+        return self.db.add(db_sk)
+
+    def store_merits_flaws(self):
+        db_cmf = CharacterMeritsFlaws()
+        pc = PlayerCharacter()
+        merit_counter = 1
+        flaw_counter = 1
+        db_cmf.character_id = Character.id
+        for merits in pc.character_dict['merits']:
+            merit_instance = self.db.query(MeritsFlaws).filter_by(merits_flaws=merits).first()
+            if merit_counter == 1:
+                db_cmf.merits_01 = merit_instance.id
+            elif merit_counter == 2:
+                db_cmf.merits_02 = merit_instance.id
+            elif merit_counter == 3:
+                db_cmf.merits_03 = merit_instance.id
+            elif merit_counter == 4:
+                db_cmf.merits_04 = merit_instance.id
+            elif merit_counter == 5:
+                db_cmf.merits_05 = merit_instance.id
+            merit_counter += 1
+        for flaws in pc.character_dict['flaws']:
+            flaw_instance = self.db.query(MeritsFlaws).filter_by(merits_flaws=flaws).first()
+            if flaw_counter == 1:
+                db_cmf.flaws_01 = flaw_instance.id
+            elif flaw_counter == 2:
+                db_cmf.flaws_02 = flaw_instance.id
+            elif flaw_counter == 3:
+                db_cmf.flaws_03 = flaw_instance.id
+            elif flaw_counter == 4:
+                db_cmf.flaws_04 = flaw_instance.id
+            elif flaw_counter == 5:
+                db_cmf.flaws_05 = flaw_instance.id
+            flaw_counter += 1
+
+        return self.db.add(db_cmf)

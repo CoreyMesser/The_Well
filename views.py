@@ -1,7 +1,9 @@
-import random, os
-from character_pc import PlayerCharacter, Species, HealthPoints, Stats, Skills, MeritsFlaws, POCC, SOCC
+import os
+
+from character_pc import PlayerCharacter, Species, HealthPoints, Stats, CharacterSkillsGenerator, MeritsFlawsGenerator, POCC, SOCC, CharacterStoreSession
 from templates.templates import Templates
 from services import PrinterServices
+from database_service import db_session
 
 
 class Introduction(object):
@@ -24,12 +26,12 @@ class CharacterCreation(object):
         self.pc = PlayerCharacter()
         self.sp = Species()
         self.sts = Stats()
-        self.sk = Skills()
-        self.mf = MeritsFlaws()
+        self.sk = CharacterSkillsGenerator()
+        self.mf = MeritsFlawsGenerator()
         self.po = POCC()
         self.so = SOCC()
-        # self.db_cs = CharacterStoreSession()
         self.ps = PrinterServices()
+        self.db_cs = CharacterStoreSession()
         self.character_dict = self.pc.character_dict
         self.skills_dict = self.pc.skills_dict
         self.character_creation()
@@ -80,4 +82,4 @@ class CharacterCreation(object):
             if player_choice == 'finished':
                 finished = True
 
-        # self.db_cs.store_character_session()
+        self.db_cs.store_character_session()

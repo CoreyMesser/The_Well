@@ -6,48 +6,6 @@ SELECT now();
 $$ LANGUAGE SQL;
 
 -- regular table structure
-CREATE TABLE character_skills
-(
-  id              SERIAL PRIMARY KEY       NOT NULL,
-  code            TEXT                     NULL,
-  academics       INT                      NULL,
-  computer        INT                      NULL,
-  concentration   INT                      NULL,
-  crafting        INT                      NULL,
-  investigation   INT                      NULL,
-  medicine        INT                      NULL,
-  occult          INT                      NULL,
-  politics        INT                      NULL,
-  science         INT                      NULL,
-  athletics       INT                      NULL,
-  brawl           INT                      NULL,
-  demolitions     INT                      NULL,
-  drive           INT                      NULL,
-  firearms        INT                      NULL,
-  larceny         INT                      NULL,
-  ranged_weaponry INT                      NULL,
-  ride            INT                      NULL,
-  stealth         INT                      NULL,
-  survival        INT                      NULL,
-  weaponry        INT                      NULL,
-  animal_kinship  INT                      NULL,
-  bluff           INT                      NULL,
-  empathy         INT                      NULL,
-  expression      INT                      NULL,
-  intimidate      INT                      NULL,
-  persuasion      INT                      NULL,
-  social_contacts INT                      NULL,
-  streetwise      INT                      NULL,
-  subterfuge      INT                      NULL,
-  updated_at      TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now_utc(),
-  created_at      TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now_utc(),
-
-  CHECK (EXTRACT(TIMEZONE FROM updated_at) = '0'),
-  CHECK (EXTRACT(TIMEZONE FROM created_at) = '0')
-
-);
-
-
 CREATE TABLE merits_flaws_type
 (
   id         SERIAL PRIMARY KEY       NOT NULL,
@@ -92,7 +50,7 @@ CREATE TABLE character
   socc          TEXT                     NULL,
   exp_total     INT                      NOT NULL,
   exp_remaining INT                      NOT NULL,
-  nartural_hp   INT                      NOT NULL,
+  natural_hp   INT                      NOT NULL,
   hp            INT                      NOT NULL,
   soak          INT                      NOT NULL,
   stuffing      INT                      NOT NULL,
@@ -103,17 +61,55 @@ CREATE TABLE character
   con           INT                      NOT NULL,
   wis           INT                      NOT NULL,
   cha           INT                      NOT NULL,
-  skills_id     INT                      NOT NULL,
-  merits_id     INT                      NOT NULL,
-  flaws_id      INT                      NOT NULL,
   updated_at    TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now_utc(),
   created_at    TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now_utc(),
 
   CHECK (EXTRACT(TIMEZONE FROM updated_at) = '0'),
+  CHECK (EXTRACT(TIMEZONE FROM created_at) = '0')
+
+);
+
+CREATE TABLE character_skills
+(
+  id              SERIAL PRIMARY KEY       NOT NULL,
+  character_id    INT                      NOT NULL,
+  code            TEXT                     NULL,
+  academics       INT                      NULL,
+  computer        INT                      NULL,
+  concentration   INT                      NULL,
+  crafting        INT                      NULL,
+  investigation   INT                      NULL,
+  medicine        INT                      NULL,
+  occult          INT                      NULL,
+  politics        INT                      NULL,
+  science         INT                      NULL,
+  athletics       INT                      NULL,
+  brawl           INT                      NULL,
+  demolitions     INT                      NULL,
+  drive           INT                      NULL,
+  firearms        INT                      NULL,
+  larceny         INT                      NULL,
+  ranged_weaponry INT                      NULL,
+  ride            INT                      NULL,
+  stealth         INT                      NULL,
+  survival        INT                      NULL,
+  weaponry        INT                      NULL,
+  animal_kinship  INT                      NULL,
+  bluff           INT                      NULL,
+  empathy         INT                      NULL,
+  expression      INT                      NULL,
+  intimidate      INT                      NULL,
+  persuasion      INT                      NULL,
+  social_contacts INT                      NULL,
+  streetwise      INT                      NULL,
+  subterfuge      INT                      NULL,
+  updated_at      TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now_utc(),
+  created_at      TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now_utc(),
+
+  CHECK (EXTRACT(TIMEZONE FROM updated_at) = '0'),
   CHECK (EXTRACT(TIMEZONE FROM created_at) = '0'),
 
-  FOREIGN KEY (skills_id) REFERENCES character_skills (id)
-
+  FOREIGN KEY (character_id) REFERENCES character (id)
 );
 
 CREATE TABLE character_merits_flaws

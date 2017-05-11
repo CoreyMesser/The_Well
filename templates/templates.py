@@ -163,7 +163,7 @@ class Templates(object):
                         "Press [ENTER] to return to the character sheet."
 
 
-    GET_MERITS = '\nᗘᗘᗘ Please select a Merits list to view [MIND] [PHYSICAL] [SOCIAL] [CANCEL]: '
+    GET_MERITS = '\nᗘᗘᗘ Please select a Merits list to view [MENTAL] [PHYSICAL] [SOCIAL] [CANCEL]: '
     GET_FLAWS = '\nᗘᗘᗘ Please select a Flaws list to view [MENTAL] [PHYSICAL] [STATS] [CANCEL]: '
 
     SELECT_MF = "\nᗘᗘ [CHANGE LIST], [CANCEL] or Enter Merit:"

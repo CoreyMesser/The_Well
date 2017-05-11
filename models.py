@@ -6,7 +6,7 @@ from sqlalchemy import func
 from sqlalchemy import null
 from sqlalchemy import or_
 from sqlalchemy.orm import relationship
-from database_service import Base
+from database_service import Base, db_session
 
 metadata = Base.metadata
 
@@ -119,7 +119,7 @@ class Character(Base):
     socc = Column(Text)
     exp_total = Column(Integer, nullable=False)
     exp_remaining = Column(Integer, nullable=False)
-    nartural_hp = Column(Integer, nullable=False)
+    natural_hp = Column(Integer, nullable=False)
     hp = Column(Integer, nullable=False)
     soak = Column(Integer, nullable=False)
     stuffing = Column(Integer, nullable=False)
@@ -130,13 +130,8 @@ class Character(Base):
     con = Column(Integer, nullable=False)
     wis = Column(Integer, nullable=False)
     cha = Column(Integer, nullable=False)
-    skills_id = Column(ForeignKey('skills.id'), nullable=False)
-    merits_id = Column(Integer, nullable=False)
-    flaws_id = Column(Integer, nullable=False)
     updated_at = Column(DateTime(True), nullable=False, server_default=text("now_utc()"))
     created_at = Column(DateTime(True), nullable=False, server_default=text("now_utc()"))
-
-    skills = relationship('Skill')
 
 
 class CharacterCode(Base):
@@ -167,14 +162,14 @@ class InventoryPc(Base):
     created_at = Column(DateTime(True), nullable=False, server_default=text("now_utc()"))
 
 
-class Skill(Base):
-    __tablename__ = 'skills'
+class CharacterSkills(Base):
+    __tablename__ = 'character_skills'
     __table_args__ = (
         CheckConstraint("date_part('timezone'::text, created_at) = '0'::double precision"),
         CheckConstraint("date_part('timezone'::text, updated_at) = '0'::double precision")
     )
 
-    id = Column(Integer, primary_key=True, server_default=text("nextval('skills_id_seq'::regclass)"))
+    id = Column(Integer, primary_key=True, server_default=text("nextval('character_skills_id_seq'::regclass)"))
     code = Column(Text)
     academics = Column(Integer)
     computer = Column(Integer)
@@ -207,6 +202,77 @@ class Skill(Base):
     subterfuge = Column(Integer)
     updated_at = Column(DateTime(True), nullable=False, server_default=text("now_utc()"))
     created_at = Column(DateTime(True), nullable=False, server_default=text("now_utc()"))
+
+
+
+class CharacterMeritsFlaws(Base):
+    __tablename__ = 'character_merits_flaws'
+    __table_args__ = (
+        CheckConstraint("date_part('timezone'::text, created_at) = '0'::double precision"),
+        CheckConstraint("date_part('timezone'::text, updated_at) = '0'::double precision")
+    )
+
+    id = Column(Integer, primary_key=True, server_default=text("nextval('character_merits_flaws_id_seq'::regclass)"))
+    code = Column(Text)
+    character_id = Column(ForeignKey('character.id'), nullable=False)
+    merits_01 = Column(ForeignKey('merits_flaws.id'))
+    merits_02 = Column(ForeignKey('merits_flaws.id'))
+    merits_03 = Column(ForeignKey('merits_flaws.id'))
+    merits_04 = Column(ForeignKey('merits_flaws.id'))
+    merits_05 = Column(ForeignKey('merits_flaws.id'))
+    flaws_01 = Column(ForeignKey('merits_flaws.id'))
+    flaws_02 = Column(ForeignKey('merits_flaws.id'))
+    flaws_03 = Column(ForeignKey('merits_flaws.id'))
+    flaws_04 = Column(ForeignKey('merits_flaws.id'))
+    flaws_05 = Column(ForeignKey('merits_flaws.id'))
+    updated_at = Column(DateTime(True), nullable=False, server_default=text("now_utc()"))
+    created_at = Column(DateTime(True), nullable=False, server_default=text("now_utc()"))
+
+    character = relationship('Character')
+    merits_flaws = relationship('MeritsFlaws', primaryjoin='CharacterMeritsFlaws.flaws_01 == MeritsFlaws.id')
+    merits_flaws1 = relationship('MeritsFlaws', primaryjoin='CharacterMeritsFlaws.flaws_02 == MeritsFlaws.id')
+    merits_flaws2 = relationship('MeritsFlaws', primaryjoin='CharacterMeritsFlaws.flaws_03 == MeritsFlaws.id')
+    merits_flaws3 = relationship('MeritsFlaws', primaryjoin='CharacterMeritsFlaws.flaws_04 == MeritsFlaws.id')
+    merits_flaws4 = relationship('MeritsFlaws', primaryjoin='CharacterMeritsFlaws.flaws_05 == MeritsFlaws.id')
+    merits_flaws5 = relationship('MeritsFlaws', primaryjoin='CharacterMeritsFlaws.merits_01 == MeritsFlaws.id')
+    merits_flaws6 = relationship('MeritsFlaws', primaryjoin='CharacterMeritsFlaws.merits_02 == MeritsFlaws.id')
+    merits_flaws7 = relationship('MeritsFlaws', primaryjoin='CharacterMeritsFlaws.merits_03 == MeritsFlaws.id')
+    merits_flaws8 = relationship('MeritsFlaws', primaryjoin='CharacterMeritsFlaws.merits_04 == MeritsFlaws.id')
+    merits_flaws9 = relationship('MeritsFlaws', primaryjoin='CharacterMeritsFlaws.merits_05 == MeritsFlaws.id')
+
+
+class MeritsFlaws(Base):
+    __tablename__ = 'merits_flaws'
+    __table_args__ = (
+        CheckConstraint("date_part('timezone'::text, created_at) = '0'::double precision"),
+        CheckConstraint("date_part('timezone'::text, updated_at) = '0'::double precision")
+    )
+
+    id = Column(Integer, primary_key=True, server_default=text("nextval('merits_flaws_id_seq'::regclass)"))
+    merits_flaws = Column(Text, nullable=False)
+    merits_flaws_type_id = Column(ForeignKey('merits_flaws_type.id'), nullable=False)
+    merits_flaws_cost = Column(Integer, nullable=False)
+    attribute = Column(Text, nullable=False)
+    attribute_modifier = Column(Integer, nullable=False)
+    updated_at = Column(DateTime(True), nullable=False, server_default=text("now_utc()"))
+    created_at = Column(DateTime(True), nullable=False, server_default=text("now_utc()"))
+
+    merits_flaws_type = relationship('MeritsFlawsType')
+
+
+class MeritsFlawsType(Base):
+    __tablename__ = 'merits_flaws_type'
+    __table_args__ = (
+        CheckConstraint("date_part('timezone'::text, created_at) = '0'::double precision"),
+        CheckConstraint("date_part('timezone'::text, updated_at) = '0'::double precision")
+    )
+
+    id = Column(Integer, primary_key=True, server_default=text("nextval('merits_flaws_type_id_seq'::regclass)"))
+    type = Column(Text, nullable=False)
+    type_id = Column(Integer, nullable=False)
+    updated_at = Column(DateTime(True), nullable=False, server_default=text("now_utc()"))
+    created_at = Column(DateTime(True), nullable=False, server_default=text("now_utc()"))
+
 
 
 class SpeciesDict(object):
@@ -376,7 +442,7 @@ class MeritsFlawsDicts:
                        'grotesque': [8, 'cha', 3]
                        }
              }
-    MERITS = {'MIND': {'danger sense': [3, 'perception', 1],
+    MERITS = {'MENTAL': {'danger sense': [3, 'perception', 1],
                        'encyclopedic knowledge': [3, 'academics', 1],
                        'iron mind': [3, 'concentration', 1],
                        'speed reader': [3, 'academics', 1],
@@ -484,7 +550,7 @@ class OCCs:
 
     PRIMARY_OCC = {'soldier': [1, 'firearms', 1, 'survival'],
                    'medic': [1, 'medicine', 1, 'academics'],
-                   'tech': [1, 'computers', 1, 'science'],
+                   'tech': [1, 'computer', 1, 'science'],
                    'law enforement': [1, 'firearms', 1, 'investigation'],
                    'criminal': [1, 'larceny', 1, 'streetwise'],
                    'occultist': [1, 'occult', 1, 'investigation'],
