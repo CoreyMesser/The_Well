@@ -527,7 +527,7 @@ class MeritsFlawsDicts:
 
 class OCCs:
     SECONDARY_OCC = {
-                    'SOLDIER': {'recon': [2, 'investigation'], 'brute': [2, 'brawl'], 'sniper': [2, 'aim'], 'weapon specialist': [2, 'weaponry'],
+                    'SOLDIER': {'recon': [2, 'investigation'], 'brute': [2, 'brawl'], 'sniper': [2, 'concentration'], 'weapon specialist': [2, 'weaponry'],
                                 'motor specialist': [2, 'drive'], 'air specialist': [2, 'fly'], 'combat medic': [2, 'medicine'],
                                 'demolitions': [2, 'demolitions']},
                     'MEDIC': {'surgeon': [2, 'medicine'], 'weaver': [2, 'crafting'], 'stuffist': [2, 'science'], 'chemist': [2, 'crafting']},

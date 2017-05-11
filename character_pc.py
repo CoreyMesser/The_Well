@@ -601,10 +601,11 @@ class SOCC(OCCs, BonusChecks):
 
     def add_socc(self, select_socc, socc_req):
         socc = OCCs.SECONDARY_OCC[socc_req][select_socc]
+        self.character_dict['socc'] = {select_socc: socc}
         bonus_attributes = socc[1]
         bonus_adjust = socc[0]
         BonusChecks.get_bonus_attribute(self, adjust=bonus_adjust, attribute=bonus_attributes)
-        self.skills_dict[bonus_attributes] += bonus_adjust
+        # self.skills_dict[bonus_attributes] += bonus_adjust
 
     def check_required_pocc(self):
         """
@@ -680,14 +681,17 @@ class CharacterStoreSession(object):
 
     def store_character_session(self):
         db_char = Character()
+        pocc = self.cc.character_dict['pocc']
+        socc = self.cc.character_dict['socc']
+
         db_char.name = self.cc.character_dict['name']
         db_char.species = self.cc.character_dict['species']
         db_char.species_size = self.cc.character_dict['species_size']
         db_char.sex = self.cc.character_dict['sex']
         db_char.faction = self.cc.character_dict['faction']
         db_char.alg = self.cc.character_dict['alg']
-        db_char.pocc = self.cc.character_dict['pocc']
-        db_char.socc = self.cc.character_dict['socc']
+        db_char.pocc = str(pocc.keys())
+        db_char.socc = str(socc.keys())
         db_char.exp_total = self.cc.character_dict['exp_total']
         db_char.exp_remaining = self.cc.character_dict['exp_remaining']
         db_char.natural_hp = self.cc.character_dict['natural_hp']
@@ -703,13 +707,11 @@ class CharacterStoreSession(object):
         db_char.cha = self.cc.character_dict['cha']
         db_char.code = 1
         self.db.add(db_char)
-        db_scs = self.store_character_skills_session()
-        # db_smf = self.store_merits_flaws()
         self.db.commit()
+        # self.store_character_session()
 
     def store_character_skills_session(self):
         db_sk = CharacterSkills()
-        db_sk.character_id = Character.id
         db_sk.academics = self.cc.skills_dict['academics']
         db_sk.computer = self.cc.skills_dict['computer']
         db_sk.concentration = self.cc.skills_dict['concentration']
@@ -739,7 +741,8 @@ class CharacterStoreSession(object):
         db_sk.social_contacts = self.cc.skills_dict['social contacts']
         db_sk.streetwise = self.cc.skills_dict['streetwise']
         db_sk.subterfuge = self.cc.skills_dict['subterfuge']
-        return self.db.add(db_sk)
+        self.db.add(db_sk)
+        self.db.commit()
 
     def store_merits_flaws(self):
         db_cmf = CharacterMeritsFlaws()
@@ -774,4 +777,5 @@ class CharacterStoreSession(object):
                 db_cmf.flaws_05 = flaw_instance.id
             flaw_counter += 1
 
-        return self.db.add(db_cmf)
+        self.db.add(db_cmf)
+        self.db.commit()

@@ -6,6 +6,36 @@ SELECT now();
 $$ LANGUAGE SQL;
 
 -- regular table structure
+CREATE TABLE pocc_db
+(
+  id                    SERIAL PRIMARY KEY       NOT NULL,
+  pocc                  TEXT                     NOT NULL,
+  attribute_modifier_01 INT                      NOT NULL,
+  attribute_01             TEXT                     NOT NULL,
+  attribute_modifier_02 INT                      NOT NULL,
+  attribute_02             TEXT                     NOT NULL,
+  updated_at            TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now_utc(),
+  created_at            TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now_utc(),
+
+  CHECK (EXTRACT(TIMEZONE FROM updated_at) = '0'),
+  CHECK (EXTRACT(TIMEZONE FROM created_at) = '0')
+
+);
+
+CREATE TABLE socc_db
+(
+  id                 SERIAL PRIMARY KEY       NOT NULL,
+  socc               TEXT                     NOT NULL,
+  attribute_modifier INT                      NOT NULL,
+  attribute          TEXT                     NOT NULL,
+  updated_at         TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now_utc(),
+  created_at         TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now_utc(),
+
+  CHECK (EXTRACT(TIMEZONE FROM updated_at) = '0'),
+  CHECK (EXTRACT(TIMEZONE FROM created_at) = '0')
+
+);
+
 CREATE TABLE merits_flaws_type
 (
   id         SERIAL PRIMARY KEY       NOT NULL,
