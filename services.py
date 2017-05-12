@@ -209,13 +209,10 @@ class PrintCompletedCharacterSheet(object):
         char_mf = self.create_mf_stats(mf_dict=mf_dict)
         print(char_stats, char_skills)
         character = char_stats + char_skills
-        file_name = input('Please enter a file name: >>'+'{}').format('.txt')
-        f = open(file_name, 'w')
+        file_name = input('Please enter a file name: >>')
+        f = open(file_name + '.txt', 'w')
         f.write(character)
         f.close()
-
-
-
 
 
 class CharacterCreationServices(object):

@@ -93,7 +93,10 @@ FLAWS  
 
 Mental
 (3) Curiosity - (your natural curiosity will draw you into unforeseen situations, GM decides when you will be drawn and whether to apply a -2 penalty or +2 to check for any rolls)  
-(3) Hydrophobia (anything concerning water large then a bathtub you are afraid of, suffer -2 to all actions) (3) Naive (3) Prude (3) Phobia I - (suffer -2 to all actions when around the object of phobia)
+(3) Hydrophobia (anything concerning water large then a bathtub you are afraid of, suffer -2 to all actions) 
+(3) Naive 
+(3) Prude 
+(3) Phobia I - (suffer -2 to all actions when around the object of phobia)
 (3) Stutter 
 (4) Afraid of Combat (freezes up in combat situations and will not fight) 
 (4) Combat Rage (when fighting a target you will fight it until it is dead and only it, enemies and companions may suffer your wrath if they interfere -2 to any action not directed at target) 
