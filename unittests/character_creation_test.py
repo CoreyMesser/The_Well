@@ -1,6 +1,6 @@
 import unittest
 from unittest import TestCase
-from models import Character, CharacterMeritsFlaws, CharacterSkills, SpeciesDict, MeritsFlawsDicts, OCCs, MeritsFlaws
+from models import Character, CharacterMeritsFlaws, CharacterSkills, SpeciesDict, MeritsFlawsDicts, OCCs, MeritsFlaws, PoccDb, SoccDb
 from database_service import db_session
 
 
@@ -12,8 +12,8 @@ class MockCharacterData(unittest.TestCase):
                       'sex': 'Female',
                       'faction': None,
                       'alg': 'CG',
-                      'pocc': 'temp',
-                      'socc': 'temp',
+                      'pocc': {'tech': 1},
+                      'socc': {'hacker': 1},
                       'exp_total': 42,
                       'exp_remaining': 42,
                       'natural_hp': 4,
@@ -28,17 +28,63 @@ class MockCharacterData(unittest.TestCase):
                       'con': 1,
                       'wis': 1,
                       'cha': 3,
-                      'merits': {},
+                      'merits': {'weaver': 1, 'lucky': 1, 'witty': 1},
                       'flaws': {}
                       }
 
-    def test_db_merits_insert(self):
+    skills_dict = {"academics": 0,
+                   "computer": 3,
+                   "concentration": 0,
+                   "crafting": 3,
+                   "investigation": 0,
+                   "medicine": 0,
+                   "occult": 0,
+                   "politics": 0,
+                   "science": 3,
+                   "athletics": 0,
+                   "brawl": 0,
+                   "demolitions": 0,
+                   "drive": 0,
+                   "firearms": 3,
+                   "larceny": 3,
+                   "ranged weaponry": 0,
+                   "ride": 0,
+                   "stealth": 0,
+                   "survival": 0,
+                   "weaponry": 3,
+                   "animal kinship": 0,
+                   "bluff": 3,
+                   "empathy": 0,
+                   "expression": 0,
+                   "intimidate": 0,
+                   "persuasion": 3,
+                   "social contacts": 0,
+                   "streetwise": 0,
+                   "subterfuge": 3
+                   }
+
+    def test_db_merits_insert(self, char_id):
         db = db_session()
         db_cmf = CharacterMeritsFlaws()
-        merits = 'weaver'
-        merit_instance = db.query(MeritsFlaws).filter_by(merits_flaws=merits).first()
-        db_cmf.character_id = 1
-        db_cmf.merits_01 = merit_instance.id
+        # merits = 'weaver'
+        # merit_instance = db.query(MeritsFlaws).filter_by(merits_flaws=merits).first()
+        # db_cmf.character_id = 1
+        # db_cmf.merits_01 = merit_instance.id
+        db_cmf.character_id = char_id
+        merit_counter = 1
+        for merits in self.character_dict['merits']:
+            merit_instance = db.query(MeritsFlaws).filter_by(merits_flaws=merits).first()
+            if merit_counter == 1:
+                db_cmf.merits_01 = merit_instance.id
+            elif merit_counter == 2:
+                db_cmf.merits_02 = merit_instance.id
+            elif merit_counter == 3:
+                db_cmf.merits_03 = merit_instance.id
+            elif merit_counter == 4:
+                db_cmf.merits_04 = merit_instance.id
+            elif merit_counter == 5:
+                db_cmf.merits_05 = merit_instance.id
+            merit_counter += 1
         db.add(db_cmf)
         db.commit()
 
@@ -48,6 +94,43 @@ class MockCharacterData(unittest.TestCase):
         cmf_m_id = CharacterMeritsFlaws.merits_01
         merit_instance = db.query(MeritsFlaws).filter_by(id=cmf_m_id).first()
         print(merit_instance.merits_flaws, merit_instance.merits_flaws_cost, merit_instance.attribute, merit_instance.attribute_modifier)
+        
+    def test_store_character_skills_session(self, char_id):
+        db = db_session()
+        db_sk = CharacterSkills()
+        db_sk.character_id = char_id
+        db_sk.academics = self.skills_dict['academics']
+        db_sk.computer = self.skills_dict['computer']
+        db_sk.concentration = self.skills_dict['concentration']
+        db_sk.crafting = self.skills_dict['crafting']
+        db_sk.investigation = self.skills_dict['investigation']
+        db_sk.medicine = self.skills_dict['medicine']
+        db_sk.occult = self.skills_dict['occult']
+        db_sk.politics = self.skills_dict['politics']
+        db_sk.science = self.skills_dict['science']
+        db_sk.athletics = self.skills_dict['athletics']
+        db_sk.brawl = self.skills_dict['brawl']
+        db_sk.demolitions = self.skills_dict['demolitions']
+        db_sk.drive = self.skills_dict['drive']
+        db_sk.firearms = self.skills_dict['firearms']
+        db_sk.larceny = self.skills_dict['larceny']
+        db_sk.ranged_weaponry = self.skills_dict['ranged weaponry']
+        db_sk.ride = self.skills_dict['ride']
+        db_sk.stealth = self.skills_dict['stealth']
+        db_sk.survival = self.skills_dict['survival']
+        db_sk.weaponry = self.skills_dict['weaponry']
+        db_sk.animal_kinship = self.skills_dict['animal kinship']
+        db_sk.bluff = self.skills_dict['bluff']
+        db_sk.empathy = self.skills_dict['empathy']
+        db_sk.expression = self.skills_dict['expression']
+        db_sk.intimidate = self.skills_dict['intimidate']
+        db_sk.persuasion = self.skills_dict['persuasion']
+        db_sk.social_contacts = self.skills_dict['social contacts']
+        db_sk.streetwise = self.skills_dict['streetwise']
+        db_sk.subterfuge = self.skills_dict['subterfuge']
+        db.add(db_sk)
+        db.commit()
+
 
     def test_store_character_session(self):
         db = db_session()
@@ -58,8 +141,12 @@ class MockCharacterData(unittest.TestCase):
         db_char.sex = self.character_dict['sex']
         db_char.faction = self.character_dict['faction']
         db_char.alg = self.character_dict['alg']
-        db_char.pocc = self.character_dict['pocc']
-        db_char.socc = self.character_dict['socc']
+        pocc = ''.join(self.character_dict['pocc'].keys())
+        pocc_instance = db.query(PoccDb).filter_by(pocc=pocc).first()
+        db_char.pocc = pocc_instance.id
+        socc = ''.join(self.character_dict['socc'].keys())
+        socc_instance = db.query(SoccDb).filter_by(socc=socc).first()
+        db_char.socc = socc_instance.id
         db_char.exp_total = self.character_dict['exp_total']
         db_char.exp_remaining = self.character_dict['exp_remaining']
         db_char.natural_hp = self.character_dict['natural_hp']
@@ -77,7 +164,117 @@ class MockCharacterData(unittest.TestCase):
         db.add(db_char)
         db.commit()
 
+        char_id = db_char.id
+
+        self.test_db_merits_insert(char_id=char_id)
+        self.test_store_character_skills_session(char_id=char_id)
+
+    def test_row_to_dict(self):
+        db = db_session()
+        for c in db.query(Character).filter(Character.id == 9):
+            character_dict = c.__dict__
+        print(character_dict)
+        for s in db.query(CharacterSkills).filter(Character.id == 9):
+            skills_dict = s.__dict__
+        print(skills_dict)
+        for mf in db.query(CharacterMeritsFlaws).filter(CharacterMeritsFlaws.id == 9):
+            mf_dict = mf.__dict__
+        print(mf_dict)
+
+
+
+class PrintCompletedCharacterSheet(object):
+    character_sheet = Character()
+    db = db_session()
+
+
+    def create_character_dict_from_db(self):
+        db = db_session()
+        for c in db.query(Character).filter(Character.id == 9):
+            character_dict = c.__dict__
+        for s in db.query(CharacterSkills).filter(Character.id == 9):
+            skills_dict = s.__dict__
+        for mf in db.query(CharacterMeritsFlaws).filter(CharacterMeritsFlaws.id == 9):
+            mf_dict = mf.__dict__
+
+        return character_dict, skills_dict, mf_dict
+
+    def create_character_stats(self, character_dict):
+        main_sheet = "[NAME]    NAME:  {name} \n" \
+                     "[SPECIES] SPECIES:  {species} \n" \
+                     "          SPECIES SZIE:  {species_size} \n" \
+                     "[SEX]     SEX: {sex} \n" \
+                     "[ FACTION] FACTION:  {faction} \n" \
+                     "[ALG]     ALIGNMENT:  {alg} \n" \
+                     "[POCC]    PRIMARY OCCUPATION: {pocc} \n" \
+                     " [SOCC]    SECOND OCCUPATION:  {socc} \n" \
+                     "\n" \
+                     "  [HP]      HP: {hp} \n" \
+                     "[STUFF]   STUFFING: {stuffing} \n" \
+                     "          SANITY: {sanity} \n" \
+                     "          SOAK: {soak} \n" \
+                     "\n" \
+                     "  ᗘᗘᗘ STATS  ᗛᗛᗛ\n" \
+                     "ᗘ[STR] : {str} \n" \
+                     " ᗘ[INT] : {int} \n" \
+                     "ᗘ[DEX] : {dex} \n" \
+                     " ᗘ[CON] : {con} \n" \
+                     " ᗘ[WIS] : {wis} \n" \
+                     " ᗘ[CHA] : {cha} \n" \
+                     "\n".format(**character_dict)
+        return main_sheet
+
+    def create_skills_stats(self, skills_dict):
+        skills_sheet = ['\nᗘᗘᗘ SKILLS  ᗛᗛᗛ\n',
+                        'ᗘᗘ MENTAL ᗛᗛ\n',
+                        'ᗘ {academics} : [Academics]\n'.format(**skills_dict),
+                        'ᗘ {computer} : [Computer]\n'.format(**skills_dict),
+                        'ᗘ {concentration} : [Concentration]\n'.format(**skills_dict),
+                        'ᗘ {crafting} : [Crafting]\n'.format(**skills_dict),
+                        'ᗘ {investigation} : [Investigation]\n'.format(**skills_dict),
+                        'ᗘ {medicine} : [Medicine]\n'.format(**skills_dict),
+                        'ᗘ {occult} : [Occult]\n'.format(**skills_dict),
+                        'ᗘ {politics} : [Politics]\n'.format(**skills_dict),
+                        'ᗘ {science} : [Science ]\n \n'.format(**skills_dict),
+                        'ᗘᗘ PHYSICAL ᗛᗛ\n'
+                        'ᗘ {athletics} : [athletics]\n'.format(**skills_dict),
+                        'ᗘ {brawl} : [brawl]\n'.format(**skills_dict),
+                        'ᗘ {demolitions} : [demolitions]\n'.format(**skills_dict),
+                        'ᗘ {drive} : [drive]\n'.format(**skills_dict),
+                        'ᗘ {firearms} : [firearms]\n'.format(**skills_dict),
+                        'ᗘ {larceny} : [larceny]\n'.format(**skills_dict),
+                        'ᗘ {ranged_weaponry} : [ranged weaponry]\n'.format(**skills_dict),
+                        'ᗘ {ride} : [ride]\n'.format(**skills_dict),
+                        'ᗘ {stealth} : [stealth]\n'.format(**skills_dict),
+                        'ᗘ {survival} : [survival]\n'.format(**skills_dict),
+                        'ᗘ {weaponry} : [weaponry]\n \n'.format(**skills_dict),
+                        'ᗘᗘ SOCIAL ᗛᗛ\n',
+                        'ᗘ {bluff} : [bluff]\n'.format(**skills_dict),
+                        'ᗘ {empathy} : [empathy]\n'.format(**skills_dict),
+                        'ᗘ {expression} : [expression]\n'.format(**skills_dict),
+                        'ᗘ {intimidate} : [intimidate]\n'.format(**skills_dict),
+                        'ᗘ {persuasion} : [persuasion]\n'.format(**skills_dict),
+                        'ᗘ {social_contacts} : [social contacts]\n'.format(**skills_dict),
+                        'ᗘ {streetwise} : [streetwise]\n'.format(**skills_dict),
+                        'ᗘ {subterfuge} : [subterfuge]\n'.format(**skills_dict)
+                        ]
+        return ''.join(skills_sheet)
+
+    def create_mf_stats(self, mf_dict):
+        pass
+
+    def print_character_sheet_from_db(self):
+        character_dict, skills_dict, mf_dict = self.create_character_dict_from_db()
+        char_stats = self.create_character_stats(character_dict=character_dict)
+        char_skills = self.create_skills_stats(skills_dict=skills_dict)
+        char_mf = self.create_mf_stats(mf_dict=mf_dict)
+        print(char_stats, char_skills)
+        character = char_stats + char_skills
+        f = open('character_sheet.txt', 'w')
+        f.write(character)
+        f.close()
+
 
 if __name__ == '__main__':
-    m_cd = MockCharacterData()
-    m_cd.test_store_character_session()
+    m_cd = PrintCompletedCharacterSheet()
+    m_cd.print_character_sheet_from_db()

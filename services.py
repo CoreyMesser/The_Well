@@ -1,4 +1,5 @@
-from models import SpeciesDict
+from models import SpeciesDict, Character, CharacterMeritsFlaws, CharacterSkills
+from database_service import db_session
 
 
 class PrinterServices(SpeciesDict):
@@ -120,6 +121,101 @@ class PrinterServices(SpeciesDict):
         species_class = self.SPECIES_DICT[species]
         for k in species_class:
             print(k, species_class[k])
+
+class PrintCompletedCharacterSheet(object):
+    character_sheet = Character()
+    db = db_session()
+
+
+    def create_character_dict_from_db(self):
+        db = db_session()
+        for c in db.query(Character).filter(Character.id == 9):
+            character_dict = c.__dict__
+        for s in db.query(CharacterSkills).filter(Character.id == 9):
+            skills_dict = s.__dict__
+        for mf in db.query(CharacterMeritsFlaws).filter(CharacterMeritsFlaws.id == 9):
+            mf_dict = mf.__dict__
+
+        return character_dict, skills_dict, mf_dict
+
+    def create_character_stats(self, character_dict):
+        main_sheet = "[NAME]    NAME:  {name} \n" \
+                     "[SPECIES] SPECIES:  {species} \n" \
+                     "          SPECIES SZIE:  {species_size} \n" \
+                     "[SEX]     SEX: {sex} \n" \
+                     "[ FACTION] FACTION:  {faction} \n" \
+                     "[ALG]     ALIGNMENT:  {alg} \n" \
+                     "[POCC]    PRIMARY OCCUPATION: {pocc} \n" \
+                     " [SOCC]    SECOND OCCUPATION:  {socc} \n" \
+                     "\n" \
+                     "  [HP]      HP: {hp} \n" \
+                     "[STUFF]   STUFFING: {stuffing} \n" \
+                     "          SANITY: {sanity} \n" \
+                     "          SOAK: {soak} \n" \
+                     "\n" \
+                     "  ᗘᗘᗘ STATS  ᗛᗛᗛ\n" \
+                     "ᗘ[STR] : {str} \n" \
+                     " ᗘ[INT] : {int} \n" \
+                     "ᗘ[DEX] : {dex} \n" \
+                     " ᗘ[CON] : {con} \n" \
+                     " ᗘ[WIS] : {wis} \n" \
+                     " ᗘ[CHA] : {cha} \n" \
+                     "\n".format(**character_dict)
+        return main_sheet
+
+    def create_skills_stats(self, skills_dict):
+        skills_sheet = ['\nᗘᗘᗘ SKILLS  ᗛᗛᗛ\n',
+                        'ᗘᗘ MENTAL ᗛᗛ\n',
+                        'ᗘ {academics} : [Academics]\n'.format(**skills_dict),
+                        'ᗘ {computer} : [Computer]\n'.format(**skills_dict),
+                        'ᗘ {concentration} : [Concentration]\n'.format(**skills_dict),
+                        'ᗘ {crafting} : [Crafting]\n'.format(**skills_dict),
+                        'ᗘ {investigation} : [Investigation]\n'.format(**skills_dict),
+                        'ᗘ {medicine} : [Medicine]\n'.format(**skills_dict),
+                        'ᗘ {occult} : [Occult]\n'.format(**skills_dict),
+                        'ᗘ {politics} : [Politics]\n'.format(**skills_dict),
+                        'ᗘ {science} : [Science ]\n \n'.format(**skills_dict),
+                        'ᗘᗘ PHYSICAL ᗛᗛ\n'
+                        'ᗘ {athletics} : [athletics]\n'.format(**skills_dict),
+                        'ᗘ {brawl} : [brawl]\n'.format(**skills_dict),
+                        'ᗘ {demolitions} : [demolitions]\n'.format(**skills_dict),
+                        'ᗘ {drive} : [drive]\n'.format(**skills_dict),
+                        'ᗘ {firearms} : [firearms]\n'.format(**skills_dict),
+                        'ᗘ {larceny} : [larceny]\n'.format(**skills_dict),
+                        'ᗘ {ranged_weaponry} : [ranged weaponry]\n'.format(**skills_dict),
+                        'ᗘ {ride} : [ride]\n'.format(**skills_dict),
+                        'ᗘ {stealth} : [stealth]\n'.format(**skills_dict),
+                        'ᗘ {survival} : [survival]\n'.format(**skills_dict),
+                        'ᗘ {weaponry} : [weaponry]\n \n'.format(**skills_dict),
+                        'ᗘᗘ SOCIAL ᗛᗛ\n',
+                        'ᗘ {bluff} : [bluff]\n'.format(**skills_dict),
+                        'ᗘ {empathy} : [empathy]\n'.format(**skills_dict),
+                        'ᗘ {expression} : [expression]\n'.format(**skills_dict),
+                        'ᗘ {intimidate} : [intimidate]\n'.format(**skills_dict),
+                        'ᗘ {persuasion} : [persuasion]\n'.format(**skills_dict),
+                        'ᗘ {social_contacts} : [social contacts]\n'.format(**skills_dict),
+                        'ᗘ {streetwise} : [streetwise]\n'.format(**skills_dict),
+                        'ᗘ {subterfuge} : [subterfuge]\n'.format(**skills_dict)
+                        ]
+        return ''.join(skills_sheet)
+
+    def create_mf_stats(self, mf_dict):
+        pass
+
+    def print_character_sheet_from_db(self):
+        character_dict, skills_dict, mf_dict = self.create_character_dict_from_db()
+        char_stats = self.create_character_stats(character_dict=character_dict)
+        char_skills = self.create_skills_stats(skills_dict=skills_dict)
+        char_mf = self.create_mf_stats(mf_dict=mf_dict)
+        print(char_stats, char_skills)
+        character = char_stats + char_skills
+        file_name = input('Please enter a file name: >>'+'{}').format('.txt')
+        f = open(file_name, 'w')
+        f.write(character)
+        f.close()
+
+
+
 
 
 class CharacterCreationServices(object):

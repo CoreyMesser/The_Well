@@ -82,4 +82,8 @@ class CharacterCreation(object):
             if player_choice == 'finished':
                 finished = True
 
-        self.db_cs.store_character_session()
+        char_id = self.db_cs.store_character_session()
+        # print finished character sheet
+        # allow them to write it to file
+        # ask if they would like to create another
+        # end

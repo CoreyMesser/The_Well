@@ -170,6 +170,7 @@ class CharacterSkills(Base):
     )
 
     id = Column(Integer, primary_key=True, server_default=text("nextval('character_skills_id_seq'::regclass)"))
+    character_id = Column(ForeignKey('character.id'), nullable=False)
     code = Column(Text)
     academics = Column(Integer)
     computer = Column(Integer)

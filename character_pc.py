@@ -655,25 +655,6 @@ class PCCombat(object):
         # return roll
         pass
 
-    # def __str__(self):
-    #     return '{}, HP: {}, XP: {}'.format(self.name, self.hp, self.exp)
-    #
-    # def rest(self):
-    #     if self.hp < self.base_hp:
-    #         self.hp += 1
-    #
-    # def leveled_up(self):
-    #     self.exp += self.monster.exp
-    #     if self.exp == '5':
-    #         self.level += 1
-    #     elif self.exp == '10':
-    #         if self.level != 2:
-    #             self.level += 2
-    #         self.level += 1
-    #     elif self.exp == '15':
-    #         self.level += 1
-    #     print('Level {}! You\'ve leveled up!! Power courses through you'.format(self.level))
-
 
 class CharacterStoreSession(object):
     cc = PlayerCharacter()
@@ -688,10 +669,10 @@ class CharacterStoreSession(object):
         db_char.sex = self.cc.character_dict['sex']
         db_char.faction = self.cc.character_dict['faction']
         db_char.alg = self.cc.character_dict['alg']
-        pocc = self.cc.character_dict['pocc']
+        pocc = ''.join(self.cc.character_dict['pocc'].keys())
         pocc_instance = self.db.query(PoccDb).filter_by(pocc=pocc).first()
         db_char.pocc = pocc_instance.id
-        socc = self.cc.character_dict['socc']
+        socc = ''.join(self.cc.character_dict['socc'].keys())
         socc_instance = self.db.query(SoccDb).filter_by(socc=socc).first()
         db_char.socc = socc_instance.id
         db_char.exp_total = self.cc.character_dict['exp_total']
@@ -711,10 +692,13 @@ class CharacterStoreSession(object):
         self.db.add(db_char)
         self.db.commit()
         char_id = db_char.id
-        self.store_character_skills_session()
+        self.store_character_skills_session(char_id=char_id)
+        self.store_merits_flaws(char_id=char_id)
+        return char_id
 
     def store_character_skills_session(self, char_id):
         db_sk = CharacterSkills()
+        db_sk.character_id = char_id
         db_sk.academics = self.cc.skills_dict['academics']
         db_sk.computer = self.cc.skills_dict['computer']
         db_sk.concentration = self.cc.skills_dict['concentration']
@@ -747,12 +731,12 @@ class CharacterStoreSession(object):
         self.db.add(db_sk)
         self.db.commit()
 
-    def store_merits_flaws(self):
+    def store_merits_flaws(self, char_id):
         db_cmf = CharacterMeritsFlaws()
         pc = PlayerCharacter()
         merit_counter = 1
         flaw_counter = 1
-        db_cmf.character_id = Character.id
+        db_cmf.character_id = char_id
         for merits in pc.character_dict['merits']:
             merit_instance = self.db.query(MeritsFlaws).filter_by(merits_flaws=merits).first()
             if merit_counter == 1:
