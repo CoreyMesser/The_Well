@@ -274,6 +274,38 @@ class MeritsFlawsType(Base):
     created_at = Column(DateTime(True), nullable=False, server_default=text("now_utc()"))
 
 
+class PoccDb(Base):
+    __tablename__ = 'pocc_db'
+    __table_args__ = (
+        CheckConstraint("date_part('timezone'::text, created_at) = '0'::double precision"),
+        CheckConstraint("date_part('timezone'::text, updated_at) = '0'::double precision")
+    )
+
+    id = Column(Integer, primary_key=True, server_default=text("nextval('pocc_db_id_seq'::regclass)"))
+    pocc = Column(Text, nullable=False)
+    attribute_modifier_01 = Column(Integer, nullable=False)
+    attribute_01 = Column(Text, nullable=False)
+    attribute_modifier_02 = Column(Integer, nullable=False)
+    attribute_02 = Column(Text, nullable=False)
+    updated_at = Column(DateTime(True), nullable=False, server_default=text("now_utc()"))
+    created_at = Column(DateTime(True), nullable=False, server_default=text("now_utc()"))
+
+
+class SoccDb(Base):
+    __tablename__ = 'socc_db'
+    __table_args__ = (
+        CheckConstraint("date_part('timezone'::text, created_at) = '0'::double precision"),
+        CheckConstraint("date_part('timezone'::text, updated_at) = '0'::double precision")
+    )
+
+    id = Column(Integer, primary_key=True, server_default=text("nextval('socc_db_id_seq'::regclass)"))
+    socc = Column(Text, nullable=False)
+    attribute_modifier = Column(Integer, nullable=False)
+    attribute = Column(Text, nullable=False)
+    updated_at = Column(DateTime(True), nullable=False, server_default=text("now_utc()"))
+    created_at = Column(DateTime(True), nullable=False, server_default=text("now_utc()"))
+
+
 
 class SpeciesDict(object):
     SPECIES_DICT = {'LAND': {'APE': ['M/O', 1, 'wis'],

@@ -4,4 +4,6 @@ DROP TABLE public.merits_flaws_type;
 DROP TABLE public.character_code;
 DROP TABLE public.inventory_pc;
 DROP TABLE public.character_skills;
-DROP TABLE public.character
+DROP TABLE public.character;
+DROP TABLE public.pocc_db;
+DROP TABLE public.socc_db

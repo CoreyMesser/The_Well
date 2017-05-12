@@ -1,9 +1,6 @@
 import unittest
 from unittest import TestCase
-from mock import patch, sentinel, MagicMock
-from character_pc import HealthPoints
 from models import Character, CharacterMeritsFlaws, CharacterSkills, SpeciesDict, MeritsFlawsDicts, OCCs, MeritsFlaws
-from services import PrinterServices
 from database_service import db_session
 
 

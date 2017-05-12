@@ -76,8 +76,8 @@ CREATE TABLE character
   sex           TEXT                     NOT NULL,
   faction       TEXT                     NULL,
   alg           TEXT                     NOT NULL,
-  pocc          TEXT                     NOT NULL,
-  socc          TEXT                     NULL,
+  pocc          INT                     NOT NULL,
+  socc          INT                     NULL,
   exp_total     INT                      NOT NULL,
   exp_remaining INT                      NOT NULL,
   natural_hp   INT                      NOT NULL,
@@ -95,7 +95,12 @@ CREATE TABLE character
   created_at    TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now_utc(),
 
   CHECK (EXTRACT(TIMEZONE FROM updated_at) = '0'),
-  CHECK (EXTRACT(TIMEZONE FROM created_at) = '0')
+  CHECK (EXTRACT(TIMEZONE FROM created_at) = '0'),
+
+  FOREIGN KEY (pocc) REFERENCES pocc_db (id),
+  FOREIGN KEY (socc) REFERENCES socc_db (id)
+
+
 
 );
 

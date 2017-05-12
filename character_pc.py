@@ -1,6 +1,6 @@
 import random, os
 from templates.templates import Templates
-from models import Character, CharacterMeritsFlaws, CharacterSkills, SpeciesDict, MeritsFlawsDicts, OCCs, MeritsFlaws
+from models import Character, CharacterMeritsFlaws, CharacterSkills, SpeciesDict, MeritsFlawsDicts, OCCs, MeritsFlaws, PoccDb, SoccDb
 from services import PrinterServices
 from database_service import db_session
 
@@ -681,8 +681,6 @@ class CharacterStoreSession(object):
 
     def store_character_session(self):
         db_char = Character()
-        pocc = self.cc.character_dict['pocc']
-        socc = self.cc.character_dict['socc']
 
         db_char.name = self.cc.character_dict['name']
         db_char.species = self.cc.character_dict['species']
@@ -690,8 +688,12 @@ class CharacterStoreSession(object):
         db_char.sex = self.cc.character_dict['sex']
         db_char.faction = self.cc.character_dict['faction']
         db_char.alg = self.cc.character_dict['alg']
-        db_char.pocc = str(pocc.keys())
-        db_char.socc = str(socc.keys())
+        pocc = self.cc.character_dict['pocc']
+        pocc_instance = self.db.query(PoccDb).filter_by(pocc=pocc).first()
+        db_char.pocc = pocc_instance.id
+        socc = self.cc.character_dict['socc']
+        socc_instance = self.db.query(SoccDb).filter_by(socc=socc).first()
+        db_char.socc = socc_instance.id
         db_char.exp_total = self.cc.character_dict['exp_total']
         db_char.exp_remaining = self.cc.character_dict['exp_remaining']
         db_char.natural_hp = self.cc.character_dict['natural_hp']
@@ -708,9 +710,10 @@ class CharacterStoreSession(object):
         db_char.code = 1
         self.db.add(db_char)
         self.db.commit()
-        # self.store_character_session()
+        char_id = db_char.id
+        self.store_character_skills_session()
 
-    def store_character_skills_session(self):
+    def store_character_skills_session(self, char_id):
         db_sk = CharacterSkills()
         db_sk.academics = self.cc.skills_dict['academics']
         db_sk.computer = self.cc.skills_dict['computer']
