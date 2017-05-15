@@ -694,7 +694,7 @@ class CharacterStoreSession(object):
         char_id = db_char.id
         self.store_character_skills_session(char_id=char_id)
         self.store_merits_flaws(char_id=char_id)
-        return char_id
+        return char_id, self.cc.character_dict['name']
 
     def store_character_skills_session(self, char_id):
         db_sk = CharacterSkills()

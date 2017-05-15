@@ -2,7 +2,7 @@ import os
 
 from character_pc import PlayerCharacter, Species, HealthPoints, Stats, CharacterSkillsGenerator, MeritsFlawsGenerator, POCC, SOCC, CharacterStoreSession
 from templates.templates import Templates
-from services import PrinterServices
+from services import PrinterServices, PrintCompletedCharacterSheet
 from database_service import db_session
 
 
@@ -32,6 +32,7 @@ class CharacterCreation(object):
         self.so = SOCC()
         self.ps = PrinterServices()
         self.db_cs = CharacterStoreSession()
+        self.chs_ex = CharacterSheetExportOptions()
         self.character_dict = self.pc.character_dict
         self.skills_dict = self.pc.skills_dict
         self.character_creation()
@@ -82,8 +83,46 @@ class CharacterCreation(object):
             if player_choice == 'finished':
                 finished = True
 
-        char_id = self.db_cs.store_character_session()
-        # print finished character sheet
-        # allow them to write it to file
-        # ask if they would like to create another
-        # end
+        char_id, char_name = self.db_cs.store_character_session()
+        self.chs_ex.export_character_sheet_txt(char_id=char_id, char_name=char_name)
+        self.chs_ex.create_another_character()
+
+
+class CharacterSheetExportOptions(object):
+    ps = PrintCompletedCharacterSheet()
+    template = Templates()
+
+    def export_character_sheet_txt(self, char_id, char_name):
+        exit_sheet = False
+
+        while exit_sheet is False:
+            player_choice = input("Would you like to save your Character to file? [YES] [NO] >>").upper()
+            if player_choice == 'YES':
+                self.ps.print_character_sheet_from_db(char_id=char_id)
+                exit_sheet = True
+            elif player_choice == 'NO':
+                player_confirm = input("You character {}'s ID is {}.  Please keep that handy. Are you sure you would like to QUIT "
+                                       "without saving? [YES] [NO]>>".format(char_id, char_name)).upper()
+                if player_confirm == 'NO':
+                    self.ps.print_character_sheet_from_db(char_id=char_id)
+                elif player_confirm == 'YES':
+                    exit_sheet = True
+                else:
+                    print(self.template.VALID_ENTRY)
+            else:
+                print(self.template.VALID_ENTRY)
+
+    def create_another_character(self):
+        cc = CharacterCreation()
+        template = Templates()
+        exit_sheet = False
+
+        while exit_sheet is False:
+            player_choice = input("Would you like to create another character? [YES] [NO] >>").upper()
+            if player_choice == 'YES':
+                cc.character_creation()
+            elif player_choice == 'NO':
+                print(template.GOODBYE)
+                exit_sheet = True
+            else:
+                print(self.template.VALID_ENTRY)

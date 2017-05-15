@@ -171,3 +171,5 @@ class Templates(object):
     NO_EXP_MSG = "\nᗘᗘᗘ You do not have sufficient experience points remaining. Press ENTER to continue."
 
     VALID_ENTRY = "\nᗘᗘᗘ Please enter a valid entry."
+
+    GOODBYE = "\nᗘᗘᗘ Thank you for using the Plush and Blood: Character Sheet Generator."
