@@ -2,6 +2,10 @@ import unittest
 from unittest import TestCase
 from models import Character, CharacterMeritsFlaws, CharacterSkills, SpeciesDict, MeritsFlawsDicts, OCCs, MeritsFlaws, PoccDb, SoccDb
 from database_service import db_session
+from templates.templates import Templates, CharacterControlTemplates
+from constants import NavigationConstants
+from level_maps.map_model import MapTemplate, Maps, MapConstants
+
 
 
 
@@ -305,7 +309,89 @@ class PrintCompletedCharacterSheet(object):
         f.write(character)
         f.close()
 
+class NavigationTEST(object):
+
+    templates = Templates()
+    cctemp = CharacterControlTemplates()
+    nc = NavigationConstants()
+    mps = Maps()
+    mpsc = MapConstants()
+    mpstemp = MapTemplate()
+    player_move_dict = {'location': (1, 4), 'path': [], 'direction': 'NORTH', 'current_level': 'LEVEL_00'}
+
+    def get_player_moves(self, player_choice):
+        directions = self.nc.DIRECTIONS_DICT
+        player_list = list(player_choice)
+        player_move = 0
+        for direction_check in player_list:
+            if direction_check in directions:
+                if directions[direction_check] == self.player_move_dict['direction']:
+                    break
+                else:
+                    self.player_move_dict['direction'] = directions[direction_check]
+                    break
+        for move_check in player_list:
+            if move_check in self.nc.MOVE_CONVERTER_DICT:
+                player_move = self.nc.MOVE_CONVERTER_DICT[move_check]
+                break
+        return player_move
+
+    def move_player(self):
+        player_choice = '1:NORTH'
+        return_menu = False
+
+        move = self.get_player_moves(player_choice=player_choice)
+        player_direction = self.player_move_dict['direction']
+        x, y = self.player_move_dict['location']
+        player_move = x, y
+
+        while return_menu is False:
+            if player_direction == 'NORTH':
+                player_move = x, y - move
+                return_menu = True
+            if player_direction == 'SOUTH':
+                player_move = x, y + move
+                return_menu = True
+            if player_direction == 'EAST':
+                player_move = x - move, y
+                return_menu = True
+            if player_direction == 'WEST':
+                player_move = x + move, y
+                return_menu = True
+
+        vaild_move = self.valid_player_move(player_move=player_move)
+        if vaild_move is True:
+            self.player_move_dict['location'] = player_move
+
+    def valid_player_move(self, player_move):
+        # self.player_move_dict['path'].append((x, y))
+        valid_move = False
+        current_level = self.player_move_dict['current_level']
+        level_map = self.get_current_level_map(current_level=current_level)
+
+        if player_move in self.mpstemp.MAP_COORDINATES:
+            move_index = self.mpstemp.MAP_COORDINATES.index(player_move)
+            level_map_check = level_map[move_index]
+            if level_map_check == 0:
+                valid_move = True
+            if level_map_check == 1:
+                # check what they ran into
+                pass
+            if level_map_check == 2:
+                # searchable area
+                pass
+
+        return valid_move
+
+    def get_current_level_map(self, current_level):
+        level_map = current_level
+        if current_level == 'LEVEL_00':
+            level_map = self.mps.MAP_LEVEL_00
+        return level_map
+
+
+
 
 if __name__ == '__main__':
-    m_cd = PrintCompletedCharacterSheet()
-    m_cd.print_character_sheet_from_db()
+    nt = NavigationTEST()
+    nt.move_player()

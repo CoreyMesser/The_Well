@@ -1,8 +1,9 @@
 import os
 
 from character_pc import PlayerCharacter, Species, HealthPoints, Stats, CharacterSkillsGenerator, MeritsFlawsGenerator, POCC, SOCC, CharacterStoreSession
-from templates.templates import Templates
+from templates.templates import Templates, CharacterControlTemplates
 from services import PrinterServices, PrintCompletedCharacterSheet
+from services_navigation import CharacterNavigation
 from database_service import db_session
 
 
@@ -86,6 +87,56 @@ class CharacterCreation(object):
         char_id, char_name = self.db_cs.store_character_session()
         self.chs_ex.export_character_sheet_txt(char_id=char_id, char_name=char_name)
         self.chs_ex.create_another_character()
+
+
+class Gameplay(object):
+
+    def __init__(self):
+        self.cn = CharacterNavigation()
+        self.cctemp = CharacterControlTemplates()
+
+    def retreive_character(self):
+        # retrieves character from database and creates a stripped down model to use in-game
+        pass
+
+    def player_controls(self):
+        finished = False
+
+        while finished is False:
+            return_menu = False
+            player_choice = input(self.cctemp.PLAYER_CHOICE).upper()
+            if player_choice == 'HELP':
+                print(self.cctemp.PLAYER_HELP)
+            if player_choice == 'LOOK':
+                pass
+            if player_choice == 'SEARCH':
+                pass
+            if player_choice == 'USE':
+                pass
+            if player_choice == 'TAKE':
+                pass
+            if player_choice == 'TURN':
+                player_choice = input(self.cctemp.PLAYER_DIRECTIONS).upper()
+                self.cn.get_player_direction(player_choice=player_choice)
+            if player_choice == 'MOVE':
+                player_choice = input(self.cctemp.PLAYER_MOVE).upper()
+                self.cn.get_player_moves(player_choice=player_choice)
+            if player_choice == 'CLIMB':
+                pass
+            if player_choice == 'JUMP':
+                pass
+            if player_choice == 'INVENTORY':
+                pass
+            if player_choice == 'EQUIP':
+                pass
+            if player_choice == 'UNEQUIP':
+                pass
+            if player_choice == 'ATTACK':
+                pass
+            if player_choice == 'BLOCK':
+                pass
+            if player_choice == 'FLEE':
+                pass
 
 
 class CharacterSheetExportOptions(object):
