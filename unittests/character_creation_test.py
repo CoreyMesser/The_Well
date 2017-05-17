@@ -389,9 +389,39 @@ class NavigationTEST(object):
             level_map = self.mps.MAP_LEVEL_00
         return level_map
 
+class MapRender(object):
+    mps = Maps()
+    mpsc = MapConstants()
+    mpstemp = MapTemplate()
+    player_move_dict = {'location': (1, 4), 'path': [], 'direction': 'NORTH', 'current_level': 'LEVEL_00'}
+
+    def get_map(self, current_level):
+        level_map = current_level
+        if current_level == 'LEVEL_00':
+            level_map = self.mps.MAP_LEVEL_00
+        return level_map
+
+    def draw_map(self):
+        current_level = self.player_move_dict['current_level']
+        level_map = self.get_map(current_level=current_level)
+        for cell in level_map:
+            tiles = self.map_tiles(cell=cell)
+            print(tiles)
+
+    def map_tiles(self, cell):
+        tile_dict = {0: ' ', 1: '#', 2: ' ', 3: ' ', 4: ' ', 5: ' ', 6: ' ', 7: ' ',
+                     8: {'NORTH': '^', 'SOUTH': 'v', 'WEST': '<', 'EAST': '>'}, 9: 'E'}
+        if cell == 8:
+            direction = self.player_move_dict['direction']
+            tile = tile_dict[8][direction]
+        else:
+            tile = tile_dict[cell]
+        return tile
+
 
 
 
 if __name__ == '__main__':
-    nt = NavigationTEST()
-    nt.move_player()
+    nt = MapRender()
+    nt.draw_map()
+    

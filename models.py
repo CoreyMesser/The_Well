@@ -10,63 +10,15 @@ from database_service import Base, db_session
 
 metadata = Base.metadata
 
+class CharacterModels(object):
+    PLAYER_MOVE_DICT = {'character_id': 9,
+                        'location': (0, 0),
+                        'path': [],
+                        'direction': 'NORTH',
+                        'current_level': 'LEVEL_00'}
+
 class Navigation(object):
-    def grid_coor(self, coor_x, coor_y, coor_z):
-        pass
-
-    def moveNorth(self, move):
-        '''
-
-        :param move: takes an int
-        :return: grid_coor incremented + on coor_y
-        '''
-        # y+
-        pass
-
-    def moveSouth(self, move):
-        '''
-
-        :param move: int
-        :return: grid_coor incremented - on coor_y
-        '''
-        # y-
-        pass
-
-    def moveEast(self, move):
-        '''
-
-        :param move: int
-        :return: grid_coor incremented on coor_y
-        '''
-        # x+
-        pass
-
-    def moveWest(self, move):
-        '''
-
-        :param move: int
-        :return: grid_coor incremented on coor_y 
-        '''
-        # x-
-        pass
-
-    def moveDown(self, move):
-        '''
-
-        :param move: int
-        :return: grid_coor incremented on coor_y 
-        '''
-        # z+
-        pass
-
-    def moveUp(self, move):
-        '''
-
-        :param move: int
-        :return:grid_coor incremented on coor_y 
-        '''
-        # z-
-        pass
+    pass
 
 
 class Inventory(object):
