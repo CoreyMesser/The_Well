@@ -320,6 +320,23 @@ class NavigationTEST(object):
     mpstemp = MapTemplate()
     player_move_dict = {'location': (1, 4), 'path': [], 'direction': 'NORTH', 'current_level': 'LEVEL_00'}
 
+    def start_location(self):
+        current_level = self.player_move_dict['current_level']
+        level_map = self.get_current_level_map(current_level=current_level)
+        starting_position = level_map.index(9)
+        starting_coordinates = self.mpstemp.MAP_COORDINATES[starting_position]
+        self.update_player_location_and_path(location=starting_coordinates, path=starting_coordinates)
+
+    def update_player_location_and_path(self, location, path):
+        """
+        updates both dict entries
+        :param location: 
+        :param path: 
+        :return: 
+        """
+        self.player_move_dict['location'] = location
+        self.player_move_dict['path'].append(path)
+
     def get_player_moves(self, player_choice):
         directions = self.nc.DIRECTIONS_DICT
         player_list = list(player_choice)
@@ -453,5 +470,5 @@ class MapRender(object):
 
 
 if __name__ == '__main__':
-    nt = MapRender()
-    nt.draw_map()
+    nt = NavigationTEST()
+    nt.start_location()

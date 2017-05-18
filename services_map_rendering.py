@@ -7,8 +7,9 @@ class MapRenderer(object):
         self.mps = Maps()
         self.mpstemp = MapTemplate()
         self.mtc = MapTileConstants()
+        self.mps_clean = Maps()
         self.gc = GetCharacter()
-        self.player_move_dict = self.gc.player_move_dict
+        # self.player_move_dict = self.gc.player_move_dict
 
     def get_map(self, current_level):
         level_map = current_level
@@ -18,26 +19,37 @@ class MapRenderer(object):
             level_map = self.mps.MAP_LEVEL_01
         return level_map
 
-    def draw_character_position(self):
-        current_level = self.player_move_dict['current_level']
+    def draw_character_position(self, player_move_dict):
+        current_level = player_move_dict['current_level']
         level_map = self.get_map(current_level=current_level)
-        player_move = self.player_move_dict['location']
+        # clean_map = self.mps_clean.MAP_LEVEL_00
+
+        player_move = player_move_dict['location']
+        path = player_move_dict['path']
 
         move_index = self.mpstemp.MAP_COORDINATES.index(player_move)
+
+        previous_move = path[-2]
+        previous_index = self.mpstemp.MAP_COORDINATES.index(previous_move)
+        previous_tile = level_map[previous_index]
+
         level_map.insert(move_index, 8)
         level_map.pop(move_index + 1)
 
+        level_map.insert(previous_index, previous_tile)
+        level_map.pop(previous_index + 1)
+
         return level_map
 
-    def draw_map(self):
+    def draw_map(self, player_move_dict):
 
-        level_map = self.draw_character_position()
+        level_map = self.draw_character_position(player_move_dict=player_move_dict)
 
         cell_print_count = 0
         rendered_map = []
 
         for cell in level_map:
-            tiles = self.map_tiles(cell=cell)
+            tiles = self.map_tiles(cell=cell, direction=player_move_dict['direction'])
             if cell_print_count == 0:
                 rendered_map.append(self.mtc.BORDER)
                 rendered_map.append(tiles)
@@ -54,11 +66,11 @@ class MapRenderer(object):
         for tile in rendered_map:
             print(tile, end='')
 
-    def map_tiles(self, cell):
+    def map_tiles(self, cell, direction):
         tile_dict = {0: '  ', 1: '[]', 2: '  ', 3: ' ', 4: ' ', 5: ' ', 6: ' ', 7: '==', 8: ' ',
                      9: 'EN'}
         if cell == 8:
-            direction = self.player_move_dict['direction']
+            direction = direction
             tile = self.mtc.PLAYER_ICON[direction]
         else:
             tile = tile_dict[cell]

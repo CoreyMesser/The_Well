@@ -4,6 +4,9 @@ from character_pc import PlayerCharacter, Species, HealthPoints, Stats, Characte
 from templates.templates import Templates, CharacterControlTemplates
 from services import PrinterServices, PrintCompletedCharacterSheet
 from services_navigation import CharacterNavigation
+from services_get_character import GetCharacter
+from models import CharacterModels
+
 from database_service import db_session
 
 
@@ -12,8 +15,10 @@ class Introduction(object):
         print(Templates.BANNER)
         print(Templates.INTRO)
         input('ᗛᗛᗛ Press Return to continue ᗘᗘᗘ')
-        cc = CharacterCreation()
-        cc.__init__()
+        # cc = CharacterCreation()
+        # cc.__init__()
+        gg = Gameplay()
+        gg.__init__()
 
 
 class CharacterCreation(object):
@@ -94,10 +99,18 @@ class Gameplay(object):
     def __init__(self):
         self.cn = CharacterNavigation()
         self.cctemp = CharacterControlTemplates()
+        self.gc = GetCharacter()
+        self.player_move_dict = self.retreive_character()
+        self.setup()
+        self.player_controls()
+
+    def setup(self):
+        self.cn.start_location(player_move_dict=self.player_move_dict)
 
     def retreive_character(self):
         # retrieves character from database and creates a stripped down model to use in-game
-        pass
+        player_move_dict = CharacterModels.PLAYER_MOVE_DICT
+        return player_move_dict
 
     def player_controls(self):
         finished = False
@@ -120,7 +133,7 @@ class Gameplay(object):
                 self.cn.get_player_direction(player_choice=player_choice)
             if player_choice == 'MOVE':
                 player_choice = input(self.cctemp.PLAYER_MOVE).upper()
-                self.cn.get_player_moves(player_choice=player_choice)
+                self.cn.move_player(player_choice=player_choice)
             if player_choice == 'CLIMB':
                 pass
             if player_choice == 'JUMP':

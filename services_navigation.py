@@ -3,6 +3,7 @@ from templates.templates import Templates, CharacterControlTemplates
 from constants import NavigationConstants
 from level_maps.map_model import MapTemplate, Maps, MapConstants
 from models import CharacterModels
+from services_map_rendering import MapRenderer
 
 class CharacterNavigation(object):
 
@@ -13,16 +14,18 @@ class CharacterNavigation(object):
         self.mps = Maps()
         self.mpstemp = MapTemplate()
         self.mpsc = MapConstants()
+        self.mpren = MapRenderer()
         self.player_move_dict = CharacterModels.PLAYER_MOVE_DICT
 
     def clear_screen(self):
         pass
 
-    def start_location(self):
-        current_level = self.player_move_dict['current_level']
+    def start_location(self, player_move_dict):
+        current_level = player_move_dict['current_level']
         level_map = self.get_current_level_map(current_level=current_level)
-        starting_position = level_map[9]
-        self.update_player_location_and_path(location=starting_position, path=starting_position)
+        starting_position = level_map.index(9)
+        starting_coordinates = self.mpstemp.MAP_COORDINATES[starting_position]
+        self.update_player_location_and_path(location=starting_coordinates, path=starting_coordinates)
 
     def get_player_direction(self, player_choice):
         return_menu = False
@@ -68,15 +71,16 @@ class CharacterNavigation(object):
                 player_move = x, y + move
                 return_menu = True
             if player_direction == 'EAST':
-                player_move = x - move, y
+                player_move = x + move, y
                 return_menu = True
             if player_direction == 'WEST':
-                player_move = x + move, y
+                player_move = x - move, y
                 return_menu = True
 
         vaild_move = self.valid_player_move(player_move=player_move)
         if vaild_move is True:
             self.update_player_location_and_path(location=player_move, path=player_move)
+            self.mpren.draw_map(player_move_dict=self.player_move_dict)
 
     def update_player_location_and_path(self, location, path):
         """
