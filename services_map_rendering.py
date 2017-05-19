@@ -1,5 +1,6 @@
 from level_maps.map_model import Maps, MapTemplate
 from services_get_character import GetCharacter
+import copy
 
 class MapRenderer(object):
 
@@ -7,22 +8,29 @@ class MapRenderer(object):
         self.mps = Maps()
         self.mpstemp = MapTemplate()
         self.mtc = MapTileConstants()
-        self.mps_clean = Maps()
+        self.mps_clean = copy.deepcopy(Maps())
         self.gc = GetCharacter()
         # self.player_move_dict = self.gc.player_move_dict
 
-    def get_map(self, current_level):
-        level_map = current_level
+    def get_map(self, player_move_dict):
+        current_level = player_move_dict['current_level']
+        clean_map = 0
         if current_level == 'LEVEL_00':
-            level_map = self.mps.MAP_LEVEL_00
+            clean_map = self.mps.MAP_LEVEL_00
         if current_level == 'LEVEL_01':
-            level_map = self.mps.MAP_LEVEL_01
+            clean_map = self.mps.MAP_LEVEL_01
+        return clean_map
+
+    def level_map_list(self, player_move_dict):
+        level_map = []
+        level_map_list = self.get_map(player_move_dict=player_move_dict)
+        for entry in level_map_list:
+            level_map.append(entry)
         return level_map
 
     def draw_character_position(self, player_move_dict):
-        current_level = player_move_dict['current_level']
-        level_map = self.get_map(current_level=current_level)
-        # clean_map = self.mps_clean.MAP_LEVEL_00
+        level_map = self.level_map_list(player_move_dict=player_move_dict)
+        clean_map = self.get_map(player_move_dict=player_move_dict)
 
         player_move = player_move_dict['location']
         path = player_move_dict['path']
@@ -31,7 +39,7 @@ class MapRenderer(object):
 
         previous_move = path[-2]
         previous_index = self.mpstemp.MAP_COORDINATES.index(previous_move)
-        previous_tile = level_map[previous_index]
+        previous_tile = clean_map[previous_index]
 
         level_map.insert(move_index, 8)
         level_map.pop(move_index + 1)
