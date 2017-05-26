@@ -1,11 +1,14 @@
-import os
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
+import os
 from character_pc import PlayerCharacter, Species, HealthPoints, Stats, CharacterSkillsGenerator, MeritsFlawsGenerator, POCC, SOCC, CharacterStoreSession
-from templates.templates import Templates, CharacterControlTemplates
+from templates.template_text import Templates, CharacterControlTemplates
 from services import PrinterServices, PrintCompletedCharacterSheet
 from services_navigation import CharacterNavigation
 from services_get_character import GetCharacter
 from models import CharacterModels
+import curses
 
 from database_service import db_session
 
@@ -18,8 +21,23 @@ class Introduction(object):
         # cc = CharacterCreation()
         # cc.__init__()
         gg = Gameplay()
+        ci = CursesInitializer()
+        ci.__init__()
         gg.__init__()
 
+
+class CursesInitializer(object):
+
+    def __init__(self):
+        self.myscreen = curses.initscr()
+        self.win = curses.newwin(25, 50, 20, 20)
+
+        self.myscreen.border(0)
+        self.myscreen.addstr(25, 50)
+        self.myscreen.refresh()
+        self.myscreen.getch()
+
+        # curses.endwin()
 
 class CharacterCreation(object):
 

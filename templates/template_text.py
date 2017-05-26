@@ -1,6 +1,5 @@
-# ᗘᗘᗘᗛᗛᗛ
-from services import PrinterServices
-
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 class Templates(object):
     BANNER = """ᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛ
@@ -201,3 +200,6 @@ class CharacterControlTemplates(object):
     PLAYER_DIRECTIONS = "ᗘᗘᗘ [WEST], [EAST], [NORTH], [SOUTH] ᗛᗛᗛ"
 
     PLAYER_MOVE = "num, or num:direction.  ex. 1 or 1:WEST"
+
+
+# ᗘᗘᗘᗛᗛᗛ

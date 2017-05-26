@@ -1,5 +1,5 @@
 import os
-from templates.templates import Templates, CharacterControlTemplates
+from templates.template_text import Templates, CharacterControlTemplates
 from constants import NavigationConstants
 from level_maps.map_model import MapTemplate, Maps, MapConstants
 from models import CharacterModels

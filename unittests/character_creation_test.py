@@ -1,11 +1,13 @@
+# coding: utf-8
 import unittest
 from unittest import TestCase
 from models import Character, CharacterMeritsFlaws, CharacterSkills, SpeciesDict, MeritsFlawsDicts, OCCs, MeritsFlaws, PoccDb, SoccDb
 from database_service import db_session
-from templates.templates import Templates, CharacterControlTemplates
+from templates.template_text import Templates, CharacterControlTemplates
 from constants import NavigationConstants
 from level_maps.map_model import MapTemplate, Maps, MapConstants
 from services_map_rendering import MapTileConstants
+import curses
 
 
 
@@ -469,6 +471,20 @@ class MapRender(object):
         return tile
 
 
+class CursesInitializer(object):
+
+    def win(self):
+        self.myscreen = curses.initscr()
+        self.win = curses.newwin(25, 50, 20, 20)
+
+        # self.myscreen.border(0)
+        # self.myscreen.addstr(25, 50)
+        self.myscreen.refresh()
+        # self.myscreen.getch()
+
+        # curses.endwin()
+
+
 if __name__ == '__main__':
-    nt = NavigationTEST()
-    nt.start_location()
+    nt = CursesInitializer()
+    nt.win()

@@ -1,5 +1,7 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 import random, os
-from templates.templates import Templates
+from templates.template_text import Templates
 from models import Character, CharacterMeritsFlaws, CharacterSkills, SpeciesDict, MeritsFlawsDicts, OCCs, MeritsFlaws, PoccDb, SoccDb
 from services import PrinterServices
 from database_service import db_session
