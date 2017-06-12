@@ -35,4 +35,4 @@ class SKILLS(object):
               }
 
 class MERITS(object):
-    
+    pass

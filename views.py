@@ -8,10 +8,19 @@ from services import PrinterServices, PrintCompletedCharacterSheet
 from services_navigation import CharacterNavigation
 from services_get_character import GetCharacter
 from models import CharacterModels
+
+from flask import render_template
+from app import get_app
 import curses
 
 from database_service import db_session
 
+app = get_app()
+app.secret_key = 'auoesh.bouoastuh.43,uoausoehuosth3ououea.auoub!'
+
+@app.route('/character_creation', methods=('GET', 'POST'))
+def character_creation_form():
+    return render_template
 
 class Introduction(object):
     def intro(self):
