@@ -10,6 +10,7 @@ from database_service import Base, db_session
 
 metadata = Base.metadata
 
+
 class CharacterModels(object):
     PLAYER_MOVE_DICT = {'character_id': 9,
                         'location': (0, 0),
@@ -258,6 +259,35 @@ class SoccDb(Base):
     updated_at = Column(DateTime(True), nullable=False, server_default=text("now_utc()"))
     created_at = Column(DateTime(True), nullable=False, server_default=text("now_utc()"))
 
+
+class User(object):
+    # username = CharField(unique=True)
+    # email = CharField(unique=True)
+    # password = CharField(max_length=100)
+    # joined_at = DateTimeField(default=datetime.datetime.now)
+    # is_admin = BooleanField(default=False)
+    #
+    # def get_characters(self):
+    #     pass
+    #
+    # def get_friends(self):
+    #     pass
+    #
+    # def get_follower(self):
+    #     pass
+    #
+    # @classmethod
+    # def create_user(cls, username, email, password, admin=False):
+    #     try:
+    #         with DATABASE.transaction():
+    #             cls.create(
+    #                 username=username,
+    #                 email=email,
+    #                 password=generate_password_hash(password),
+    #                 is_admin=admin)
+    #     except IntegrityError:
+    #         raise ValueError("User already exists")
+    pass
 
 
 class SpeciesDict(object):

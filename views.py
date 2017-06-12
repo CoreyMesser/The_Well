@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 import os
 from character_pc import PlayerCharacter, Species, HealthPoints, Stats, CharacterSkillsGenerator, MeritsFlawsGenerator, POCC, SOCC, CharacterStoreSession
 from templates.template_text import Templates, CharacterControlTemplates
@@ -8,19 +7,84 @@ from services import PrinterServices, PrintCompletedCharacterSheet
 from services_navigation import CharacterNavigation
 from services_get_character import GetCharacter
 from models import CharacterModels
+from config import Config
 
-from flask import render_template
+from flask import Flask
+from flask import Flask, render_template, g, redirect, flash, url_for
+from flask_login import LoginManager, login_user, logout_user, current_user, login_required
+from flask_bcrypt import generate_password_hash, check_password_hash
+
+from forms import CharacterForm, RegisterForm, LoginForm
+import models
+
 from app import get_app
+
 import curses
 
-from database_service import db_session
-
 app = get_app()
-app.secret_key = 'auoesh.bouoastuh.43,uoausoehuosth3ououea.auoub!'
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
+
+@app.route('/')
+def index():
+    return render_template('index.html')
+
 
 @app.route('/character_creation', methods=('GET', 'POST'))
 def character_creation_form():
-    return render_template
+    forms = CharacterForm()
+    return render_template('character_creation.html', form=forms)
+
+
+@login_manager.user_loader
+def load_user(userid):
+    try:
+        return models.User.get(models.User.id == userid)
+    except models.DoesNotExist:
+        return None
+
+
+@app.route('/register', methods=('GET', 'POST'))
+def register():
+    form = RegisterForm()
+    if form.validate_on_submit():
+        flash("Yay, you registered!", "success")
+        models.User.create_user(
+            username=form.username.data,
+            email=form.email.data,
+            password=form.password.data
+        )
+        return redirect(url_for('index'))
+    return render_template('register.html', form=form)
+
+
+@app.route('/login', methods=('GET', 'POST'))
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        try:
+            user = models.User.get(models.User.email == form.email.data)
+        except models.DoesNotExist:
+            flash("Your email or password doesn't match!", "error")
+        else:
+            if check_password_hash(user.password, form.password.data):
+                login_user(user)
+                flash("You've been logged in!", "success")
+                return redirect(url_for('index'))
+            else:
+                flash("Your email or password doesn't match!", "error")
+    return render_template('login.html', form=form)
+
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    flash("You've been logged out! Come back soon!", "success")
+    return redirect(url_for('index'))
+
 
 class Introduction(object):
     def intro(self):

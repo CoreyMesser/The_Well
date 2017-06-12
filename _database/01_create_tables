@@ -6,6 +6,60 @@ SELECT now();
 $$ LANGUAGE SQL;
 
 -- regular table structure
+CREATE TABLE  users
+(
+  id                   SERIAL PRIMARY KEY       NOT NULL,
+  active               BOOL DEFAULT FALSE       NOT NULL,
+  user_name            TEXT,
+  password_hash        TEXT,
+  forgot_password_data TEXT                     NULL,
+  user_email           TEXT                     NOT NULL,
+  updated_at           TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now_utc(),
+  created_at           TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now_utc(),
+  CHECK (EXTRACT(TIMEZONE FROM updated_at) = '0'),
+  CHECK (EXTRACT(TIMEZONE FROM created_at) = '0')
+);
+
+CREATE TABLE user_login
+(
+  id              SERIAL PRIMARY KEY       NOT NULL,
+  user_id         INT,
+  username_raw    TEXT,
+  login_type_id   INT                      NOT NULL,
+  login_result_id INT                      NOT NULL,
+  message         TEXT,
+  ip_address      TEXT                     NOT NULL,
+  ua_browser      TEXT,
+  ua_os           TEXT,
+  created_at      TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now_utc(),
+
+  CHECK (EXTRACT(TIMEZONE FROM created_at) = '0'),
+
+  FOREIGN KEY (user_id) REFERENCES users (id),
+  FOREIGN KEY (login_type_id) REFERENCES login_type (id),
+  FOREIGN KEY (login_result_id) REFERENCES login_result (id),
+);
+
+CREATE TABLE login_result
+(
+  id         SERIAL PRIMARY KEY       NOT NULL,
+  name       TEXT                     NOT NULL,
+  updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now_utc(),
+  created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now_utc(),
+  CHECK (EXTRACT(TIMEZONE FROM updated_at) = '0'),
+  CHECK (EXTRACT(TIMEZONE FROM created_at) = '0')
+);
+
+CREATE TABLE login_type
+(
+  id         SERIAL PRIMARY KEY       NOT NULL,
+  name       TEXT                     NOT NULL,
+  updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now_utc(),
+  created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now_utc(),
+  CHECK (EXTRACT(TIMEZONE FROM updated_at) = '0'),
+  CHECK (EXTRACT(TIMEZONE FROM created_at) = '0')
+);
+
 CREATE TABLE pocc_db
 (
   id                    SERIAL PRIMARY KEY       NOT NULL,
@@ -69,6 +123,7 @@ CREATE TABLE merits_flaws
 CREATE TABLE character
 (
   id            SERIAL PRIMARY KEY       NOT NULL,
+  user_id       INT                      NULL,
   code          TEXT                     NOT NULL,
   name          TEXT                     NOT NULL,
   species       TEXT                     NOT NULL,
@@ -76,11 +131,11 @@ CREATE TABLE character
   sex           TEXT                     NOT NULL,
   faction       TEXT                     NULL,
   alg           TEXT                     NOT NULL,
-  pocc          INT                     NOT NULL,
-  socc          INT                     NULL,
+  pocc          INT                      NOT NULL,
+  socc          INT                      NULL,
   exp_total     INT                      NOT NULL,
   exp_remaining INT                      NOT NULL,
-  natural_hp   INT                      NOT NULL,
+  natural_hp    INT                      NOT NULL,
   hp            INT                      NOT NULL,
   soak          INT                      NOT NULL,
   stuffing      INT                      NOT NULL,
@@ -97,6 +152,7 @@ CREATE TABLE character
   CHECK (EXTRACT(TIMEZONE FROM updated_at) = '0'),
   CHECK (EXTRACT(TIMEZONE FROM created_at) = '0'),
 
+  FOREIGN KEY (user_id) REFERENCES users(id),
   FOREIGN KEY (pocc) REFERENCES pocc_db (id),
   FOREIGN KEY (socc) REFERENCES socc_db (id)
 
