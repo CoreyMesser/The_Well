@@ -1,0 +1,12 @@
+app.pyc
+character_pc.pyc
+system_constants.pyc
+views.pyc
+.idea/dataSources.local.xml
+.idea/misc.xml
+.idea/modules.xml
+.idea/The_Well.iml
+.idea/workspace.xml
+.idea/inspectionProfiles/profiles_settings.xml
+unittests/character_sheet.txt
+unittests/test_character_sheet.txt
