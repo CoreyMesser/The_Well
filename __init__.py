@@ -5,6 +5,7 @@ from config import FlaskConstants
 
 app = get_app()
 import views
+
 if __name__ == '__main__':
     app.run(
         host=FlaskConstants.HOST,

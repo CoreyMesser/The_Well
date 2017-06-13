@@ -6,7 +6,18 @@ SELECT now();
 $$ LANGUAGE SQL;
 
 -- regular table structure
-CREATE TABLE  users
+
+CREATE TABLE user_roll
+(
+  id         SERIAL PRIMARY KEY       NOT NULL,
+  name       TEXT                     NOT NULL,
+  updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now_utc(),
+  created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now_utc(),
+  CHECK (EXTRACT(TIMEZONE FROM updated_at) = '0'),
+  CHECK (EXTRACT(TIMEZONE FROM created_at) = '0')
+);
+
+CREATE TABLE users
 (
   id                   SERIAL PRIMARY KEY       NOT NULL,
   active               BOOL DEFAULT FALSE       NOT NULL,
@@ -14,8 +25,31 @@ CREATE TABLE  users
   password_hash        TEXT,
   forgot_password_data TEXT                     NULL,
   user_email           TEXT                     NOT NULL,
+  user_roll            INT       NOT NULL,
   updated_at           TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now_utc(),
   created_at           TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now_utc(),
+  CHECK (EXTRACT(TIMEZONE FROM updated_at) = '0'),
+  CHECK (EXTRACT(TIMEZONE FROM created_at) = '0'),
+
+  FOREIGN KEY (user_roll) REFERENCES user_roll(id)
+);
+
+CREATE TABLE login_result
+(
+  id         SERIAL PRIMARY KEY       NOT NULL,
+  name       TEXT                     NOT NULL,
+  updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now_utc(),
+  created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now_utc(),
+  CHECK (EXTRACT(TIMEZONE FROM updated_at) = '0'),
+  CHECK (EXTRACT(TIMEZONE FROM created_at) = '0')
+);
+
+CREATE TABLE login_type
+(
+  id         SERIAL PRIMARY KEY       NOT NULL,
+  name       TEXT                     NOT NULL,
+  updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now_utc(),
+  created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now_utc(),
   CHECK (EXTRACT(TIMEZONE FROM updated_at) = '0'),
   CHECK (EXTRACT(TIMEZONE FROM created_at) = '0')
 );
@@ -37,27 +71,7 @@ CREATE TABLE user_login
 
   FOREIGN KEY (user_id) REFERENCES users (id),
   FOREIGN KEY (login_type_id) REFERENCES login_type (id),
-  FOREIGN KEY (login_result_id) REFERENCES login_result (id),
-);
-
-CREATE TABLE login_result
-(
-  id         SERIAL PRIMARY KEY       NOT NULL,
-  name       TEXT                     NOT NULL,
-  updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now_utc(),
-  created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now_utc(),
-  CHECK (EXTRACT(TIMEZONE FROM updated_at) = '0'),
-  CHECK (EXTRACT(TIMEZONE FROM created_at) = '0')
-);
-
-CREATE TABLE login_type
-(
-  id         SERIAL PRIMARY KEY       NOT NULL,
-  name       TEXT                     NOT NULL,
-  updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now_utc(),
-  created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now_utc(),
-  CHECK (EXTRACT(TIMEZONE FROM updated_at) = '0'),
-  CHECK (EXTRACT(TIMEZONE FROM created_at) = '0')
+  FOREIGN KEY (login_result_id) REFERENCES login_result (id)
 );
 
 CREATE TABLE pocc_db

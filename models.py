@@ -1,12 +1,10 @@
 from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, Numeric, Text, text, Time
 from sqlalchemy import CheckConstraint
-from sqlalchemy import Date
-from sqlalchemy import and_
-from sqlalchemy import func
-from sqlalchemy import null
-from sqlalchemy import or_
 from sqlalchemy.orm import relationship
 from database_service import Base, db_session
+
+from flask_login import LoginManager
+from flask_bcrypt import generate_password_hash, check_password_hash
 
 metadata = Base.metadata
 
@@ -53,6 +51,7 @@ class PCSlots(object):
         self.neck_slot = ''
         self.head_slot = ''
 
+
 class Character(Base):
     __tablename__ = 'character'
     __table_args__ = (
@@ -61,6 +60,7 @@ class Character(Base):
     )
 
     id = Column(Integer, primary_key=True, server_default=text("nextval('character_id_seq'::regclass)"))
+    user_id = Column(Integer, nullable=False)
     code = Column(Text, nullable=False)
     name = Column(Text, nullable=False)
     species = Column(Text, nullable=False)
@@ -68,8 +68,8 @@ class Character(Base):
     sex = Column(Text, nullable=False)
     faction = Column(Text)
     alg = Column(Text, nullable=False)
-    pocc = Column(Text, nullable=False)
-    socc = Column(Text)
+    pocc = Column(ForeignKey('pocc_db.id'), nullable=False)
+    socc = Column(ForeignKey('socc_db.id'))
     exp_total = Column(Integer, nullable=False)
     exp_remaining = Column(Integer, nullable=False)
     natural_hp = Column(Integer, nullable=False)
@@ -86,6 +86,9 @@ class Character(Base):
     updated_at = Column(DateTime(True), nullable=False, server_default=text("now_utc()"))
     created_at = Column(DateTime(True), nullable=False, server_default=text("now_utc()"))
 
+    pocc_db = relationship('PoccDb')
+    socc_db = relationship('SoccDb')
+
 
 class CharacterCode(Base):
     __tablename__ = 'character_code'
@@ -101,18 +104,40 @@ class CharacterCode(Base):
     created_at = Column(DateTime(True), nullable=False, server_default=text("now_utc()"))
 
 
-class InventoryPc(Base):
-    __tablename__ = 'inventory_pc'
+class CharacterMeritsFlaws(Base):
+    __tablename__ = 'character_merits_flaws'
     __table_args__ = (
         CheckConstraint("date_part('timezone'::text, created_at) = '0'::double precision"),
         CheckConstraint("date_part('timezone'::text, updated_at) = '0'::double precision")
     )
 
-    id = Column(Integer, primary_key=True, server_default=text("nextval('inventory_pc_id_seq'::regclass)"))
-    code = Column(Text, nullable=False)
-    character_id = Column(Text, nullable=False)
+    id = Column(Integer, primary_key=True, server_default=text("nextval('character_merits_flaws_id_seq'::regclass)"))
+    code = Column(Text)
+    character_id = Column(ForeignKey('character.id'), nullable=False)
+    merits_01 = Column(ForeignKey('merits_flaws.id'))
+    merits_02 = Column(ForeignKey('merits_flaws.id'))
+    merits_03 = Column(ForeignKey('merits_flaws.id'))
+    merits_04 = Column(ForeignKey('merits_flaws.id'))
+    merits_05 = Column(ForeignKey('merits_flaws.id'))
+    flaws_01 = Column(ForeignKey('merits_flaws.id'))
+    flaws_02 = Column(ForeignKey('merits_flaws.id'))
+    flaws_03 = Column(ForeignKey('merits_flaws.id'))
+    flaws_04 = Column(ForeignKey('merits_flaws.id'))
+    flaws_05 = Column(ForeignKey('merits_flaws.id'))
     updated_at = Column(DateTime(True), nullable=False, server_default=text("now_utc()"))
     created_at = Column(DateTime(True), nullable=False, server_default=text("now_utc()"))
+
+    character = relationship('Character')
+    merits_flaw = relationship('MeritsFlaws', primaryjoin='CharacterMeritsFlaws.flaws_01 == MeritsFlaws.id')
+    merits_flaw1 = relationship('MeritsFlaws', primaryjoin='CharacterMeritsFlaws.flaws_02 == MeritsFlaws.id')
+    merits_flaw2 = relationship('MeritsFlaws', primaryjoin='CharacterMeritsFlaws.flaws_03 == MeritsFlaws.id')
+    merits_flaw3 = relationship('MeritsFlaws', primaryjoin='CharacterMeritsFlaws.flaws_04 == MeritsFlaws.id')
+    merits_flaw4 = relationship('MeritsFlaws', primaryjoin='CharacterMeritsFlaws.flaws_05 == MeritsFlaws.id')
+    merits_flaw5 = relationship('MeritsFlaws', primaryjoin='CharacterMeritsFlaws.merits_01 == MeritsFlaws.id')
+    merits_flaw6 = relationship('MeritsFlaws', primaryjoin='CharacterMeritsFlaws.merits_02 == MeritsFlaws.id')
+    merits_flaw7 = relationship('MeritsFlaws', primaryjoin='CharacterMeritsFlaws.merits_03 == MeritsFlaws.id')
+    merits_flaw8 = relationship('MeritsFlaws', primaryjoin='CharacterMeritsFlaws.merits_04 == MeritsFlaws.id')
+    merits_flaw9 = relationship('MeritsFlaws', primaryjoin='CharacterMeritsFlaws.merits_05 == MeritsFlaws.id')
 
 
 class CharacterSkills(Base):
@@ -157,42 +182,47 @@ class CharacterSkills(Base):
     updated_at = Column(DateTime(True), nullable=False, server_default=text("now_utc()"))
     created_at = Column(DateTime(True), nullable=False, server_default=text("now_utc()"))
 
+    character = relationship('Character')
 
 
-class CharacterMeritsFlaws(Base):
-    __tablename__ = 'character_merits_flaws'
+class InventoryPc(Base):
+    __tablename__ = 'inventory_pc'
     __table_args__ = (
         CheckConstraint("date_part('timezone'::text, created_at) = '0'::double precision"),
         CheckConstraint("date_part('timezone'::text, updated_at) = '0'::double precision")
     )
 
-    id = Column(Integer, primary_key=True, server_default=text("nextval('character_merits_flaws_id_seq'::regclass)"))
-    code = Column(Text)
-    character_id = Column(ForeignKey('character.id'), nullable=False)
-    merits_01 = Column(ForeignKey('merits_flaws.id'))
-    merits_02 = Column(ForeignKey('merits_flaws.id'))
-    merits_03 = Column(ForeignKey('merits_flaws.id'))
-    merits_04 = Column(ForeignKey('merits_flaws.id'))
-    merits_05 = Column(ForeignKey('merits_flaws.id'))
-    flaws_01 = Column(ForeignKey('merits_flaws.id'))
-    flaws_02 = Column(ForeignKey('merits_flaws.id'))
-    flaws_03 = Column(ForeignKey('merits_flaws.id'))
-    flaws_04 = Column(ForeignKey('merits_flaws.id'))
-    flaws_05 = Column(ForeignKey('merits_flaws.id'))
+    id = Column(Integer, primary_key=True, server_default=text("nextval('inventory_pc_id_seq'::regclass)"))
+    code = Column(Text, nullable=False)
+    character_id = Column(Text, nullable=False)
     updated_at = Column(DateTime(True), nullable=False, server_default=text("now_utc()"))
     created_at = Column(DateTime(True), nullable=False, server_default=text("now_utc()"))
 
-    character = relationship('Character')
-    merits_flaws = relationship('MeritsFlaws', primaryjoin='CharacterMeritsFlaws.flaws_01 == MeritsFlaws.id')
-    merits_flaws1 = relationship('MeritsFlaws', primaryjoin='CharacterMeritsFlaws.flaws_02 == MeritsFlaws.id')
-    merits_flaws2 = relationship('MeritsFlaws', primaryjoin='CharacterMeritsFlaws.flaws_03 == MeritsFlaws.id')
-    merits_flaws3 = relationship('MeritsFlaws', primaryjoin='CharacterMeritsFlaws.flaws_04 == MeritsFlaws.id')
-    merits_flaws4 = relationship('MeritsFlaws', primaryjoin='CharacterMeritsFlaws.flaws_05 == MeritsFlaws.id')
-    merits_flaws5 = relationship('MeritsFlaws', primaryjoin='CharacterMeritsFlaws.merits_01 == MeritsFlaws.id')
-    merits_flaws6 = relationship('MeritsFlaws', primaryjoin='CharacterMeritsFlaws.merits_02 == MeritsFlaws.id')
-    merits_flaws7 = relationship('MeritsFlaws', primaryjoin='CharacterMeritsFlaws.merits_03 == MeritsFlaws.id')
-    merits_flaws8 = relationship('MeritsFlaws', primaryjoin='CharacterMeritsFlaws.merits_04 == MeritsFlaws.id')
-    merits_flaws9 = relationship('MeritsFlaws', primaryjoin='CharacterMeritsFlaws.merits_05 == MeritsFlaws.id')
+
+class LoginResult(Base):
+    __tablename__ = 'login_result'
+    __table_args__ = (
+        CheckConstraint("date_part('timezone'::text, created_at) = '0'::double precision"),
+        CheckConstraint("date_part('timezone'::text, updated_at) = '0'::double precision")
+    )
+
+    id = Column(Integer, primary_key=True, server_default=text("nextval('login_result_id_seq'::regclass)"))
+    name = Column(Text, nullable=False)
+    updated_at = Column(DateTime(True), nullable=False, server_default=text("now_utc()"))
+    created_at = Column(DateTime(True), nullable=False, server_default=text("now_utc()"))
+
+
+class LoginType(Base):
+    __tablename__ = 'login_type'
+    __table_args__ = (
+        CheckConstraint("date_part('timezone'::text, created_at) = '0'::double precision"),
+        CheckConstraint("date_part('timezone'::text, updated_at) = '0'::double precision")
+    )
+
+    id = Column(Integer, primary_key=True, server_default=text("nextval('login_type_id_seq'::regclass)"))
+    name = Column(Text, nullable=False)
+    updated_at = Column(DateTime(True), nullable=False, server_default=text("now_utc()"))
+    created_at = Column(DateTime(True), nullable=False, server_default=text("now_utc()"))
 
 
 class MeritsFlaws(Base):
@@ -260,35 +290,115 @@ class SoccDb(Base):
     created_at = Column(DateTime(True), nullable=False, server_default=text("now_utc()"))
 
 
-class User(object):
-    # username = CharField(unique=True)
-    # email = CharField(unique=True)
-    # password = CharField(max_length=100)
-    # joined_at = DateTimeField(default=datetime.datetime.now)
-    # is_admin = BooleanField(default=False)
-    #
-    # def get_characters(self):
-    #     pass
-    #
-    # def get_friends(self):
-    #     pass
-    #
-    # def get_follower(self):
-    #     pass
-    #
-    # @classmethod
-    # def create_user(cls, username, email, password, admin=False):
-    #     try:
-    #         with DATABASE.transaction():
-    #             cls.create(
-    #                 username=username,
-    #                 email=email,
-    #                 password=generate_password_hash(password),
-    #                 is_admin=admin)
-    #     except IntegrityError:
-    #         raise ValueError("User already exists")
-    pass
+class UserLogin(Base):
+    __tablename__ = 'user_login'
+    __table_args__ = (
+        CheckConstraint("date_part('timezone'::text, created_at) = '0'::double precision"),
+    )
 
+    id = Column(Integer, primary_key=True, server_default=text("nextval('user_login_id_seq'::regclass)"))
+    user_id = Column(ForeignKey('users.id'))
+    username_raw = Column(Text)
+    login_type_id = Column(ForeignKey('login_type.id'), nullable=False)
+    login_result_id = Column(ForeignKey('login_result.id'), nullable=False)
+    message = Column(Text)
+    ip_address = Column(Text, nullable=False)
+    ua_browser = Column(Text)
+    ua_os = Column(Text)
+    created_at = Column(DateTime(True), nullable=False, server_default=text("now_utc()"))
+
+    login_result = relationship('LoginResult')
+    login_type = relationship('LoginType')
+    user = relationship('User')
+
+
+class UserRoll(Base):
+    __tablename__ = 'user_roll'
+    __table_args__ = (
+        CheckConstraint("date_part('timezone'::text, created_at) = '0'::double precision"),
+        CheckConstraint("date_part('timezone'::text, updated_at) = '0'::double precision")
+    )
+
+    id = Column(Integer, primary_key=True, server_default=text("nextval('user_roll_id_seq'::regclass)"))
+    name = Column(Text, nullable=False)
+    updated_at = Column(DateTime(True), nullable=False, server_default=text("now_utc()"))
+    created_at = Column(DateTime(True), nullable=False, server_default=text("now_utc()"))
+
+
+class User(Base):
+    __tablename__ = 'users'
+    __table_args__ = (
+        CheckConstraint("date_part('timezone'::text, created_at) = '0'::double precision"),
+        CheckConstraint("date_part('timezone'::text, updated_at) = '0'::double precision")
+    )
+
+    id = Column(Integer, primary_key=True, server_default=text("nextval('users_id_seq'::regclass)"))
+    active = Column(Boolean, nullable=False, server_default=text("false"))
+    user_name = Column(Text)
+    password_hash = Column(Text)
+    forgot_password_data = Column(Text)
+    user_email = Column(Text, nullable=False)
+    user_roll = Column(ForeignKey('user_roll.id'), nullable=False)
+    updated_at = Column(DateTime(True), nullable=False, server_default=text("now_utc()"))
+    created_at = Column(DateTime(True), nullable=False, server_default=text("now_utc()"))
+
+    user_roll1 = relationship('UserRoll')
+
+    @property
+    def is_authenticated(self):
+        return True
+
+    @property
+    def is_active(self):
+        return True
+
+    def get_id(self):
+        return self.id
+
+    def get_characters(self):
+        pass
+
+    def get_friends(self):
+        pass
+
+    # def following(self):
+    #     """The users that we are following."""
+    #     return (
+    #         User.select().join(
+    #             Relationship, on=Relationship.to_user
+    #         ).where(
+    #             Relationship.from_user == self
+    #         )
+    #     )
+    #
+    # def followers(self):
+    #     """Get users following the current user"""
+    #     return (
+    #         User.select().join(
+    #             Relationship, on=Relationship.from_user
+    #         ).where(
+    #             Relationship.to_user == self
+    #         )
+    #     )
+
+    @classmethod
+    def create_user(self, username, email, password, user_roll=4):
+        db = db_session()
+        # try:
+        # user = User(user_name=username,
+        #             user_email=email,
+        #             password_hash=generate_password_hash(password),
+        #             user_roll=user_roll)
+        user = User()
+        user.user_name = username
+        user.user_email = email
+        user.password_hash = password
+        user.user_roll = user_roll
+        db.add(user)
+        db.commit()
+
+        # except Exception:
+        #     raise ValueError("User already exists")
 
 class SpeciesDict(object):
     SPECIES_DICT = {'LAND': {'APE': ['M/O', 1, 'wis'],

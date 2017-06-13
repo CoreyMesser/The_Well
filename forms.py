@@ -1,15 +1,18 @@
-from wtforms import StringField, PasswordField, TextAreaField, Form
+from wtforms import StringField, PasswordField, TextAreaField, BooleanField
 from wtforms.validators import (DataRequired, Regexp, ValidationError, Email,
                                Length, EqualTo)
+from flask_wtf import FlaskForm as Form
+from database_service import db_session
 
 from models import User
+db = db_session()
 
 def name_exists(form, field):
-    if User.select().where(User.username == field.data).exists():
+    if db.query(User).filter_by(user_name=field.data).first():
         raise ValidationError('User with that name already exists.')
 
 def email_exists(form, field):
-    if User.select().where(User.email == field.data).exists():
+    if db.query(User).filter_by(user_email=field.data).first():
         raise ValidationError('User with that email already exists.')
 
 
@@ -34,6 +37,7 @@ class RegisterForm(Form):
 class LoginForm(Form):
     email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired()])
+    remeber_me = BooleanField('Remember_Me', default=False)
 
 
 class PostForm(Form):

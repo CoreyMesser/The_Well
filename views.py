@@ -13,6 +13,7 @@ from flask import Flask
 from flask import Flask, render_template, g, redirect, flash, url_for
 from flask_login import LoginManager, login_user, logout_user, current_user, login_required
 from flask_bcrypt import generate_password_hash, check_password_hash
+from flask_wtf import Form
 
 from forms import CharacterForm, RegisterForm, LoginForm
 import models
@@ -50,12 +51,12 @@ def load_user(userid):
 def register():
     form = RegisterForm()
     if form.validate_on_submit():
-        flash("Yay, you registered!", "success")
         models.User.create_user(
             username=form.username.data,
             email=form.email.data,
             password=form.password.data
         )
+        flash("Yay, you registered!", "success")
         return redirect(url_for('index'))
     return render_template('register.html', form=form)
 
@@ -64,18 +65,21 @@ def register():
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        try:
-            user = models.User.get(models.User.email == form.email.data)
-        except models.DoesNotExist:
-            flash("Your email or password doesn't match!", "error")
-        else:
-            if check_password_hash(user.password, form.password.data):
-                login_user(user)
-                flash("You've been logged in!", "success")
-                return redirect(url_for('index'))
-            else:
-                flash("Your email or password doesn't match!", "error")
+        # try:
+        #     user = models.User.get(models.User.email == form.email.data)
+        # except models.DoesNotExist:
+        #     flash("Your email or password doesn't match!", "error")
+        # else:
+        #     if check_password_hash(user.password, form.password.data):
+        #         login_user(user)
+        #         flash("You've been logged in!", "success")
+        #         return redirect(url_for('index'))
+        #     else:
+        #         flash("Your email or password doesn't match!", "error")
+        flash('you have logged in', (form.email.data, form.password.data, form.remeber_me.data))
+        return redirect('/index')
     return render_template('login.html', form=form)
+
 
 
 @app.route('/logout')

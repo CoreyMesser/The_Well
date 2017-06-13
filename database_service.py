@@ -25,8 +25,8 @@ db_session = sessionmaker(bind=engine)
 def before_request():
     """Connect to the database before each request."""
     g.db = db_session()
-    g.db.connect()
-    g.user = current_user
+    # g.db.connect()
+    # g.user = current_user
 
 
 @app.after_request
