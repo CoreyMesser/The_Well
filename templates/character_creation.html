@@ -7,7 +7,11 @@
     {% for field in form %}
         {{ render_field(field) }}
     {% endfor %}
+    {% if current_user.is_authenticated %}
     <button type="submit" id="submit">Save Character</button>
+    {% else %}
+    <button type="submit" id="export">Export Character</button>
+    {% endif %}
     <button type="button" id="cancel">Cancel</button>
 </form>
 {% endblock %}

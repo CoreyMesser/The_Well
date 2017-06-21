@@ -1,11 +1,14 @@
-from wtforms import StringField, PasswordField, TextAreaField, BooleanField
+from wtforms import StringField, PasswordField, TextAreaField, BooleanField, FormField, SelectField
 from wtforms.validators import (DataRequired, Regexp, ValidationError, Email,
                                Length, EqualTo)
 from flask_wtf import FlaskForm as Form
 from database_service import db_session
 
-from models import User
+from models import User, MeritsFlawsDicts
+from services import PrinterServices
+
 db = db_session()
+ps = PrinterServices()
 
 def name_exists(form, field):
     if db.query(User).filter_by(user_name=field.data).first():
@@ -45,6 +48,9 @@ class PostForm(Form):
 
 
 class CharacterForm(Form):
+    merits_flaws_dict = MeritsFlawsDicts()
+    merits_list = merits_flaws_dict.MERITS
+
     char_name = StringField('Name', validators=[DataRequired()])
     species = StringField('Species', validators=[DataRequired()])
     sex = StringField('Sex', validators=[DataRequired()])
@@ -59,5 +65,6 @@ class CharacterForm(Form):
     con = StringField('CON', validators=[DataRequired(), Regexp(r'^[0-9]+$', message=("Numbers Only"))])
     wis = StringField('WIS', validators=[DataRequired(), Regexp(r'^[0-9]+$', message=("Numbers Only"))])
     cha = StringField('CHA', validators=[DataRequired(), Regexp(r'^[0-9]+$', message=("Numbers Only"))])
-    merits = StringField('Merits', validators=[DataRequired()])
+
+    mertis_select_mental = SelectField(u"Merits: Mental", choices=[(f, f) for f in merits_list['MENTAL'].items()])
     flaws = StringField('Flaws', validators=[DataRequired()])

@@ -384,21 +384,14 @@ class User(Base):
     @classmethod
     def create_user(self, username, email, password, user_roll=4):
         db = db_session()
-        # try:
-        # user = User(user_name=username,
-        #             user_email=email,
-        #             password_hash=generate_password_hash(password),
-        #             user_roll=user_roll)
         user = User()
+        user.active = True
         user.user_name = username
         user.user_email = email
         user.password_hash = password
         user.user_roll = user_roll
         db.add(user)
         db.commit()
-
-        # except Exception:
-        #     raise ValueError("User already exists")
 
 class SpeciesDict(object):
     SPECIES_DICT = {'LAND': {'APE': ['M/O', 1, 'wis'],

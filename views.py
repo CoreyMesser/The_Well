@@ -6,7 +6,8 @@ from templates.template_text import Templates, CharacterControlTemplates
 from services import PrinterServices, PrintCompletedCharacterSheet
 from services_navigation import CharacterNavigation
 from services_get_character import GetCharacter
-from models import CharacterModels
+from models import CharacterModels, User
+from database_service import db_session
 from config import Config
 
 from flask import Flask
@@ -23,6 +24,7 @@ from app import get_app
 import curses
 
 app = get_app()
+db = db_session()
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -35,14 +37,16 @@ def index():
 
 @app.route('/character_creation', methods=('GET', 'POST'))
 def character_creation_form():
-    forms = CharacterForm()
-    return render_template('character_creation.html', form=forms)
+    form = CharacterForm()
+    if form.validate_on_submit():
+        pass
+    return render_template('character_creation.html', form=form)
 
 
 @login_manager.user_loader
 def load_user(userid):
     try:
-        return models.User.get(models.User.id == userid)
+        return db.query(User).filter_by(id=userid).first()
     except models.DoesNotExist:
         return None
 
@@ -65,19 +69,23 @@ def register():
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        # try:
-        #     user = models.User.get(models.User.email == form.email.data)
-        # except models.DoesNotExist:
-        #     flash("Your email or password doesn't match!", "error")
-        # else:
-        #     if check_password_hash(user.password, form.password.data):
-        #         login_user(user)
-        #         flash("You've been logged in!", "success")
-        #         return redirect(url_for('index'))
-        #     else:
-        #         flash("Your email or password doesn't match!", "error")
-        flash('you have logged in', (form.email.data, form.password.data, form.remeber_me.data))
-        return redirect('/index')
+        try:
+            user = db.query(User).filter_by(user_email=form.email.data).first()
+        except Exception as e:
+            flash("Soemthing went wrong {}".format(e))
+        else:
+            if user.password_hash == form.password.data:
+                login_user(user)
+                flash("You've been logged in!", "success")
+                return redirect(url_for('index'))
+            elif check_password_hash(user.password_hash, form.password.data):
+                login_user(user)
+                flash("You've been logged in!", "success")
+                return redirect(url_for('index'))
+            else:
+                flash("Your credentials are wrong.")
+        # flash('you have logged in', (form.email.data, form.password.data, form.remeber_me.data))
+        return redirect(url_for('index'))
     return render_template('login.html', form=form)
 
 

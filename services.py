@@ -1,4 +1,4 @@
-from models import SpeciesDict, Character, CharacterMeritsFlaws, CharacterSkills, MeritsFlaws, PoccDb, SoccDb
+from models import SpeciesDict, Character, CharacterMeritsFlaws, CharacterSkills, MeritsFlaws, PoccDb, SoccDb, MeritsFlawsDicts
 from database_service import db_session
 
 
@@ -246,3 +246,14 @@ class PrintCompletedCharacterSheet(object):
 
 class CharacterCreationServices(object):
     pass
+
+class FormServiecs(object):
+    mf_dict = MeritsFlawsDicts()
+
+    # (f, f)
+    # for f in merits_list['MENTAL']
+
+    def generate_selectable_mf_list(self, mf_dict):
+        for k, v in mf_dict:
+            return
+
