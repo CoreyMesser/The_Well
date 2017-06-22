@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import os
-from character_pc import PlayerCharacter, Species, HealthPoints, Stats, CharacterSkillsGenerator, MeritsFlawsGenerator, POCC, SOCC, CharacterStoreSession
+from character_pc import Species, HealthPoints, Stats, CharacterSkillsGenerator, MeritsFlawsGenerator, POCC, SOCC, CharacterStoreSession
 from templates.template_text import Templates, CharacterControlTemplates
 from services import PrinterServices, PrintCompletedCharacterSheet
 from services_navigation import CharacterNavigation
 from services_get_character import GetCharacter
-from models import CharacterModels, User
+from models import CharacterModels, User, PlayerCharacter
 from database_service import db_session
 from config import Config
 
@@ -211,7 +211,10 @@ class Gameplay(object):
         self.cn.start_location(player_move_dict=self.player_move_dict)
 
     def retreive_character(self):
-        # retrieves character from database and creates a stripped down model to use in-game
+        """
+        retrieves character from database and creates a stripped down model to use in-game
+        :return:
+        """
         player_move_dict = CharacterModels.PLAYER_MOVE_DICT
         return player_move_dict
 

@@ -393,6 +393,97 @@ class User(Base):
         db.add(user)
         db.commit()
 
+
+class PlayerCharacter(object):
+    character_dict = {'name': None,
+                      'species': None,
+                      'species_size': None,
+                      'sex': None,
+                      'faction': None,
+                      'alg': None,
+                      'pocc': None,
+                      'socc': None,
+                      'exp_total': 42,
+                      'exp_remaining': 42,
+                      'natural_hp': 1,
+                      'bonus_hp': 0,
+                      'hp': 0,
+                      'soak': 0,
+                      'stuffing': 10,
+                      'sanity': 5,
+                      'str': 1,
+                      'int': 1,
+                      'dex': 1,
+                      'con': 1,
+                      'wis': 1,
+                      'cha': 1,
+                      'merits': {},
+                      'flaws': {}
+                      }
+    character_stats = ['str', 'int', 'dex', 'con', 'wis', 'cha']
+
+    skills_dict = {"academics": 0,
+                   "computer": 0,
+                   "concentration": 0,
+                   "crafting": 0,
+                   "investigation": 0,
+                   "medicine": 0,
+                   "occult": 0,
+                   "politics": 0,
+                   "science": 0,
+                   "athletics": 0,
+                   "brawl": 0,
+                   "demolitions": 0,
+                   "drive": 0,
+                   "firearms": 0,
+                   "larceny": 0,
+                   "ranged weaponry": 0,
+                   "ride": 0,
+                   "stealth": 0,
+                   "survival": 0,
+                   "weaponry": 0,
+                   "animal kinship": 0,
+                   "bluff": 0,
+                   "empathy": 0,
+                   "expression": 0,
+                   "intimidate": 0,
+                   "persuasion": 0,
+                   "social contacts": 0,
+                   "streetwise": 0,
+                   "subterfuge": 0
+                   }
+
+    checks_dict = {'aim': 0,
+                   'attack_power': 0,
+                   'concentration': 0,
+                   'dodge': 0,
+                   'initiative': 0,
+                   'knowledge': 0,
+                   'mental': 0,
+                   'money': 0,
+                   'social': 0,
+                   'perception': 0,
+                   'physical': 0,
+                   'poison_resistance': 0,
+                   'probability': 0,
+                   'rage': 0,
+                   'ranged_attack_power': 0,
+                   'resistance': 0,
+                   'search': 0,
+                   'vitality': 0}
+
+    combat_dict = {'attacks_per_round': 0,
+                   'aim': 0,
+                   'armor_class': 0,
+                   'initiative': 0,
+                   'attack_power': 0,
+                   'ranged_attack_power': 0,
+                   'block': 0,
+                   'dodge': 0,
+                   'parry': 0,
+                   'move': 10}
+
+
 class SpeciesDict(object):
     SPECIES_DICT = {'LAND': {'APE': ['M/O', 1, 'wis'],
                              'BADGER': ['M/O', 1, 'con'],
@@ -475,7 +566,7 @@ class SpeciesDict(object):
                     }
 
 
-class MeritsFlawsDicts:
+class MeritsFlawsDicts(object):
     FLAWS = {'MENTAL': {'curiosity': [3, 'search', 2],
                         'hydrophobia': [3, 'water', 2],
                         'naive': [3, 'academics', 1],
@@ -643,7 +734,7 @@ class MeritsFlawsDicts:
               }
 
 
-class OCCs:
+class OCCs(object):
     SECONDARY_OCC = {
                     'SOLDIER': {'recon': [2, 'investigation'], 'brute': [2, 'brawl'], 'sniper': [2, 'concentration'], 'weapon specialist': [2, 'weaponry'],
                                 'motor specialist': [2, 'drive'], 'air specialist': [2, 'fly'], 'combat medic': [2, 'medicine'],
@@ -677,3 +768,8 @@ class OCCs:
                    'mage': [1, 'concentration', 1, 'academics'],
                    'athlete': [2, 'athletics', 0, 'athletics']
                    }
+
+class SearchablesModel(object):
+    searchables_dict = {}
+
+

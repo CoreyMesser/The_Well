@@ -2,7 +2,7 @@ import os
 from templates.template_text import Templates, CharacterControlTemplates
 from constants import NavigationConstants
 from level_maps.map_model import MapTemplate, Maps, MapConstants
-from models import CharacterModels
+from models import CharacterModels, SearchablesModel
 from services_map_rendering import MapRenderer
 
 class CharacterNavigation(object):
@@ -64,16 +64,16 @@ class CharacterNavigation(object):
         player_move = x, y
 
         while return_menu is False:
-            if player_direction == 'NORTH':
+            if player_direction == NavigationConstants.NORTH:
                 player_move = x, y - move
                 return_menu = True
-            if player_direction == 'SOUTH':
+            if player_direction == NavigationConstants.SOUTH:
                 player_move = x, y + move
                 return_menu = True
-            if player_direction == 'EAST':
+            if player_direction == NavigationConstants.EAST:
                 player_move = x + move, y
                 return_menu = True
-            if player_direction == 'WEST':
+            if player_direction == NavigationConstants.WEST:
                 player_move = x - move, y
                 return_menu = True
 
@@ -126,9 +126,16 @@ class CharacterNavigation(object):
 class CharacterInteraction(object):
 
     def __init__(self):
+        self.search = SearchablesModel()
         pass
 
-    def character_look(self):
+    def character_look(self, direction, object=None):
+        # where am I
+        # what direction am I pointed
+        # what is around me
+
+        # if object is not None:
+        #     if object in self.search.searchables_dict and object in level_object_instance:
         pass
 
     def character_serach(self):

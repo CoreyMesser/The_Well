@@ -1,102 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import random, os
-from templates.template_text import Templates
-from models import Character, CharacterMeritsFlaws, CharacterSkills, SpeciesDict, MeritsFlawsDicts, OCCs, MeritsFlaws, PoccDb, SoccDb
-from services import PrinterServices
+from constants import Constants, MeritsFlawsConstants, SpeciesConstants
 from database_service import db_session
-
-
-class PlayerCharacter(object):
-    character_dict = {'name': None,
-                      'species': None,
-                      'species_size': None,
-                      'sex': None,
-                      'faction': None,
-                      'alg': None,
-                      'pocc': None,
-                      'socc': None,
-                      'exp_total': 42,
-                      'exp_remaining': 42,
-                      'natural_hp': 1,
-                      'bonus_hp': 0,
-                      'hp': 0,
-                      'soak': 0,
-                      'stuffing': 10,
-                      'sanity': 5,
-                      'str': 1,
-                      'int': 1,
-                      'dex': 1,
-                      'con': 1,
-                      'wis': 1,
-                      'cha': 1,
-                      'merits': {},
-                      'flaws': {}
-                      }
-    character_stats = ['str', 'int', 'dex', 'con', 'wis', 'cha']
-
-    skills_dict = {"academics": 0,
-                   "computer": 0,
-                   "concentration": 0,
-                   "crafting": 0,
-                   "investigation": 0,
-                   "medicine": 0,
-                   "occult": 0,
-                   "politics": 0,
-                   "science": 0,
-                   "athletics": 0,
-                   "brawl": 0,
-                   "demolitions": 0,
-                   "drive": 0,
-                   "firearms": 0,
-                   "larceny": 0,
-                   "ranged weaponry": 0,
-                   "ride": 0,
-                   "stealth": 0,
-                   "survival": 0,
-                   "weaponry": 0,
-                   "animal kinship": 0,
-                   "bluff": 0,
-                   "empathy": 0,
-                   "expression": 0,
-                   "intimidate": 0,
-                   "persuasion": 0,
-                   "social contacts": 0,
-                   "streetwise": 0,
-                   "subterfuge": 0
-                   }
-
-    checks_dict = {'aim': 0,
-                   'attack_power': 0,
-                   'concentration': 0,
-                   'dodge': 0,
-                   'initiative': 0,
-                   'knowledge': 0,
-                   'mental': 0,
-                   'money': 0,
-                   'social': 0,
-                   'perception': 0,
-                   'physical': 0,
-                   'poison_resistance': 0,
-                   'probability': 0,
-                   'rage': 0,
-                   'ranged_attack_power': 0,
-                   'resistance': 0,
-                   'search': 0,
-                   'vitality': 0}
-
-    combat_dict = {'attacks_per_round': 0,
-                   'aim': 0,
-                   'armor_class': 0,
-                   'initiative': 0,
-                   'attack_power': 0,
-                   'ranged_attack_power': 0,
-                   'block': 0,
-                   'dodge': 0,
-                   'parry': 0,
-                   'move': 10}
-
-    template = Templates()
+from models import Character, CharacterMeritsFlaws, CharacterSkills, SpeciesDict, MeritsFlawsDicts, OCCs, MeritsFlaws, PoccDb, SoccDb, \
+    PlayerCharacter
+from services import PrinterServices
+from templates.template_text import Templates
 
 
 class Species(SpeciesDict):
@@ -115,9 +24,9 @@ class Species(SpeciesDict):
         species_end = False
         while species_end is False:
             species_l = self.species_dict[species]
-            if species_l_choice == 'SWITCH':
+            if species_l_choice == Constants.SWITCH:
                 self.switch_species(species)
-            elif species_l_choice == 'CANCEL':
+            elif species_l_choice == Constants.CANCEL:
                 return_menu = True
                 return return_menu
             else:
@@ -136,10 +45,10 @@ class Species(SpeciesDict):
         :param species: 
         :return: 
         """
-        if species == 'LAND':
-            species = 'AIR'
+        if species == SpeciesConstants.LAND:
+            species = SpeciesConstants.AIR
         else:
-            species = 'LAND'
+            species = SpeciesConstants.LAND
         return species
 
 
@@ -306,14 +215,14 @@ class CharacterSkillsGenerator(object):
             print(exp.exp_current())
             skill_select = input(self.template.SKILLS_SELECT).lower()
             skills_dict = self.skills_dict
-            if skill_select == 'cancel':
+            if skill_select == Constants.CANCEL.lower():
                 skills_end = True
                 return skills_end
             else:
                 if skill_select in skills_dict.keys():
                     current_skill = skills_dict[skill_select]
                     skill_mini_dict = self.get_skill_adjust(current_skill, skill_select)
-                    if skill_mini_dict != 'cancel':
+                    if skill_mini_dict != Constants.CANCEL.lower():
                         self.get_skill_cost(skill_mini_dict=skill_mini_dict)
                     else:
                         skills_end = True
@@ -339,9 +248,7 @@ class CharacterSkillsGenerator(object):
         :return: 
         """
         exp = ExperienceCheck()
-        skill_select = skill_mini_dict['skill']
-        current_skill = skill_mini_dict['points']
-        skill_adjust = skill_mini_dict['adjust']
+        skill_select, current_skill, skill_adjust = skill_mini_dict['skill'], skill_mini_dict['points'], skill_mini_dict['adjust']
         skill_cost = [1, 2, 3, 4, 5]
         skill_cost_add = 0
         skill_climb = skill_adjust - current_skill
@@ -439,27 +346,26 @@ class MeritsFlawsGenerator(MeritsFlawsDicts):
             if merits_limit < 3:
                 self.get_current_merits_flaws(mf=mf)
                 merits_list_select = input(self.template.GET_MERITS).upper()
-                if merits_list_select == 'CANCEL':
+                if merits_list_select == Constants.CANCEL:
                     merits_end = True
-                elif merits_list_select == 'MENTAL' or merits_list_select == 'PHYSICAL' or merits_list_select == 'SOCIAL':
+                elif merits_list_select == MeritsFlawsConstants.MENTAL or merits_list_select == MeritsFlawsConstants.PHYSICAL or merits_list_select == MeritsFlawsConstants.SOCIAL:
                     merits_dict = self.merits_flaws_dicts.MERITS
                     self.print_merits_flaws(select=merits_list_select, mf_dict=merits_dict, mf=mf)
                     print(exp.exp_current())
-                    merits_select = input(self.template.SELECT_MF).lower()
-                    if merits_select == 'cancel':
+                    merits_select = input(self.template.SELECT_MF).upper()
+                    if merits_select == Constants.CANCEL:
                         merits_end = True
-                    elif merits_select == 'change list':
+                    elif merits_select == MeritsFlawsConstants.CHANGE_LIST:
                         continue
                     elif merits_select in merits_dict[merits_list_select]:
                         merit_values = merits_dict[merits_list_select][merits_select]
-                        exp_cost = merit_values[0]
-                        exp_check = exp.exp_remaining_check(exp_cost=exp_cost)
+                        exp_check = exp.exp_remaining_check(exp_cost=merit_values[0])
                         if exp_check is True:
                             merits_mini_dict = {merits_select: merits_dict[merits_list_select][merits_select]}
-                            merits = self.character_dict['merits']
+                            merits = self.character_dict[mf]
                             merits.update(merits_mini_dict)
                             self.get_bonus_attribute(mf=mf, values=merit_values)
-                            self.character_dict['exp_remaining'] -= exp_cost
+                            self.character_dict['exp_remaining'] -= merit_values[0]
                             merits_limit += 1
                     else:
                         print(self.template.VALID_ENTRY)
@@ -481,25 +387,24 @@ class MeritsFlawsGenerator(MeritsFlawsDicts):
             if flaws_limit < 3:
                 self.get_current_merits_flaws(mf=mf)
                 flaws_list_select = input(self.template.GET_FLAWS).upper()
-                if flaws_list_select == 'CANCEL':
+                if flaws_list_select == Constants.CANCEL:
                     flaws_end = True
-                elif flaws_list_select == 'MENTAL' or flaws_list_select == 'PHYSICAL' or flaws_list_select == 'STATS':
+                elif flaws_list_select == MeritsFlawsConstants.MENTAL or flaws_list_select == MeritsFlawsConstants.PHYSICAL or flaws_list_select == MeritsFlawsConstants.STATS:
                     flaws_dict = self.merits_flaws_dicts.FLAWS
                     self.print_merits_flaws(select=flaws_list_select, mf_dict=flaws_dict, mf=mf)
                     print(exp.exp_current())
-                    flaws_select = input(self.template.GET_FLAWS).lower()
-                    if flaws_select == 'cancel':
+                    flaws_select = input(self.template.GET_FLAWS).upper()
+                    if flaws_select == Constants.CANCEL:
                         flaws_end = True
-                    elif flaws_select == 'change list':
+                    elif flaws_select == MeritsFlawsConstants.CHANGE_LIST:
                         continue
                     elif flaws_select in flaws_dict[flaws_list_select]:
                         flaws_values = flaws_dict[flaws_list_select][flaws_select]
-                        exp_cost = flaws_values[0]
                         flaws_mini_dict = {flaws_select: flaws_dict[flaws_list_select][flaws_select]}
-                        flaws = self.character_dict['flaws']
+                        flaws = self.character_dict[mf]
                         flaws.update(flaws_mini_dict)
                         self.get_bonus_attribute(mf=mf, values=flaws_values)
-                        self.character_dict['exp_remaining'] += exp_cost
+                        self.character_dict['exp_remaining'] += flaws_values[0]
                         flaws_limit += 1
                     else:
                         print(self.template.VALID_ENTRY)
@@ -551,7 +456,7 @@ class POCC(OCCs, BonusChecks):
         pocc_end = False
         while pocc_end is False:
             pocc_list = OCCs.PRIMARY_OCC.keys()
-            if select_pocc != 'cancel':
+            if select_pocc != Constants.CANCEL.lower():
                 if select_pocc in pocc_list:
                     pocc = OCCs.PRIMARY_OCC[select_pocc]
                     self.character_dict['pocc'] = {select_pocc: pocc}
@@ -604,10 +509,8 @@ class SOCC(OCCs, BonusChecks):
     def add_socc(self, select_socc, socc_req):
         socc = OCCs.SECONDARY_OCC[socc_req][select_socc]
         self.character_dict['socc'] = {select_socc: socc}
-        bonus_attributes = socc[1]
-        bonus_adjust = socc[0]
+        bonus_attributes, bonus_adjust = socc[1], socc[0]
         BonusChecks.get_bonus_attribute(self, adjust=bonus_adjust, attribute=bonus_attributes)
-        # self.skills_dict[bonus_attributes] += bonus_adjust
 
     def check_required_pocc(self):
         """
