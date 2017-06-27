@@ -1,7 +1,7 @@
 import os
 from templates.template_text import Templates, CharacterControlTemplates
-from constants import NavigationConstants
-from level_maps.map_model import MapTemplate, Maps, MapConstants
+from constants import NavigationConstants, MapConstants
+from level_maps.map_model import MapTemplate, Maps
 from models import CharacterModels, SearchablesModel
 from services_map_rendering import MapRenderer
 
@@ -127,12 +127,19 @@ class CharacterInteraction(object):
 
     def __init__(self):
         self.search = SearchablesModel()
+        self.character_services = CharacterServices()
         pass
 
-    def character_look(self, direction, object=None):
+    def character_look(self, look_direction, object=None):
         # where am I
+        location, direction = self.character_services.get_player_position_and_directon()
+        if direction != look_direction:
+            direction = look_direction
+        tile_center, tile_left, tile_right = self.character_services.get_range_of_view(location=location, direction=direction)
+
         # what direction am I pointed
         # what is around me
+        # - takes pos and dir and finds the tile directly ahead of you and the adjacent tiles on either side of that tile.
 
         # if object is not None:
         #     if object in self.search.searchables_dict and object in level_object_instance:
@@ -150,4 +157,34 @@ class CharacterInteraction(object):
 
 class NPCNavigation(object):
     pass
+
+class CharacterServices(object):
+    def __init__(self):
+        self.player_move_dict = CharacterModels.PLAYER_MOVE_DICT
+        self.mpstemp = MapTemplate()
+
+    def get_player_position_and_directon(self):
+        player_position = self.player_move_dict['location']
+        player_direction = self.player_move_dict['direction']
+        return player_position, player_direction
+
+    def get_range_of_view(self, location, direction):
+        x, y = location
+        range_of_view_dict = {'tile_center': {'NORTH': (0, -1), 'SOUTH': (0, +1), 'EAST': (+1, 0), 'WEST': (-1, 0)},
+                              'tile_left': {'NORTH': (-1, -1), 'SOUTH': (+1, +1), 'EAST': (+1, -1), 'WEST': (-1, +1)},
+                              'tile_right': {'NORTH': (+1, -1), 'SOUTH': (-1, +1), 'EAST': (+1, +1), 'WEST': (-1, -1)}}
+        tile_center_adjust, tile_left_adjust, tile_right_adjust = range_of_view_dict['tile_center'][direction], \
+                                                                  range_of_view_dict['tile_left'][direction], \
+                                                                  range_of_view_dict['tile_right'][direction]
+        tile_center = (x + tile_center_adjust[0], y + tile_center_adjust[1])
+        tile_left = (x + tile_left_adjust[0], y + tile_left_adjust[1])
+        tile_right = (x + tile_right_adjust[0], y + tile_right_adjust[1])
+        return tile_center, tile_left, tile_right
+
+    def get_map_tile(self, tile_x_y):
+        current_level = self.player_move_dict['current_level']
+        level_map = CharacterNavigation().get_current_level_map(current_level=current_level)
+        if tile_x_y in self.mpstemp.MAP_COORDINATES:
+            tile_key = level_map.index(self.mpstemp.MAP_COORDINATES.index(tile_x_y))
+        return tile_key
 

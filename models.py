@@ -14,7 +14,7 @@ class CharacterModels(object):
                         'location': (0, 0),
                         'path': [],
                         'direction': 'NORTH',
-                        'current_level': 'LEVEL_00'}
+                        'current_level': 'MAP_LEVEL_00'}
 
 class Navigation(object):
     pass

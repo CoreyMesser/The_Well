@@ -1,5 +1,6 @@
 from level_maps.map_model import Maps, MapTemplate
 from services_get_character import GetCharacter
+from constants import MapConstants
 import copy
 
 class MapRenderer(object):
@@ -8,6 +9,7 @@ class MapRenderer(object):
         self.mps = Maps()
         self.mpstemp = MapTemplate()
         self.mtc = MapTileConstants()
+        self.mpsc = MapConstants()
         self.mps_clean = copy.deepcopy(Maps())
         self.gc = GetCharacter()
         # self.player_move_dict = self.gc.player_move_dict
@@ -15,7 +17,7 @@ class MapRenderer(object):
     def get_map(self, player_move_dict):
         current_level = player_move_dict['current_level']
         clean_map = 0
-        if current_level == 'LEVEL_00':
+        if current_level == self.mpsc.LEVEL_00:
             clean_map = self.mps.MAP_LEVEL_00
         if current_level == 'LEVEL_01':
             clean_map = self.mps.MAP_LEVEL_01

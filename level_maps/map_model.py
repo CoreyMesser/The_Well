@@ -1,10 +1,6 @@
 import os
 
 
-class MapConstants(object):
-    pass
-
-
 class MapTemplate(object):
     MAP_COORDINATES = [(0, 0), (1, 0), (2, 0), (3, 0), (4, 0), (5, 0),
                        (0, 1), (1, 1), (2, 1), (3, 1), (4, 1), (5, 1),
@@ -15,7 +11,6 @@ class MapTemplate(object):
 
 
 class Maps(MapTemplate):
-    
     
     MAP_LEVEL_00 = [(1), (1), (1), (1), (7), (1),
                     (1), (0), (0), (0), (0), (1),
