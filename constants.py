@@ -1,5 +1,6 @@
 import os
 
+
 class Constants(object):
     CANCEL = 'CANCEL'
     SWITCH = 'SWITCH'
@@ -24,9 +25,31 @@ class NavigationConstants(object):
     DOWN = 'DOWN'
     LEFT = 'LEFT'
     RIGHT = 'RIGHT'
+    DIRECTIONS_LIST = ['NORTH', 'EAST', 'SOUTH', 'WEST']
     DIRECTIONS_DICT = {'NORTH': 'NORTH', 'SOUTH': 'SOUTH', 'EAST':'EAST', 'WEST': 'WEST', 'N': 'NORTH', 'S': 'SOUTH', 'E':'EAST', 'W': 'WEST'}
     MOVE_CONVERTER_DICT = {'1': 1, '2': 2, '3': 3, '4': 4, '5': 5}
 
 class MapConstants(object):
     LEVEL_00 = 'MAP_LEVEL_00'
     LEVEL_00_ITEMS = 'MAP_LEVEL_00_ITEMS'
+
+class TileConstants(object):
+    pass
+
+class PlayerCommands(object):
+    MOVE = 'MOVE'
+    TURN = 'TURN'
+    CLIMB = 'CLIMB'
+    JUMP = 'JUMP'
+    LOOK = 'LOOK'
+    SEARCH = 'SEARCH'
+    USE = 'USE'
+    TAKE = 'TAKE'
+    INVENTROY = 'INVENTORY'
+    EQUIP = 'EQUIP'
+    UNEQUIP = 'UNEQUIP'
+    ATTACK = 'ATTACK'
+    BLOCK = 'BLOCK'
+    FLEE = 'FLEE'
+    PLAYER_COMMANDS_SET = {'MOVE', 'TURN', 'JUMP', 'LOOK', 'SEARCH', 'USE', 'TAKE',
+                           'INVENTORY', 'EQUIP', 'UNEQUIP', 'ATTACK', 'BLOCK', 'FLEE'}

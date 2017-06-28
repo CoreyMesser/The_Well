@@ -1,9 +1,10 @@
 import os
 from templates.template_text import Templates, CharacterControlTemplates
-from constants import NavigationConstants, MapConstants
+from constants import NavigationConstants, MapConstants, PlayerCommands
 from level_maps.map_model import MapTemplate, Maps
 from models import CharacterModels, SearchablesModel
 from services_map_rendering import MapRenderer
+from game_text.in_game_text import LookSearchMessages
 
 class CharacterNavigation(object):
 
@@ -118,7 +119,7 @@ class CharacterNavigation(object):
 
     def get_current_level_map(self, current_level):
         level_map = current_level
-        if current_level == 'LEVEL_00':
+        if current_level == MapConstants.LEVEL_00:
             level_map = self.mps.MAP_LEVEL_00
         return level_map
 
@@ -130,15 +131,21 @@ class CharacterInteraction(object):
         self.character_services = CharacterServices()
         pass
 
-    def character_look(self, look_direction, object=None):
+    def character_look(self, look_direction, object_item=None):
         # where am I
         location, direction = self.character_services.get_player_position_and_directon()
-        if direction != look_direction:
-            direction = look_direction
-        tile_center, tile_left, tile_right = self.character_services.get_range_of_view(location=location, direction=direction)
 
         # what direction am I pointed
+        direction = self.character_services.look_direction_interpreter(look_direction=look_direction, direction=direction)
+
         # what is around me
+        self.character_services.look_see(look_direction=look_direction,location=location, direction=direction)
+
+
+
+        # unique message id, instaed of a # 0-9, it is something like a four digit message id, 0087
+        # if wall/floor random generic wall/floor message
+
         # - takes pos and dir and finds the tile directly ahead of you and the adjacent tiles on either side of that tile.
 
         # if object is not None:
@@ -160,8 +167,11 @@ class NPCNavigation(object):
 
 class CharacterServices(object):
     def __init__(self):
+        self.looksearchmsg = LookSearchMessages()
         self.player_move_dict = CharacterModels.PLAYER_MOVE_DICT
         self.mpstemp = MapTemplate()
+        self.player_commands = PlayerCommands()
+        self.nav_constants = NavigationConstants()
 
     def get_player_position_and_directon(self):
         player_position = self.player_move_dict['location']
@@ -182,9 +192,55 @@ class CharacterServices(object):
         return tile_center, tile_left, tile_right
 
     def get_map_tile(self, tile_x_y):
+        tile_key = 1
         current_level = self.player_move_dict['current_level']
         level_map = CharacterNavigation().get_current_level_map(current_level=current_level)
         if tile_x_y in self.mpstemp.MAP_COORDINATES:
-            tile_key = level_map.index(self.mpstemp.MAP_COORDINATES.index(tile_x_y))
+            tile_key = level_map[self.mpstemp.MAP_COORDINATES.index(tile_x_y)]
         return tile_key
+
+    def get_tile_message(self, tile_position, tile_x_y, object_item=None):
+        tile_key = self.get_map_tile(tile_x_y=tile_x_y)
+        tile_message = self.looksearchmsg.build_message(tile_key=tile_key, tile_position=tile_position, object_item=object_item)
+        return tile_message
+
+    def look_direction_interpreter(self, look_direction, direction):
+        direction_index = self.nav_constants.DIRECTIONS_LIST.index(direction)
+        interpreter_dict = {'LEFT': -1, 'RIGHT': +1, 'BACKWARDS': +2}
+        if look_direction != direction:
+            if look_direction == 'AROUND' or look_direction == 'LOOK':
+                return direction
+            elif interpreter_dict[look_direction]:
+                look_direction_index = direction_index + interpreter_dict[look_direction]
+                if look_direction_index < 0:
+                    look_direction_index = look_direction_index + 4
+                elif look_direction_index > 3:
+                    look_direction_index = look_direction_index - 4
+                direction = self.nav_constants.DIRECTIONS_LIST[(direction_index + interpreter_dict[look_direction])]
+                return direction
+            else:
+                return direction
+        else:
+            return direction
+
+    def look_see(self, look_direction, location, direction):
+        tile_center, tile_left, tile_right = self.get_range_of_view(location=location, direction=direction)
+        look_direction_dict = {'RIGHT': 'tile_center', 'LEFT': 'tile_center', 'FORWARD': 'tile_center', 'BACKWARDS': 'tile_center',
+                               'AROUND': ['tile_center', 'tile_left', 'tile_right']}
+        # if len(look_direction_dict[look_direction]) > 1:
+        #     for look in look_direction_dict[look_direction]:
+        #         print(self.get_tile_message(tile_position=look, tile_x_y=location))
+        # else:
+        ll = look_direction_dict[look_direction]
+        print(self.get_tile_message(tile_position=look_direction_dict[look_direction], tile_x_y=location))
+
+
+    def player_command_breakdown(self, player_choice):
+        # choice_list = player_choice.split('')
+        # choice = [entry
+        #           for entry in choice_list
+        #           if entry in self.player_commands.PLAYER_COMMANDS_SET]
+        pass
+
+
 

@@ -176,7 +176,7 @@ class Templates(object):
 
 class CharacterControlTemplates(object):
     
-    PLAYER_CHOICE = "ᗘᗘᗘ What do you do? [HELP] for directions ᗘᗘᗘ "
+    PLAYER_CHOICE = "\n\nᗘᗘᗘ What do you do? [HELP] for directions ᗘᗘᗘ "
     PLAYER_HELP = "ᗘᗘᗘ Interaction: \n" \
                   "[LOOK] - Take a gander and get a lay of the land. \n" \
                   "[SEARCH] - Take the time to investigate with your search skill. \n" \
@@ -200,6 +200,8 @@ class CharacterControlTemplates(object):
     PLAYER_DIRECTIONS = "ᗘᗘᗘ [WEST], [EAST], [NORTH], [SOUTH] ᗛᗛᗛ"
 
     PLAYER_MOVE = "num, or num:direction.  ex. 1 or 1:WEST"
+
+    PLAYER_LOOK = "ᗘᗘᗘ [LEFT], [RIGHT], [FORWARD], [BACKWARDS], [AROUND], at [OBJECT] ᗛᗛᗛ"
 
 
 # ᗘᗘᗘᗛᗛᗛ

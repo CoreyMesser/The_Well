@@ -4,8 +4,9 @@ import os
 from character_pc import Species, HealthPoints, Stats, CharacterSkillsGenerator, MeritsFlawsGenerator, POCC, SOCC, CharacterStoreSession
 from templates.template_text import Templates, CharacterControlTemplates
 from services import PrinterServices, PrintCompletedCharacterSheet
-from services_navigation import CharacterNavigation
+from services_navigation import CharacterNavigation, CharacterInteraction
 from services_get_character import GetCharacter
+from services_map_rendering import MapRenderer
 from models import CharacterModels, User, PlayerCharacter
 from database_service import db_session
 from config import Config
@@ -201,14 +202,22 @@ class Gameplay(object):
 
     def __init__(self):
         self.cn = CharacterNavigation()
+        self.ch_interaction = CharacterInteraction()
         self.cctemp = CharacterControlTemplates()
         self.gc = GetCharacter()
         self.player_move_dict = self.retreive_character()
+        self.map_render = MapRenderer()
         self.setup()
         self.player_controls()
 
+    def clear_screen(self):
+        os.system('cls' if os.name == 'nt' else 'clear')
+
     def setup(self):
         self.cn.start_location(player_move_dict=self.player_move_dict)
+        # self.cn.update_player_location_and_path(location=CharacterModels.PLAYER_MOVE_DICT['location'],
+        #                                          path=CharacterModels.PLAYER_MOVE_DICT['path'])
+        self.map_render.draw_map(player_move_dict=self.player_move_dict)
 
     def retreive_character(self):
         """
@@ -223,11 +232,13 @@ class Gameplay(object):
 
         while finished is False:
             return_menu = False
+            self.clear_screen()
             player_choice = input(self.cctemp.PLAYER_CHOICE).upper()
             if player_choice == 'HELP':
                 print(self.cctemp.PLAYER_HELP)
             if player_choice == 'LOOK':
-                pass
+                player_choice = input(self.cctemp.PLAYER_LOOK).upper()
+                self.ch_interaction.character_look(look_direction=player_choice)
             if player_choice == 'SEARCH':
                 pass
             if player_choice == 'USE':

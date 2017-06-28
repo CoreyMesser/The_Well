@@ -4,9 +4,11 @@ from unittest import TestCase
 from models import Character, CharacterMeritsFlaws, CharacterSkills, SpeciesDict, MeritsFlawsDicts, OCCs, MeritsFlaws, PoccDb, SoccDb
 from database_service import db_session
 from templates.template_text import Templates, CharacterControlTemplates
-from constants import NavigationConstants
-from level_maps.map_model import MapTemplate, Maps, MapConstants
+from constants import NavigationConstants, MapConstants
+from level_maps.map_model import MapTemplate, Maps
 from services_map_rendering import MapTileConstants
+from services_navigation import CharacterServices
+from game_text.in_game_text import LookSearchMessages
 import curses
 
 
@@ -485,6 +487,17 @@ class CursesInitializer(object):
         # curses.endwin()
 
 
+class MessageGen(object):
+    cs = CharacterServices()
+    ls = LookSearchMessages()
+    def get_tile_message(self, tile_position, tile_x_y, object=None):
+        tile_key = self.cs.get_map_tile(tile_x_y=tile_x_y)
+        tile_message = self.ls.build_message(tile_key=tile_key, tile_position=tile_position)
+        print(tile_message)
+
+
 if __name__ == '__main__':
-    nt = CursesInitializer()
-    nt.win()
+    nt = MessageGen()
+    tile_position = 'tile_left'
+    tile_x_y = (2, 4)
+    nt.get_tile_message(tile_position, tile_x_y)

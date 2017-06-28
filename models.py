@@ -2,6 +2,7 @@ from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, Numeric, 
 from sqlalchemy import CheckConstraint
 from sqlalchemy.orm import relationship
 from database_service import Base, db_session
+from constants import MapConstants
 
 from flask_login import LoginManager
 from flask_bcrypt import generate_password_hash, check_password_hash
@@ -11,10 +12,10 @@ metadata = Base.metadata
 
 class CharacterModels(object):
     PLAYER_MOVE_DICT = {'character_id': 9,
-                        'location': (0, 0),
-                        'path': [],
+                        'location': (1, 5),
+                        'path': [(0, 0)],
                         'direction': 'NORTH',
-                        'current_level': 'MAP_LEVEL_00'}
+                        'current_level': MapConstants.LEVEL_00}
 
 class Navigation(object):
     pass
