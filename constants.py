@@ -53,11 +53,11 @@ class PlayerCommands(object):
     SEARCH = 'SEARCH'
     USE = 'USE'
     TAKE = 'TAKE'
-    INVENTROY = 'INVENTORY'
+    INVENTORY = 'INVENTORY'
     EQUIP = 'EQUIP'
     UNEQUIP = 'UNEQUIP'
     ATTACK = 'ATTACK'
     BLOCK = 'BLOCK'
     FLEE = 'FLEE'
-    PLAYER_COMMANDS_SET = {'MOVE', 'TURN', 'JUMP', 'LOOK', 'SEARCH', 'USE', 'TAKE',
-                           'INVENTORY', 'EQUIP', 'UNEQUIP', 'ATTACK', 'BLOCK', 'FLEE'}
+    PLAYER_COMMANDS_SET = {MOVE, TURN, JUMP, LOOK, SEARCH, USE, TAKE,
+                           INVENTORY, EQUIP, UNEQUIP, ATTACK, BLOCK, FLEE}

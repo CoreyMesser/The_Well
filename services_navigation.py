@@ -134,15 +134,6 @@ class CharacterInteraction(object):
         self.character_services.look_see(look_direction=look_direction,location=location, direction=direction)
 
 
-
-        # unique message id, instaed of a # 0-9, it is something like a four digit message id, 0087
-        # if wall/floor random generic wall/floor message
-
-        # - takes pos and dir and finds the tile directly ahead of you and the adjacent tiles on either side of that tile.
-
-        # if object is not None:
-        #     if object in self.search.searchables_dict and object in level_object_instance:
-
     def character_serach(self):
         pass
 
@@ -157,6 +148,7 @@ class NPCNavigation(object):
     pass
 
 class CharacterServices(object):
+    
     def __init__(self):
         self.looksearchmsg = LookSearchMessages()
         self.player_move_dict = CharacterModels.PLAYER_MOVE_DICT
@@ -173,8 +165,8 @@ class CharacterServices(object):
     def get_range_of_view(self, location, direction):
         x, y = location
         range_of_view_dict = {'tile_center': {'NORTH': (0, -1), 'SOUTH': (0, +1), 'EAST': (+1, 0), 'WEST': (-1, 0)},
-                              'tile_left': {'NORTH': (-1, -1), 'SOUTH': (+1, +1), 'EAST': (+1, -1), 'WEST': (-1, +1)},
-                              'tile_right': {'NORTH': (+1, -1), 'SOUTH': (-1, +1), 'EAST': (+1, +1), 'WEST': (-1, -1)}}
+                              'tile_left': {'NORTH': (-1, 0), 'SOUTH': (+1, 0), 'EAST': (0, -1), 'WEST': (0, +1)},
+                              'tile_right': {'NORTH': (+1, 0), 'SOUTH': (-1, 0), 'EAST': (0, +1), 'WEST': (0, -1)}}
         tile_center_adjust, tile_left_adjust, tile_right_adjust = range_of_view_dict['tile_center'][direction], \
                                                                   range_of_view_dict['tile_left'][direction], \
                                                                   range_of_view_dict['tile_right'][direction]
