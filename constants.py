@@ -25,8 +25,16 @@ class NavigationConstants(object):
     DOWN = 'DOWN'
     LEFT = 'LEFT'
     RIGHT = 'RIGHT'
-    DIRECTIONS_LIST = ['NORTH', 'EAST', 'SOUTH', 'WEST']
-    DIRECTIONS_DICT = {'NORTH': 'NORTH', 'SOUTH': 'SOUTH', 'EAST':'EAST', 'WEST': 'WEST', 'N': 'NORTH', 'S': 'SOUTH', 'E':'EAST', 'W': 'WEST'}
+    FORWARD = 'FORWARD'
+    BACKWARDS = 'BACKWARDS'
+    CENTER = 'CENTER'
+    DIRECTIONS_LIST = [LEFT, RIGHT, CENTER, FORWARD, BACKWARDS, UP, DOWN]
+    COMPASS_DIRECTIONS_LIST = [NORTH, EAST, SOUTH, WEST]
+    DIRECTIONS_DICT = {NORTH: NORTH, SOUTH: SOUTH, EAST: EAST, WEST: WEST, 'N': NORTH, 'S': SOUTH, 'E':EAST, 'W': WEST}
+    COMPASS_DIRECTIONS_INTERPRETER = {NORTH: {WEST: LEFT, EAST: RIGHT, SOUTH: BACKWARDS}, 
+                                      EAST: {NORTH: LEFT, SOUTH: RIGHT, WEST: BACKWARDS},
+                                      SOUTH: {EAST: LEFT, WEST: RIGHT, NORTH: BACKWARDS},
+                                      WEST: {SOUTH: LEFT, NORTH: RIGHT, EAST: BACKWARDS}}
     MOVE_CONVERTER_DICT = {'1': 1, '2': 2, '3': 3, '4': 4, '5': 5}
 
 class MapConstants(object):

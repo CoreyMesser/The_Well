@@ -22,8 +22,7 @@ class CharacterNavigation(object):
         pass
 
     def start_location(self, player_move_dict):
-        current_level = player_move_dict['current_level']
-        level_map = self.get_current_level_map(current_level=current_level)
+        level_map, _ = self.mpren.get_map(player_move_dict=player_move_dict)
         starting_position = level_map.index(9)
         starting_coordinates = self.mpstemp.MAP_COORDINATES[starting_position]
         self.update_player_location_and_path(location=starting_coordinates, path=starting_coordinates)
@@ -100,8 +99,7 @@ class CharacterNavigation(object):
         :return: returns a True or a value appropriate to notify the player of obstacle
         """
         valid_move = False
-        current_level = self.player_move_dict['current_level']
-        level_map = self.get_current_level_map(current_level=current_level)
+        level_map, _ = self.mpren.get_map(player_move_dict=self.player_move_dict)
 
         if player_move in self.mpstemp.MAP_COORDINATES:
             move_index = self.mpstemp.MAP_COORDINATES.index(player_move)
@@ -117,12 +115,6 @@ class CharacterNavigation(object):
 
         return valid_move
 
-    def get_current_level_map(self, current_level):
-        level_map = current_level
-        if current_level == MapConstants.LEVEL_00:
-            level_map = self.mps.MAP_LEVEL_00
-        return level_map
-
 
 class CharacterInteraction(object):
 
@@ -136,7 +128,7 @@ class CharacterInteraction(object):
         location, direction = self.character_services.get_player_position_and_directon()
 
         # what direction am I pointed
-        direction = self.character_services.look_direction_interpreter(look_direction=look_direction, direction=direction)
+        look_direction = self.character_services.look_direction_interpreter(look_direction=look_direction, direction=direction)
 
         # what is around me
         self.character_services.look_see(look_direction=look_direction,location=location, direction=direction)
@@ -150,7 +142,6 @@ class CharacterInteraction(object):
 
         # if object is not None:
         #     if object in self.search.searchables_dict and object in level_object_instance:
-        pass
 
     def character_serach(self):
         pass
@@ -172,6 +163,7 @@ class CharacterServices(object):
         self.mpstemp = MapTemplate()
         self.player_commands = PlayerCommands()
         self.nav_constants = NavigationConstants()
+        self.mpren = MapRenderer()
 
     def get_player_position_and_directon(self):
         player_position = self.player_move_dict['location']
@@ -193,46 +185,34 @@ class CharacterServices(object):
 
     def get_map_tile(self, tile_x_y):
         tile_key = 1
-        current_level = self.player_move_dict['current_level']
-        level_map = CharacterNavigation().get_current_level_map(current_level=current_level)
+        level_map, items_map = self.mpren.get_map(player_move_dict=self.player_move_dict)
         if tile_x_y in self.mpstemp.MAP_COORDINATES:
-            tile_key = level_map[self.mpstemp.MAP_COORDINATES.index(tile_x_y)]
+            tile_key = items_map[self.mpstemp.MAP_COORDINATES.index(tile_x_y)]
         return tile_key
 
-    def get_tile_message(self, tile_position, tile_x_y, object_item=None):
-        tile_key = self.get_map_tile(tile_x_y=tile_x_y)
+    def get_tile_message(self, tile_position, tile_key, object_item=None):
         tile_message = self.looksearchmsg.build_message(tile_key=tile_key, tile_position=tile_position, object_item=object_item)
         return tile_message
 
     def look_direction_interpreter(self, look_direction, direction):
-        direction_index = self.nav_constants.DIRECTIONS_LIST.index(direction)
-        interpreter_dict = {'LEFT': -1, 'RIGHT': +1, 'BACKWARDS': +2}
-        if look_direction != direction:
-            if look_direction == 'AROUND' or look_direction == 'LOOK':
-                return direction
-            elif interpreter_dict[look_direction]:
-                look_direction_index = direction_index + interpreter_dict[look_direction]
-                if look_direction_index < 0:
-                    look_direction_index = look_direction_index + 4
-                elif look_direction_index > 3:
-                    look_direction_index = look_direction_index - 4
-                direction = self.nav_constants.DIRECTIONS_LIST[(direction_index + interpreter_dict[look_direction])]
-                return direction
+        if look_direction in self.nav_constants.COMPASS_DIRECTIONS_INTERPRETER.keys():
+            if look_direction == direction:
+                look_direction = self.nav_constants.FORWARD
+                return look_direction
             else:
-                return direction
+                look_direction = self.nav_constants.COMPASS_DIRECTIONS_INTERPRETER[direction][look_direction]
+                return look_direction
         else:
-            return direction
+            return look_direction
+
 
     def look_see(self, look_direction, location, direction):
         tile_center, tile_left, tile_right = self.get_range_of_view(location=location, direction=direction)
-        look_direction_dict = {'RIGHT': 'tile_center', 'LEFT': 'tile_center', 'FORWARD': 'tile_center', 'BACKWARDS': 'tile_center',
-                               'AROUND': ['tile_center', 'tile_left', 'tile_right']}
-        # if len(look_direction_dict[look_direction]) > 1:
-        #     for look in look_direction_dict[look_direction]:
-        #         print(self.get_tile_message(tile_position=look, tile_x_y=location))
-        # else:
-        ll = look_direction_dict[look_direction]
-        print(self.get_tile_message(tile_position=look_direction_dict[look_direction], tile_x_y=location))
+        look_direction_dict = {'RIGHT': tile_right, 'LEFT': tile_left, 'FORWARD': tile_center, 'BACKWARDS': tile_center,
+                               'AROUND': [tile_center, tile_left, tile_right]}
+        tile_key = self.get_map_tile(tile_x_y=look_direction_dict[look_direction])
+
+        print(self.get_tile_message(tile_position=look_direction, tile_key=tile_key))
 
 
     def player_command_breakdown(self, player_choice):
@@ -241,6 +221,3 @@ class CharacterServices(object):
         #           for entry in choice_list
         #           if entry in self.player_commands.PLAYER_COMMANDS_SET]
         pass
-
-
-

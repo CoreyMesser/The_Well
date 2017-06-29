@@ -485,6 +485,38 @@ class PlayerCharacter(object):
                    'move': 10}
 
 
+class WallModel(object):
+    wall_type = 'all'
+    breakable = False
+    wall_dc = 5
+    wall_soak = 3
+    wall_hp = 10
+
+
+class WallStone(WallModel):
+    wall_type = 'stone'
+    breakable = False
+    wall_dc = 5
+    wall_soak = 3
+    wall_hp = 10
+
+
+class WallEarth(WallModel):
+    wall_type = 'earthen'
+    breakable = False
+    wall_dc = 5
+    wall_soak = 3
+    wall_hp = 10
+
+
+class WallCrumbling(WallModel):
+    wall_type = 'crumbling'
+    breakable = True
+    wall_dc = 3
+    wall_soak = 2
+    wall_hp = 5
+
+
 class SpeciesDict(object):
     SPECIES_DICT = {'LAND': {'APE': ['M/O', 1, 'wis'],
                              'BADGER': ['M/O', 1, 'con'],
@@ -770,7 +802,11 @@ class OCCs(object):
                    'athlete': [2, 'athletics', 0, 'athletics']
                    }
 
+
 class SearchablesModel(object):
+
     searchables_dict = {}
+
+
 
 

@@ -17,22 +17,24 @@ class MapRenderer(object):
     def get_map(self, player_move_dict):
         current_level = player_move_dict['current_level']
         clean_map = 0
+        items_map = 0
         if current_level == self.mpsc.LEVEL_00:
-            clean_map = self.mps.MAP_LEVEL_00
+            clean_map = self.mps.MAP_LEVEL_00['nav_map']
+            items_map = self.mps.MAP_LEVEL_00['items_map']
         if current_level == 'LEVEL_01':
             clean_map = self.mps.MAP_LEVEL_01
-        return clean_map
+        return clean_map, items_map
 
     def level_map_list(self, player_move_dict):
         level_map = []
-        level_map_list = self.get_map(player_move_dict=player_move_dict)
+        level_map_list, _ = self.get_map(player_move_dict=player_move_dict)
         for entry in level_map_list:
             level_map.append(entry)
         return level_map
 
     def draw_character_position(self, player_move_dict):
         level_map = self.level_map_list(player_move_dict=player_move_dict)
-        clean_map = self.get_map(player_move_dict=player_move_dict)
+        clean_map, _ = self.get_map(player_move_dict=player_move_dict)
 
         player_move = player_move_dict['location']
         path = player_move_dict['path']
