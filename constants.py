@@ -42,6 +42,19 @@ class MapConstants(object):
     LEVEL_00_ITEMS = 'MAP_LEVEL_00_ITEMS'
 
 class TileConstants(object):
+    # 0 - floor, 00 - dirt floor, 001 - stone floor, 002 - wet floor
+    # 01 - traped tile
+    # 1 - wall, 10 - stone wall, 100 - dirt wall, 101 - wood wall
+    # 11 - breakable wall
+    # 2 - object-container
+    # 3 - object-item
+    # 4 -
+    # 5 -
+    # 6 -
+    # 7 - basic portal, 70 - basic door(open), 700 - basic door (closed), 701 - heavy wood door(open), 702 - heavy wood door(closed),
+    # 71 - basic stairs
+    # 8 -
+    # 9 - special-instance
     pass
 
 class PlayerCommands(object):

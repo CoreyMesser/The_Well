@@ -133,6 +133,9 @@ class CharacterInteraction(object):
         # what is around me
         self.character_services.look_see(look_direction=look_direction,location=location, direction=direction)
 
+        # detect if a hallway/room exists floor id 00 - basic hall, 01 - basic room 02 - basic nook/alcove
+        # detect doors/stairs/portals/etc  7 - generic portal, 70 - basic door, 71 basic stairs
+
 
     def character_serach(self):
         pass

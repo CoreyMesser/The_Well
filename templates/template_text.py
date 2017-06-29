@@ -19,6 +19,17 @@ class Templates(object):
  \____/_| |_|\__,_|_|  \__,_|\___|\__\___|_|    \____/|_| |_|\___|\___|\__|  \____/\___|_| |_|\___|_|  \__,_|\__\___/|_|   
 ᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛ"""
 
+    BANNER_THEWELL = """ᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛ
+                                                                 _____ _            _    _      _ _ 
+                                                                |_   _| |          | |  | |    | | |
+                                                                  | | | |__   ___  | |  | | ___| | |
+                                                                  | | | '_ \ / _ \ | |/\| |/ _ \ | |
+                                                                  | | | | | |  __/ \  /\  /  __/ | |
+                                                                  \_/ |_| |_|\___|  \/  \/ \___|_|_|
+                                                                                                    
+                                    
+                        ᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗘᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛᗛ"""
+
     INTRO = "\n \nᗘᗘᗘ FOREWORD:\n" \
             "        The Plush and Blood Roleplaying system was designed around two core concepts, story telling and immersed player characters.\n" \
             "Any RP’r out there reading this is right about now tallying up how they can manipulate and twink the system.  That is not\n" \
