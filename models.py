@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, Numeric, Text, text, Time
 from sqlalchemy import CheckConstraint
 from sqlalchemy.orm import relationship
@@ -613,7 +614,7 @@ class SpeciesDict(object):
                              'HORSE': ['L/H', 1, 'str'],
                              'HYENA': ['M/C', 1, 'con'],
                              'KANGAROO': ['M/H', 1, 'con'],
-                             ' KOALA': ['M/H', 1, 'wis'],
+                             'KOALA': ['M/H', 1, 'wis'],
                              'LEMUR': ['M/H', 1, 'wis'],
                              'LEOPARD': ['M/C', 1, 'dex'],
                              'LION': ['M/C', 1, 'str'],
@@ -875,10 +876,4 @@ class OCCs(object):
                    'mage': [1, 'concentration', 1, 'academics'],
                    'athlete': [2, 'athletics', 0, 'athletics']
                    }
-
-
-
-
-
-
 
