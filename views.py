@@ -234,11 +234,11 @@ class Gameplay(object):
             return_menu = False
             self.clear_screen()
             player_choice = input(self.cctemp.PLAYER_CHOICE).upper()
+            # interpreter
             if player_choice == 'HELP':
                 print(self.cctemp.PLAYER_HELP)
             if player_choice == 'LOOK':
-                player_choice = input(self.cctemp.PLAYER_LOOK).upper()
-                self.ch_interaction.character_look(look_direction=player_choice)
+                self.ch_interaction.character_look(look_direction=input(self.cctemp.PLAYER_LOOK).upper())
             if player_choice == 'SEARCH':
                 pass
             if player_choice == 'USE':
@@ -246,11 +246,9 @@ class Gameplay(object):
             if player_choice == 'TAKE':
                 pass
             if player_choice == 'TURN':
-                player_choice = input(self.cctemp.PLAYER_DIRECTIONS).upper()
-                self.cn.get_player_direction(player_choice=player_choice)
+                self.cn.get_player_direction(player_choice=input(self.cctemp.PLAYER_DIRECTIONS).upper())
             if player_choice == 'MOVE':
-                player_choice = input(self.cctemp.PLAYER_MOVE).upper()
-                self.cn.move_player(player_choice=player_choice)
+                self.cn.move_player(player_choice=input(self.cctemp.PLAYER_MOVE).upper())
             if player_choice == 'CLIMB':
                 pass
             if player_choice == 'JUMP':
@@ -267,6 +265,12 @@ class Gameplay(object):
                 pass
             if player_choice == 'FLEE':
                 pass
+
+            # player_command = {'HELP': print(self.cctemp.PLAYER_HELP),
+            #                   'LOOK': self.ch_interaction.character_look(look_direction=input(self.cctemp.PLAYER_LOOK).upper()),
+            #                   'TURN': self.cn.get_player_direction(player_choice=input(self.cctemp.PLAYER_DIRECTIONS).upper()),
+            #                   'MOVE': self.cn.move_player(player_choice=input(self.cctemp.PLAYER_MOVE).upper())
+            #                   }
 
 
 class CharacterSheetExportOptions(object):

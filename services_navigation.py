@@ -1,4 +1,4 @@
-import os
+import re
 from templates.template_text import Templates, CharacterControlTemplates
 from constants import NavigationConstants, MapConstants, PlayerCommands
 from level_maps.map_model import MapTemplate, Maps
@@ -130,13 +130,20 @@ class CharacterInteraction(object):
         look_direction = self.character_services.look_direction_interpreter(look_direction=look_direction, direction=direction)
 
         # what is around me
-        self.character_services.look_see(look_direction=look_direction,location=location, direction=direction)
+        self.character_services.look_see(look_direction=look_direction, location=location, direction=direction)
 
         # detect if a hallway/room exists floor id 00 - basic hall, 01 - basic room 02 - basic nook/alcove
         # detect doors/stairs/portals/etc  7 - generic portal, 70 - basic door, 71 basic stairs
 
 
-    def character_serach(self):
+    def character_serach(self, object):
+        # keyword interpreter
+
+        # does that object exist
+
+        # what am I searching
+
+        # proximity of object validator
 
         pass
 
@@ -211,6 +218,16 @@ class CharacterServices(object):
 
 
     def player_command_breakdown(self, player_choice):
+        # search command
+        if re.search(PlayerCommands.PLAYER_COMMANDS_SET, player_choice):
+            # search action, direction, object
+            if re.search([0-9], player_choice):
+                if re.search(NavigationConstants.COMPASS_DIRECTIONS_LIST, player_choice) or re.search(NavigationConstants.DIRECTIONS_LIST, player_choice):
+                    return 'move'
+
+        # regex to find pattern
+        # breaks up words
+
         # choice_list = player_choice.split('')
         # choice = [entry
         #           for entry in choice_list

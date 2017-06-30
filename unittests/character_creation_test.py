@@ -1,13 +1,14 @@
 # coding: utf-8
-import unittest
+import unittest, re
 from unittest import TestCase
 from models import Character, CharacterMeritsFlaws, CharacterSkills, SpeciesDict, MeritsFlawsDicts, OCCs, MeritsFlaws, PoccDb, SoccDb
 from database_service import db_session
+from services_get_character import GetCharacter
 from templates.template_text import Templates, CharacterControlTemplates
-from constants import NavigationConstants, MapConstants
+from constants import NavigationConstants, MapConstants, PlayerCommands
 from level_maps.map_model import MapTemplate, Maps
-from services_map_rendering import MapTileConstants
-from services_navigation import CharacterServices
+from services_map_rendering import MapTileConstants, MapRenderer
+from services_navigation import CharacterServices, CharacterNavigation, CharacterInteraction
 from game_text.in_game_text import LookSearchMessages
 import curses
 
@@ -495,9 +496,51 @@ class MessageGen(object):
         tile_message = self.ls.build_message(tile_key=tile_key, tile_position=tile_position)
         print(tile_message)
 
+class MoveInterpreter(object):
+    def __init__(self):
+        self.cn = CharacterNavigation()
+        self.ch_interaction = CharacterInteraction()
+        self.cctemp = CharacterControlTemplates()
+        self.gc = GetCharacter()
+        self.map_render = MapRenderer()
+
+
+
+
+    def player_command_breakdown(self, player_choice):
+        player_command = {'HELP': print(self.cctemp.PLAYER_HELP),
+                          'LOOK': self.ch_interaction.character_look(look_direction=input(self.cctemp.PLAYER_LOOK).upper()),
+                          'TURN': self.cn.get_player_direction(player_choice=input(self.cctemp.PLAYER_DIRECTIONS).upper()),
+                          'MOVE': self.cn.move_player(player_choice=input(self.cctemp.PLAYER_MOVE).upper())
+                          }
+        # search command
+        command = ''
+        direction = ''
+        move = 0
+        player_split = re.split(': | |, |,', player_choice)
+        for split in player_split:
+            if split in PlayerCommands.PLAYER_COMMANDS_SET:
+                command = split
+                # player_split.pop(player_split.index(split))
+
+
+            if split in NavigationConstants.COMPASS_DIRECTIONS_LIST:
+                direction = split
+                # player_split.pop(player_split.index(split))
+
+
+            if split in NavigationConstants.DIRECTIONS_LIST:
+                look_direction = split
+                # player_split.pop(player_split.index(split))
+
+            if split in NavigationConstants.MOVE_CONVERTER_DICT.keys():
+                move = NavigationConstants.MOVE_CONVERTER_DICT[split]
+
+        
+        return print(command, direction, move)
+
 
 if __name__ == '__main__':
-    nt = MessageGen()
-    tile_position = 'tile_left'
-    tile_x_y = (2, 4)
-    nt.get_tile_message(tile_position, tile_x_y)
+    nt = MoveInterpreter()
+    player_choice = 'LOOK EAST'
+    nt.player_command_breakdown(player_choice=player_choice)
