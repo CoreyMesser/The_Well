@@ -1,4 +1,5 @@
 import random
+from models import ContainerCrate, WeaponKnife
 
 class GameMessages(object):
     """
@@ -15,10 +16,12 @@ class GameMessages(object):
     LEFT = " left"
     RIGHT = " right"
 
+
 class InGameMessages(object):
     messages = {}
     color = {}
     search = {}
+
 
 class WallMessages(InGameMessages):
     messages = {'stone': ["is a rough hewn stone wall marked with faint echos of chisel bits.",
@@ -32,6 +35,13 @@ class WallMessages(InGameMessages):
                       "Even with a pick you'd be hard pressed to turn it to mineral."],
              'soft': ["It looks to buckle any moment.", "A sneeze may bring it down at any time."]}
 
+    search = {'stone': ["Only a geologist would search cold stone for answers...", "Perhaps erosion will unveil something within...",
+                       "Looks like... granite? You wished you would have paid more attention to uncle Susan's mineral obsession."],
+              'earth': ["You are already underground, is there a point to digging further?",
+                        "Smells like... damp soil with a hint of despair",
+                        "Uncle Susan would have paid handsomely for this rich earth."]}
+
+
 class FloorMessages(InGameMessages):
     messages = {'stone': ["the floor is strewn with bits of chunky gravel over hard rough stone.",
                           "brutal scores left the flagstones of the floor cracked and shattered."],
@@ -44,6 +54,22 @@ class FloorMessages(InGameMessages):
                       "As if someone had designed the floor after hearing the description from a bedridden octogenarian."],
              'soft': ["You can't imagine staying upright on it for too long.", "You will never take boots for granted again."]}
 
+    search = {'stone': ["Only a geologist would search cold stone for answers...", "Perhaps erosion will unveil something within...",
+                        "Looks like... granite? You wished you would have paid more attention to uncle Susan's mineral obsession."],
+              'earth': ["You are already underground, is there a point to digging further?",
+                        "Smells like... damp soil with a hint of despair",
+                        "Uncle Susan would have paid handsomely for this rich earth."]}
+
+
+class ContainerMessages(InGameMessages):
+    messages = {'crate': "Rotted and waterlogged a near formless mass of wood rests against a wall."}
+
+    color = {"crate": "In a surrealists eye the shape generally resembles a box."}
+
+    search = ''.join(['{} Inside you find: {}: {}'.format(ContainerCrate().get_description(),
+                                                          WeaponKnife().get_name(),
+                                                          WeaponKnife().get_description())])
+
 class EntranceMessages(InGameMessages):
     messages = {'start': ["the muddy soup trails after you all that is left of a once deep well.",
                           "the foul mud clings to you with fervor."]}
@@ -53,10 +79,20 @@ class EntranceMessages(InGameMessages):
 
 
 class LookSearchMessages(object):
-    TILE_KEY_CONSTANTS_DICT = {'0': {'messages': FloorMessages.messages, 'color': FloorMessages.color},
-                                '1': {'messages': WallMessages.messages, 'color': WallMessages.color},
-                                '10': {'messages': WallMessages.messages['stone'], 'color': WallMessages.color['hard']},
-                                '9': {'messages': EntranceMessages.messages, 'color': EntranceMessages.color}}
+    TILE_KEY_CONSTANTS_DICT = {'0': {'messages': FloorMessages.messages,
+                                     'color': FloorMessages.color,
+                                     'search': FloorMessages.search},
+                               '1': {'messages': WallMessages.messages,
+                                     'color': WallMessages.color,
+                                     'search': WallMessages.search},
+                               '10': {'messages': WallMessages.messages['stone'],
+                                      'color': WallMessages.color['hard'],
+                                      'search': WallMessages.search},
+                               '2': {'messages': ContainerMessages.messages,
+                                     'color': ContainerMessages.color,
+                                     'search': ContainerMessages.search},
+                               '9': {'messages': EntranceMessages.messages,
+                                     'color': EntranceMessages.color}}
 
 
     def get_prefix(self, tile_position):

@@ -42,9 +42,11 @@ class MapConstants(object):
     LEVEL_00_ITEMS = 'MAP_LEVEL_00_ITEMS'
 
 class TileConstants(object):
-    # 0 - floor, 00 - dirt floor, 001 - stone floor, 002 - wet floor
+    # 0 - floor (generic)
+    # 00 - dirt floor, 001 - stone floor, 002 - wet floor
     # 01 - traped tile
-    # 1 - wall, 10 - stone wall, 100 - dirt wall, 101 - wood wall
+    # 1 - wall (generic)
+    # 10 - stone wall, 100 - dirt wall, 101 - wood wall
     # 11 - breakable wall
     # 2 - object-container
     # 3 - object-item
@@ -74,3 +76,14 @@ class PlayerCommands(object):
     FLEE = 'FLEE'
     PLAYER_COMMANDS_SET = {MOVE, TURN, JUMP, LOOK, SEARCH, USE, TAKE,
                            INVENTORY, EQUIP, UNEQUIP, ATTACK, BLOCK, FLEE}
+
+class ObjectConstants(object):
+    SMALL = 'SMALL'
+    MEDIUM = 'MEDIUM'
+    LARGE = 'LARGE'
+
+class WeaponConstant(object):
+    MELEE = 'MELEE'
+    RANGED = 'RANGED'
+    RANGE = 'range'
+    DMG = 'dmg'

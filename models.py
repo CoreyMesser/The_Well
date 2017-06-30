@@ -2,7 +2,7 @@ from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, Numeric, 
 from sqlalchemy import CheckConstraint
 from sqlalchemy.orm import relationship
 from database_service import Base, db_session
-from constants import MapConstants
+from constants import MapConstants, ObjectConstants, WeaponConstant
 
 from flask_login import LoginManager
 from flask_bcrypt import generate_password_hash, check_password_hash
@@ -488,33 +488,107 @@ class PlayerCharacter(object):
 class WallModel(object):
     wall_type = 'all'
     breakable = False
-    wall_dc = 5
+    wall_dc = (5, 10)
     wall_soak = 3
-    wall_hp = 10
 
 
 class WallStone(WallModel):
     wall_type = 'stone'
     breakable = False
-    wall_dc = 5
+    wall_dc = (5, 10)
     wall_soak = 3
-    wall_hp = 10
 
 
 class WallEarth(WallModel):
     wall_type = 'earthen'
     breakable = False
-    wall_dc = 5
+    wall_dc = (5, 10)
     wall_soak = 3
-    wall_hp = 10
 
 
 class WallCrumbling(WallModel):
     wall_type = 'crumbling'
     breakable = True
-    wall_dc = 3
+    wall_dc = (3, 3)
     wall_soak = 2
-    wall_hp = 5
+
+
+class ContainerModel(object):
+
+    container_description = ''
+    container_size = ''
+    container_weight = 0
+    container_dc = (1, 1)
+    container_soak = 0
+    container_inventory = {}
+
+    def get_description(self):
+        return self.container_description
+
+    def unpack_inventory(self):
+        for entry in self.container_inventory:
+            print(entry, '\n')
+
+
+class ContainerCrate(ContainerModel):
+
+    container_description = 'This small rotten crate looks as if it was dropped into the well long ago.'
+    container_size = ObjectConstants.SMALL
+    container_weight = 3
+    container_inventory = {'knife': '0'}
+
+
+class WeaponMeleeModel(object):
+
+    weapon_description = ''
+    weapon_name = ''
+    weapon_type = WeaponConstant.MELEE
+    weapon_atk = 0
+    weapon_dmg = 1
+    weapon_dc = (3, 2)
+    weapon_modifier = 0
+    weapon_limiter = ''
+
+    def get_description(self):
+        return self.weapon_description
+
+    def get_name(self):
+        return self.weapon_name
+
+
+class WeaponKnife(WeaponMeleeModel):
+
+    weapon_description = 'This simple carving knife had been forgotten, left to rust, lost perhaps by accident into the darkness.'
+    weapon_name = 'Rusted Knife'
+    weapon_dc = (2, 2)
+
+
+class WeaponRangedModel(object):
+
+    weapon_description = ''
+    weapon_name = ''
+    weapon_type = WeaponConstant.RANGED
+    weapon_atk = 0
+    weapon_dmg = 1
+    weapon_dc = (3, 2)
+    weapon_range = (10, 20, 40)
+    weapon_rate_of_fire = 1
+    weapon_ammo_capacity = 1
+    weapon_modifier = 0
+    weapon_limiter = ''
+
+
+class WeaponBow(WeaponRangedModel):
+
+    weapon_description = 'This primitive bow looks as if it could be as much a danger to you as it could be for your target.'
+    weapon_name = 'Waterlogged Bow'
+    weapon_dmg = 2
+    weapon_dc = (2, 2)
+    weapon_range = (5, 10, 15)
+    
+    
+
+
 
 
 class SpeciesDict(object):
@@ -803,9 +877,7 @@ class OCCs(object):
                    }
 
 
-class SearchablesModel(object):
 
-    searchables_dict = {}
 
 
 

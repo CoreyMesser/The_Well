@@ -101,7 +101,7 @@ def logout():
 
 class Introduction(object):
     def intro(self):
-        print(Templates.BANNER)
+        print(Templates.BANNER_THEWELL)
         print(Templates.INTRO)
         input('ᗛᗛᗛ Press Return to continue ᗘᗘᗘ')
         # cc = CharacterCreation()

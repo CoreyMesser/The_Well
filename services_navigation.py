@@ -2,7 +2,7 @@ import os
 from templates.template_text import Templates, CharacterControlTemplates
 from constants import NavigationConstants, MapConstants, PlayerCommands
 from level_maps.map_model import MapTemplate, Maps
-from models import CharacterModels, SearchablesModel
+from models import CharacterModels
 from services_map_rendering import MapRenderer
 from game_text.in_game_text import LookSearchMessages
 
@@ -119,7 +119,6 @@ class CharacterNavigation(object):
 class CharacterInteraction(object):
 
     def __init__(self):
-        self.search = SearchablesModel()
         self.character_services = CharacterServices()
         pass
 
@@ -138,6 +137,7 @@ class CharacterInteraction(object):
 
 
     def character_serach(self):
+
         pass
 
     def character_use(self):
