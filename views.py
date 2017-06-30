@@ -232,7 +232,6 @@ class Gameplay(object):
 
         while finished is False:
             return_menu = False
-            self.clear_screen()
             player_choice = input(self.cctemp.PLAYER_CHOICE).upper()
             # interpreter
             if player_choice == 'HELP':
@@ -265,6 +264,7 @@ class Gameplay(object):
                 pass
             if player_choice == 'FLEE':
                 pass
+            self.clear_screen()
 
             # player_command = {'HELP': print(self.cctemp.PLAYER_HELP),
             #                   'LOOK': self.ch_interaction.character_look(look_direction=input(self.cctemp.PLAYER_LOOK).upper()),

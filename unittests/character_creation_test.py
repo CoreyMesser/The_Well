@@ -536,7 +536,6 @@ class MoveInterpreter(object):
             if split in NavigationConstants.MOVE_CONVERTER_DICT.keys():
                 move = NavigationConstants.MOVE_CONVERTER_DICT[split]
 
-        
         return print(command, direction, move)
 
 
