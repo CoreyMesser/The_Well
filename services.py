@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from models import SpeciesDict, Character, CharacterMeritsFlaws, CharacterSkills, MeritsFlaws, PoccDb, SoccDb, MeritsFlawsDicts
 from database_service import db_session
 
@@ -11,7 +12,7 @@ class PrinterServices(SpeciesDict):
         :param skills_dict: 
         :return: 
         """
-        main_sheet = "[NAME]    NAME:  {name} \n" \
+        main_sheet = "[NAME]    NAME: {name} \n" \
                      "[SPECIES] SPECIES:  {species} \n" \
                      "          SPECIES SZIE:  {species_size} \n" \
                      "[SEX]     SEX: {sex} \n" \
