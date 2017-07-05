@@ -266,12 +266,6 @@ class Gameplay(object):
                 pass
             self.clear_screen()
 
-            # player_command = {'HELP': print(self.cctemp.PLAYER_HELP),
-            #                   'LOOK': self.ch_interaction.character_look(look_direction=input(self.cctemp.PLAYER_LOOK).upper()),
-            #                   'TURN': self.cn.get_player_direction(player_choice=input(self.cctemp.PLAYER_DIRECTIONS).upper()),
-            #                   'MOVE': self.cn.move_player(player_choice=input(self.cctemp.PLAYER_MOVE).upper())
-            #                   }
-
 
 class CharacterSheetExportOptions(object):
     ps = PrintCompletedCharacterSheet()

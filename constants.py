@@ -81,6 +81,7 @@ class ObjectConstants(object):
     SMALL = 'SMALL'
     MEDIUM = 'MEDIUM'
     LARGE = 'LARGE'
+    OBJECTS_DICT = {}
 
 class WeaponConstant(object):
     MELEE = 'MELEE'

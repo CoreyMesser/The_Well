@@ -5,7 +5,7 @@ from models import Character, CharacterMeritsFlaws, CharacterSkills, SpeciesDict
 from database_service import db_session
 from services_get_character import GetCharacter
 from templates.template_text import Templates, CharacterControlTemplates
-from constants import NavigationConstants, MapConstants, PlayerCommands
+from constants import NavigationConstants, MapConstants, PlayerCommands, ObjectConstants
 from level_maps.map_model import MapTemplate, Maps
 from services_map_rendering import MapTileConstants, MapRenderer
 from services_navigation import CharacterServices, CharacterNavigation, CharacterInteraction
@@ -496,6 +496,13 @@ class MessageGen(object):
         tile_message = self.ls.build_message(tile_key=tile_key, tile_position=tile_position)
         print(tile_message)
 
+class PlayerCommandsDict(object):
+
+    player_command = {'HELP': print(CharacterControlTemplates().PLAYER_HELP),
+                      'LOOK': CharacterInteraction().character_look(look_direction=input(CharacterControlTemplates().PLAYER_LOOK).upper()),
+                      'TURN': CharacterNavigation().get_player_direction(player_choice=input(CharacterControlTemplates().PLAYER_DIRECTIONS).upper()),
+                      'MOVE': CharacterNavigation().move_player(player_choice=input(CharacterControlTemplates().PLAYER_MOVE).upper())}
+
 class MoveInterpreter(object):
     def __init__(self):
         self.cn = CharacterNavigation()
@@ -504,42 +511,36 @@ class MoveInterpreter(object):
         self.gc = GetCharacter()
         self.map_render = MapRenderer()
 
-
-
-
     def player_command_breakdown(self, player_choice):
-        player_command = {'HELP': print(self.cctemp.PLAYER_HELP),
-                          'LOOK': self.ch_interaction.character_look(look_direction=input(self.cctemp.PLAYER_LOOK).upper()),
-                          'TURN': self.cn.get_player_direction(player_choice=input(self.cctemp.PLAYER_DIRECTIONS).upper()),
-                          'MOVE': self.cn.move_player(player_choice=input(self.cctemp.PLAYER_MOVE).upper())
-                          }
-        # search command
-        command = ''
-        direction = ''
-        move = 0
+
+        player_command_dict = {'command': None, 'direction': None, 'move': None, 'object_item': None}
+
         player_split = re.split(': | |, |,', player_choice)
         for split in player_split:
             if split in PlayerCommands.PLAYER_COMMANDS_SET:
-                command = split
-                # player_split.pop(player_split.index(split))
+                player_command_dict['command'] = split
 
-
-            if split in NavigationConstants.COMPASS_DIRECTIONS_LIST:
-                direction = split
-                # player_split.pop(player_split.index(split))
-
-
-            if split in NavigationConstants.DIRECTIONS_LIST:
-                look_direction = split
-                # player_split.pop(player_split.index(split))
+            if split in NavigationConstants.COMPASS_DIRECTIONS_LIST or split in NavigationConstants.DIRECTIONS_LIST:
+                player_command_dict['direction'] = split
 
             if split in NavigationConstants.MOVE_CONVERTER_DICT.keys():
-                move = NavigationConstants.MOVE_CONVERTER_DICT[split]
+                player_command_dict['move'] = NavigationConstants.MOVE_CONVERTER_DICT[split]
 
-        return print(command, direction, move)
+            if split in ObjectConstants.OBJECTS_DICT.keys():
+                player_command_dict['object_item'] = split
+
+        return player_command_dict
+
+    def command_executor(self, player_choice):
+        player_command_dict = self.player_command_breakdown(player_choice=player_choice)
+        if player_command_dict['command'] is not None and player_command_dict['direction'] is not None or player_command_dict['object_item'] is not None:
+            return PlayerCommandsDict().player_command[player_command_dict['command']]
+        pass
+
+
 
 
 if __name__ == '__main__':
     nt = MoveInterpreter()
-    player_choice = 'LOOK EAST'
+    player_choice = 'EAST : >> 2 LOOK'
     nt.player_command_breakdown(player_choice=player_choice)
