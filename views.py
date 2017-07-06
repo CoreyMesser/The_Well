@@ -17,6 +17,9 @@ from flask_login import LoginManager, login_user, logout_user, current_user, log
 from flask_bcrypt import generate_password_hash, check_password_hash
 from flask_wtf import Form
 
+import curses
+from curses import wrapper
+
 from forms import CharacterForm, RegisterForm, LoginForm
 import models
 
@@ -101,29 +104,48 @@ def logout():
 
 class Introduction(object):
     def intro(self):
-        print(Templates.BANNER_THEWELL)
-        print(Templates.INTRO)
-        input('ᗛᗛᗛ Press Return to continue ᗘᗘᗘ')
-        # cc = CharacterCreation()
-        # cc.__init__()
-        gg = Gameplay()
+        # print(Templates.BANNER_THEWELL)
+        # print(Templates.INTRO)
+        # input('ᗛᗛᗛ Press Return to continue ᗘᗘᗘ')
         ci = CursesInitializer()
+        # ci.__init__()
         ci.__init__()
+        gg = Gameplay()
         gg.__init__()
 
 
 class CursesInitializer(object):
 
     def __init__(self):
-        self.myscreen = curses.initscr()
-        self.win = curses.newwin(25, 50, 20, 20)
+        stdscr = curses.initscr()
+        wrapper(self.main(stdscr=stdscr))
 
-        self.myscreen.border(0)
-        self.myscreen.addstr(25, 50)
-        self.myscreen.refresh()
-        self.myscreen.getch()
+    def main(self, stdscr):
+        # stdscr.border(0)
+        # stdscr.refresh()
+        # win = self.make_new_window()
+        curses.noecho()
+        win = curses.newwin(30, 100, 0, 0)
+        win.box()
+        win.border(0)
+        win.refresh()
 
-        # curses.endwin()
+        win.addstr(2, 3, Templates.BANNER_THEWELL)
+        win.addstr(15, 30, Templates.CONTINUE)
+
+        win.getch()
+        curses.endwin()
+
+    def make_new_window(self):
+        win = curses.newwin(20, 20, 30, 100)
+        win.erase()
+        win.box()
+        win.refresh()
+        return win
+
+    def render_services(self, win, render):
+        win.addstr(2, 3, render)
+        
 
 class CharacterCreation(object):
 
@@ -264,6 +286,8 @@ class Gameplay(object):
                 pass
             if player_choice == 'FLEE':
                 pass
+            if player_choice == 'EXIT':
+                finished = True
             self.clear_screen()
 
 

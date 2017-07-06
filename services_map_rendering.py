@@ -75,6 +75,10 @@ class MapRenderer(object):
                 cell_print_count = 0
             cell_print_count += 1
         rendered_map.append((self.mtc.BORDER))
+        # self.print_map(rendered_map)
+        return rendered_map
+
+    def print_map(self, rendered_map):
         for tile in rendered_map:
             print(tile, end='')
 

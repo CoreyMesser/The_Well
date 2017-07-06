@@ -5,10 +5,10 @@ class CursesTest(object):
     temp =Templates()
 
     myscreen = curses.initscr()
-    # self.win = curses.newwin(25, 50, 20, 20)
+    win = curses.newwin(25, 50, 30, 100)
 
     myscreen.border(0)
-    myscreen.addstr(25, 50, temp.INTRO)
+    myscreen.addstr(10, 10, temp.BANNER_THEWELL)
     myscreen.refresh()
     myscreen.getch()
 
