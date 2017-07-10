@@ -1,10 +1,13 @@
+import random
 import re
-from templates.template_text import Templates, CharacterControlTemplates
-from constants import NavigationConstants, MapConstants, PlayerCommands
+
+from constants import NavigationConstants, MapConstants, PlayerCommands, MessagesConstants
+from game_text.in_game_text import GameMessages, TileKeyConstants
 from level_maps.map_model import MapTemplate, Maps
-from models import CharacterModels
+from models import CharacterModels, PlayerCharacter
 from services_map_rendering import MapRenderer
-from game_text.in_game_text import LookSearchMessages
+from templates.template_text import Templates, CharacterControlTemplates
+
 
 class CharacterNavigation(object):
 
@@ -120,6 +123,9 @@ class CharacterInteraction(object):
 
     def __init__(self):
         self.character_services = CharacterServices()
+        self.player_move_dict = CharacterModels.PLAYER_MOVE_DICT
+        self.player_character_dict = PlayerCharacter.character_dict
+        self.player_skills_dict = PlayerCharacter.skills_dict
         pass
 
     def character_look(self, look_direction, object_item=None):
@@ -136,7 +142,10 @@ class CharacterInteraction(object):
         # detect doors/stairs/portals/etc  7 - generic portal, 70 - basic door, 71 basic stairs
 
 
-    def character_serach(self, object):
+    def character_serach(self, search_object):
+        get_object = self.character_services.get_map_tile_ahead(tile_x_y=self.player_move_dict['location'])
+        object_message = self.character_services.serach_object(object_tile=get_object, search_object=search_object)
+
         # keyword interpreter
 
         # does that object exist
@@ -144,8 +153,6 @@ class CharacterInteraction(object):
         # what am I searching
 
         # proximity of object validator
-
-        pass
 
     def character_use(self):
         pass
@@ -162,6 +169,7 @@ class CharacterServices(object):
     def __init__(self):
         self.looksearchmsg = LookSearchMessages()
         self.player_move_dict = CharacterModels.PLAYER_MOVE_DICT
+        self.player_skills_dict = PlayerCharacter.skills_dict
         self.mpstemp = MapTemplate()
         self.player_commands = PlayerCommands()
         self.nav_constants = NavigationConstants()
@@ -192,6 +200,12 @@ class CharacterServices(object):
             tile_key = items_map[self.mpstemp.MAP_COORDINATES.index(tile_x_y)]
         return tile_key
 
+    def get_map_tile_ahead(self, tile_x_y):
+        direction_step = {NavigationConstants.NORTH: (-1, 0), NavigationConstants.SOUTH: (+1, 0),
+                          NavigationConstants.EAST: (0, +1), NavigationConstants.WEST: (0, -1)}
+        tile_ahead = self.get_map_tile(tile_x_y=(direction_step[self.player_move_dict['direction']] + tile_x_y))
+        return tile_ahead
+
     def get_tile_message(self, tile_position, tile_key, object_item=None):
         tile_message = self.looksearchmsg.build_message(tile_key=tile_key, tile_position=tile_position, object_item=object_item)
         return tile_message
@@ -216,6 +230,10 @@ class CharacterServices(object):
 
         print(self.get_tile_message(tile_position=look_direction, tile_key=tile_key))
 
+    def serach_object(self, object_tile, search_object=None):
+        object_message = self.looksearchmsg.get_tile_object(tile_key=object_tile, object_item=search_object)
+        return object_message
+
 
     def player_command_breakdown(self, player_choice):
         # search command
@@ -233,3 +251,56 @@ class CharacterServices(object):
         #           for entry in choice_list
         #           if entry in self.player_commands.PLAYER_COMMANDS_SET]
         pass
+
+
+class LookSearchMessages(TileKeyConstants):
+    def __init__(self):
+        self.player_checks_dict = PlayerCharacter.checks_dict
+
+    def skill_check(self, skill, dificulty_check):
+        if skill > dificulty_check:
+            return True
+        else:
+            return False
+
+    def get_prefix(self, tile_position):
+        tile_set = {NavigationConstants.LEFT: [GameMessages.TO_YOUR, GameMessages.LEFT],
+                    NavigationConstants.RIGHT: [GameMessages.TO_YOUR, GameMessages.RIGHT],
+                    NavigationConstants.CENTER: [GameMessages.AHEAD_OF_YOU],
+                    NavigationConstants.FORWARD: [GameMessages.AHEAD_OF_YOU]}
+        prefix = "".join(tile_set[tile_position])
+        return prefix
+
+    def build_message(self, tile_position, tile_key, object_item):
+        look_message = "{} {} {}".format(self.get_prefix(tile_position=tile_position),
+                                         self.get_tile_object(tile_key=tile_key, object_item=object_item),
+                                         self.get_message_color(tile_key=tile_key))
+        return look_message
+
+    def get_tile_object(self, tile_key, object_item=None):
+        object_message_type = self.TILE_KEY_CONSTANTS_DICT[str(tile_key)]
+        skill_check = self.skill_check(skill=self.player_checks_dict['search'], dificulty_check=object_message_type)
+        if object_item != None:
+            if object_item in object_message_type[MessagesConstants.SEARCH][MessagesConstants.KEYWORDS]:
+                if skill_check is True:
+                    item_message = object_message_type[MessagesConstants.SEARCH][MessagesConstants.CONTENTS]
+                else:
+                    item_message = random.choice(object_message_type[MessagesConstants.SEARCH][MessagesConstants.DEFAULT])
+            else:
+                item_message = random.choice(object_message_type[MessagesConstants.SEARCH][MessagesConstants.DEFAULT])
+        else:
+            if tile_key > 9:
+                item_message = random.choice(object_message_type[MessagesConstants.MESSAGES])
+            else:
+                item_type = random.choice(list(object_message_type[MessagesConstants.MESSAGES]))
+                item_message = random.choice(object_message_type[MessagesConstants.MESSAGES][item_type])
+        return item_message
+
+    def get_message_color(self, tile_key):
+        object_message_type = self.TILE_KEY_CONSTANTS_DICT[str(tile_key)]
+        if tile_key > 9:
+            message_color = random.choice(list(object_message_type[MessagesConstants.COLOR]))
+        else:
+            color_type = random.choice(list(object_message_type[MessagesConstants.COLOR]))
+            message_color = random.choice(object_message_type[MessagesConstants.COLOR][color_type])
+        return message_color

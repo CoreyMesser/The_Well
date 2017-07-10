@@ -214,5 +214,7 @@ class CharacterControlTemplates(object):
 
     PLAYER_LOOK = "ᗘᗘᗘ [LEFT], [RIGHT], [FORWARD], [BACKWARDS], [AROUND], at [OBJECT] ᗛᗛᗛ"
 
+    PLAYER_SEARCH = "ᗘᗘᗘ [OBJECT] ᗛᗛᗛ"
+
 
 # ᗘᗘᗘᗛᗛᗛ

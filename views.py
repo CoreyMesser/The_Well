@@ -239,7 +239,7 @@ class Gameplay(object):
             if player_choice == 'LOOK':
                 self.ch_interaction.character_look(look_direction=input(self.cctemp.PLAYER_LOOK).upper())
             if player_choice == 'SEARCH':
-                pass
+                self.ch_interaction.character_serach(search_object=input())
             if player_choice == 'USE':
                 pass
             if player_choice == 'TAKE':

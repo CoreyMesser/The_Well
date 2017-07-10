@@ -522,6 +522,9 @@ class ContainerModel(object):
     container_dc = (1, 1)
     container_soak = 0
     container_inventory = {}
+    container_keywords = {}
+    container_search_level = 1
+
 
     def get_description(self):
         return self.container_description
@@ -537,6 +540,7 @@ class ContainerCrate(ContainerModel):
     container_size = ObjectConstants.SMALL
     container_weight = 3
     container_inventory = {'knife': '0'}
+    container_keywords = {'crate', 'box', 'chest'}
 
 
 class WeaponMeleeModel(object):

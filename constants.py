@@ -1,6 +1,3 @@
-import os
-
-
 class Constants(object):
     CANCEL = 'CANCEL'
     SWITCH = 'SWITCH'
@@ -88,3 +85,15 @@ class WeaponConstant(object):
     RANGED = 'RANGED'
     RANGE = 'range'
     DMG = 'dmg'
+
+
+class MessagesConstants(object):
+    MESSAGES = 'messages'
+    COLOR = 'color'
+    SEARCH = 'search'
+    KEYWORDS = 'keywords'
+    CONTENTS = 'contents'
+    INVENTORY = 'inventory'
+    DEFAULT = 'default'
+
+
