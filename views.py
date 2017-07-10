@@ -145,7 +145,7 @@ class CursesInitializer(object):
 
     def render_services(self, win, render):
         win.addstr(2, 3, render)
-        
+
 
 class CharacterCreation(object):
 
