@@ -1,5 +1,5 @@
 from constants import MessagesConstants
-from models import ContainerCrate, WeaponKnife
+from models import ContainerCrate, WeaponKnife, FloorModel
 
 
 class GameMessages(object):
@@ -19,6 +19,7 @@ class GameMessages(object):
 
 
 class InGameMessages(object):
+    model = None
     messages = {}
     color = {}
     search = {}
@@ -46,6 +47,8 @@ class WallMessages(InGameMessages):
 
 
 class FloorMessages(InGameMessages):
+    model = FloorModel()
+
     messages = {'stone': ["the floor is strewn with bits of chunky gravel over hard rough stone.",
                           "brutal scores left the flagstones of the floor cracked and shattered."],
                 'damp_stone': ["a slick substance coats the floor making footing treacherous.",
@@ -57,7 +60,9 @@ class FloorMessages(InGameMessages):
                       "As if someone had designed the floor after hearing the description from a bedridden octogenarian."],
              'soft': ["You can't imagine staying upright on it for too long.", "You will never take boots for granted again."]}
 
-    search = {'default': {
+    search = {'keywords': 'floor, ground, tiles',
+              'contents': None,
+              'default': {
         'stone': ["Only a geologist would search cold stone for answers...", "Perhaps erosion will unveil something within...",
                   "Looks like... granite? You wished you would have paid more attention to uncle Susan's mineral obsession."],
         'earth': ["You are already underground, is there a point to digging further?",
@@ -67,13 +72,15 @@ class FloorMessages(InGameMessages):
 
 
 class ContainerMessages(InGameMessages):
+    model = ContainerCrate()
+
     messages = {'crate': ["Rotted and waterlogged a near formless mass of wood rests against a wall."]}
 
     color = {'crate': ["In a surrealists eye the shape generally resembles a box."]}
 
     search = {'keywords': ContainerCrate.container_keywords, 'inventory': {WeaponKnife},
-              'contents': [''.join(['{} Inside you find: {}: {}'.format(ContainerCrate().get_description(),
-                                                                        WeaponKnife().get_name(),
+              'contents': [''.join(['{} Inside you find: [{}]: {}'.format(ContainerCrate().get_description(),
+                                                                        WeaponKnife().get_name().upper(),
                                                                         WeaponKnife().get_description())])],
               'default': {'crate': ["You are not quite sure what you are looking at, but you can be sure your search yielded little results",
                           "You would have probably found something if you had been paying attention."]}}
@@ -87,16 +94,19 @@ class EntranceMessages(InGameMessages):
 
 
 class TileKeyConstants(object):
-    TILE_KEY_CONSTANTS_DICT = {'0': {MessagesConstants.MESSAGES: FloorMessages.messages,
+    TILE_KEY_CONSTANTS_DICT = {'0': {MessagesConstants.MODEL: FloorMessages.model,
+                                     MessagesConstants.MESSAGES: FloorMessages.messages,
                                      MessagesConstants.COLOR: FloorMessages.color,
                                      MessagesConstants.SEARCH: FloorMessages.search},
-                               '1': {MessagesConstants.MESSAGES: WallMessages.messages,
+                               '1': {MessagesConstants.MODEL: WallMessages.model,
+                                     MessagesConstants.MESSAGES: WallMessages.messages,
                                      MessagesConstants.COLOR: WallMessages.color,
                                      MessagesConstants.SEARCH: WallMessages.search},
                                '10': {MessagesConstants.MESSAGES: WallMessages.messages['stone'],
                                       MessagesConstants.COLOR: WallMessages.color['hard'],
                                       MessagesConstants.SEARCH: WallMessages.search},
-                               '2': {MessagesConstants.MESSAGES: ContainerMessages.messages,
+                               '2': {MessagesConstants.MODEL: ContainerMessages.model,
+                                     MessagesConstants.MESSAGES: ContainerMessages.messages,
                                      MessagesConstants.COLOR: ContainerMessages.color,
                                      MessagesConstants.SEARCH: ContainerMessages.search},
                                '9': {MessagesConstants.MESSAGES: EntranceMessages.messages,

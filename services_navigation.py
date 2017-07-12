@@ -83,7 +83,7 @@ class CharacterNavigation(object):
         vaild_move = self.valid_player_move(player_move=player_move)
         if vaild_move is True:
             self.update_player_location_and_path(location=player_move, path=player_move)
-            self.mpren.draw_map(player_move_dict=self.player_move_dict)
+            # self.mpren.draw_map(player_move_dict=self.player_move_dict)
 
     def update_player_location_and_path(self, location, path):
         """
@@ -143,8 +143,11 @@ class CharacterInteraction(object):
 
 
     def character_serach(self, search_object):
-        get_object = self.character_services.get_map_tile_ahead(tile_x_y=self.player_move_dict['location'])
-        object_message = self.character_services.serach_object(object_tile=get_object, search_object=search_object)
+        # get_object = self.character_services.get_map_tile_ahead(tile_x_y=self.player_move_dict['location'])
+        tile_center, _, _ = self.character_services.get_range_of_view(location=self.player_move_dict['location'],
+                                                                      direction=self.player_move_dict['direction'])
+        object_message = self.character_services.search_object(object_tile=tile_center, search_object=search_object)
+        print(object_message)
 
         # keyword interpreter
 
@@ -201,9 +204,12 @@ class CharacterServices(object):
         return tile_key
 
     def get_map_tile_ahead(self, tile_x_y):
-        direction_step = {NavigationConstants.NORTH: (-1, 0), NavigationConstants.SOUTH: (+1, 0),
-                          NavigationConstants.EAST: (0, +1), NavigationConstants.WEST: (0, -1)}
-        tile_ahead = self.get_map_tile(tile_x_y=(direction_step[self.player_move_dict['direction']] + tile_x_y))
+        x, y = tile_x_y
+        direction_step = {NavigationConstants.NORTH: (0, -1), NavigationConstants.SOUTH: (0, +1),
+                          NavigationConstants.EAST: (+1, 0), NavigationConstants.WEST: (-1, 0)}
+
+        xx, yy = direction_step[self.player_move_dict['direction'][0]], direction_step[self.player_move_dict['direction'][1]]
+        tile_ahead = self.get_map_tile(tile_x_y=((x + xx), (y + yy)))
         return tile_ahead
 
     def get_tile_message(self, tile_position, tile_key, object_item=None):
@@ -230,8 +236,10 @@ class CharacterServices(object):
 
         print(self.get_tile_message(tile_position=look_direction, tile_key=tile_key))
 
-    def serach_object(self, object_tile, search_object=None):
-        object_message = self.looksearchmsg.get_tile_object(tile_key=object_tile, object_item=search_object)
+    def search_object(self, object_tile, search_object=None):
+        tile_key = self.get_map_tile(tile_x_y=object_tile)
+        tile_object = self.looksearchmsg.get_tile_object(tile_key=tile_key, object_item=search_object)
+        object_message = ("{}".format(tile_object))
         return object_message
 
 
@@ -258,7 +266,7 @@ class LookSearchMessages(TileKeyConstants):
         self.player_checks_dict = PlayerCharacter.checks_dict
 
     def skill_check(self, skill, dificulty_check):
-        if skill > dificulty_check:
+        if skill >= dificulty_check:
             return True
         else:
             return False
@@ -277,13 +285,19 @@ class LookSearchMessages(TileKeyConstants):
                                          self.get_message_color(tile_key=tile_key))
         return look_message
 
+
     def get_tile_object(self, tile_key, object_item=None):
         object_message_type = self.TILE_KEY_CONSTANTS_DICT[str(tile_key)]
-        skill_check = self.skill_check(skill=self.player_checks_dict['search'], dificulty_check=object_message_type)
         if object_item != None:
             if object_item in object_message_type[MessagesConstants.SEARCH][MessagesConstants.KEYWORDS]:
+                skill_check = self.skill_check(skill=self.player_checks_dict['search'],
+                                               dificulty_check=object_message_type['model'].search_level)
                 if skill_check is True:
-                    item_message = object_message_type[MessagesConstants.SEARCH][MessagesConstants.CONTENTS]
+                    if object_message_type[MessagesConstants.SEARCH][MessagesConstants.CONTENTS] is None:
+                        item_type = random.choice(list(object_message_type[MessagesConstants.SEARCH][MessagesConstants.DEFAULT]))
+                        item_message = random.choice(object_message_type[MessagesConstants.SEARCH][MessagesConstants.DEFAULT][item_type])
+                    else:
+                        item_message = object_message_type[MessagesConstants.SEARCH][MessagesConstants.CONTENTS]
                 else:
                     item_message = random.choice(object_message_type[MessagesConstants.SEARCH][MessagesConstants.DEFAULT])
             else:

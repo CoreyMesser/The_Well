@@ -95,5 +95,6 @@ class MessagesConstants(object):
     CONTENTS = 'contents'
     INVENTORY = 'inventory'
     DEFAULT = 'default'
+    MODEL = 'model'
 
 

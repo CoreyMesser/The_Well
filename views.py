@@ -102,7 +102,7 @@ def logout():
 class Introduction(object):
     def intro(self):
         print(Templates.BANNER_THEWELL)
-        print(Templates.INTRO)
+        # print(Templates.INTRO)
         input('ᗛᗛᗛ Press Return to continue ᗘᗘᗘ')
         # cc = CharacterCreation()
         # cc.__init__()
@@ -215,9 +215,9 @@ class Gameplay(object):
 
     def setup(self):
         self.cn.start_location(player_move_dict=self.player_move_dict)
+        self.map_render.draw_map(player_move_dict=self.player_move_dict)
         # self.cn.update_player_location_and_path(location=CharacterModels.PLAYER_MOVE_DICT['location'],
         #                                          path=CharacterModels.PLAYER_MOVE_DICT['path'])
-        self.map_render.draw_map(player_move_dict=self.player_move_dict)
 
     def retreive_character(self):
         """
@@ -239,7 +239,7 @@ class Gameplay(object):
             if player_choice == 'LOOK':
                 self.ch_interaction.character_look(look_direction=input(self.cctemp.PLAYER_LOOK).upper())
             if player_choice == 'SEARCH':
-                self.ch_interaction.character_serach(search_object=input())
+                self.ch_interaction.character_serach(search_object=input(self.cctemp.PLAYER_SEARCH.upper()))
             if player_choice == 'USE':
                 pass
             if player_choice == 'TAKE':
@@ -247,7 +247,7 @@ class Gameplay(object):
             if player_choice == 'TURN':
                 self.cn.get_player_direction(player_choice=input(self.cctemp.PLAYER_DIRECTIONS).upper())
             if player_choice == 'MOVE':
-                self.cn.move_player(player_choice=input(self.cctemp.PLAYER_MOVE).upper())
+                self.cn.move_player(player_choice=input(self.cctemp.PLAYER_MOVE).lower())
             if player_choice == 'CLIMB':
                 pass
             if player_choice == 'JUMP':
@@ -265,6 +265,7 @@ class Gameplay(object):
             if player_choice == 'FLEE':
                 pass
             self.clear_screen()
+            self.map_render.draw_map(player_move_dict=self.player_move_dict)
 
 
 class CharacterSheetExportOptions(object):

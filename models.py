@@ -486,11 +486,24 @@ class PlayerCharacter(object):
                    'move': 10}
 
 
+class FloorModel(object):
+    floor_type = 'all'
+    breakable = False
+    floor_dc = (5, 10)
+    floor_soak = 3
+    search_level = 0
+
+class FloorStone(FloorModel):
+    floor_type = 'stone'
+    search_level = 0
+
+
 class WallModel(object):
     wall_type = 'all'
     breakable = False
     wall_dc = (5, 10)
     wall_soak = 3
+    search_level = 0
 
 
 class WallStone(WallModel):
@@ -523,7 +536,7 @@ class ContainerModel(object):
     container_soak = 0
     container_inventory = {}
     container_keywords = {}
-    container_search_level = 1
+    search_level = 1
 
 
     def get_description(self):
@@ -541,6 +554,7 @@ class ContainerCrate(ContainerModel):
     container_weight = 3
     container_inventory = {'knife': '0'}
     container_keywords = {'crate', 'box', 'chest'}
+    search_level = 0
 
 
 class WeaponMeleeModel(object):
