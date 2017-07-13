@@ -1,7 +1,7 @@
 import random
 import re
 
-from constants import NavigationConstants, MapConstants, PlayerCommands, MessagesConstants
+from constants import NavigationConstants, MapConstants, PlayerCommands, MessagesConstants, ObjectConstants
 from game_text.in_game_text import GameMessages, TileKeyConstants
 from level_maps.map_model import MapTemplate, Maps
 from models import CharacterModels, PlayerCharacter
@@ -13,13 +13,13 @@ class CharacterNavigation(object):
 
     def __init__(self):
         self.cctemp = CharacterControlTemplates()
-        self.nc = NavigationConstants()
         self.templates = Templates()
         self.mps = Maps()
         self.mpstemp = MapTemplate()
         self.mpsc = MapConstants()
         self.mpren = MapRenderer()
         self.player_move_dict = CharacterModels.PLAYER_MOVE_DICT
+        self.nav_constants = NavigationConstants()
 
     def clear_screen(self):
         pass
@@ -31,31 +31,35 @@ class CharacterNavigation(object):
         self.update_player_location_and_path(location=starting_coordinates, path=starting_coordinates)
 
     def get_player_direction(self, player_choice):
-        return_menu = False
-        directions = self.nc.DIRECTIONS_DICT
-        while return_menu is False:
-            if player_choice in directions:
-                self.player_move_dict['direction'] = player_choice
-                return_menu = True
-            else:
-                print(self.templates.VALID_ENTRY)
-                player_choice = input(self.cctemp.PLAYER_DIRECTIONS).upper()
+        if player_choice in self.nav_constants.DIRECTIONS_LIST:
+            self.player_move_dict['direction'] = player_choice
+        else:
+            self.player_move_dict['direction'] = player_choice['direction']
 
     def get_player_moves(self, player_choice):
-        directions = self.nc.DIRECTIONS_DICT
-        player_list = list(player_choice)
-        player_move = 0
-        for direction_check in player_list:
-            if direction_check in directions:
-                if directions[direction_check] == self.player_move_dict['direction']:
+        try:
+            player_move = player_choice['move']
+            if player_choice['direction']:
+                if self.player_move_dict['direction'] != player_choice['direction']:
+                    if player_choice['direction'] in self.nav_constants.COMPASS_DIRECTIONS_LIST:
+                        self.player_move_dict['direction'] = player_choice['direction']
+                    else:
+                        self.player_move_dict['direction'] = self.nav_constants.COMPASS_DIRECTIONS_INTERPRETER[self.player_move_dict['direction']][player_choice['direction']]
+        except:
+            directions = self.nav_constants.DIRECTIONS_DICT
+            player_list = list(player_choice)
+            player_move = 0
+            for direction_check in player_list:
+                if direction_check in directions:
+                    if directions[direction_check] == self.player_move_dict['direction']:
+                        break
+                    else:
+                        self.player_move_dict['direction'] = directions[direction_check]
+                        break
+            for move_check in player_list:
+                if move_check in self.nav_constants.MOVE_CONVERTER_DICT:
+                    player_move = self.nav_constants.MOVE_CONVERTER_DICT[move_check]
                     break
-                else:
-                    self.player_move_dict['direction'] = directions[direction_check]
-                    break
-        for move_check in player_list:
-            if move_check in self.nc.MOVE_CONVERTER_DICT:
-                player_move = self.nc.MOVE_CONVERTER_DICT[move_check]
-                break
         return player_move
 
     def move_player(self, player_choice):
@@ -126,9 +130,15 @@ class CharacterInteraction(object):
         self.player_move_dict = CharacterModels.PLAYER_MOVE_DICT
         self.player_character_dict = PlayerCharacter.character_dict
         self.player_skills_dict = PlayerCharacter.skills_dict
-        pass
+        self.nav_constants = NavigationConstants()
 
-    def character_look(self, look_direction, object_item=None):
+
+    def character_look(self, player_choice, object_item=None):
+        if player_choice in self.nav_constants.DIRECTIONS_LIST:
+            look_direction = player_choice
+        else:
+            look_direction = player_choice['direction']
+
         # where am I
         location, direction = self.character_services.get_player_position_and_directon()
 
@@ -318,3 +328,69 @@ class LookSearchMessages(TileKeyConstants):
             color_type = random.choice(list(object_message_type[MessagesConstants.COLOR]))
             message_color = random.choice(object_message_type[MessagesConstants.COLOR][color_type])
         return message_color
+
+
+class CommandServices(object):
+    cs = CharacterServices()
+    ci = CharacterInteraction()
+    cn = CharacterNavigation()
+    cctemp = CharacterControlTemplates()
+
+    def __init__(self):
+        self.cn = CharacterNavigation()
+        self.ch_interaction = CharacterInteraction()
+        self.cctemp = CharacterControlTemplates()
+
+    def player_command_breakdown(self, player_choice):
+
+        player_command_dict = {'command': None, 'direction': None, 'move': None, 'object_item': None}
+
+        player_split = re.split(': | |, |,', player_choice)
+        for split in player_split:
+            if split in PlayerCommands.PLAYER_COMMANDS_SET:
+                player_command_dict['command'] = split
+
+            if split in NavigationConstants.COMPASS_DIRECTIONS_LIST or split in NavigationConstants.DIRECTIONS_LIST:
+                player_command_dict['direction'] = split
+
+            if split in NavigationConstants.MOVE_CONVERTER_DICT.keys():
+                player_command_dict['move'] = NavigationConstants.MOVE_CONVERTER_DICT[split]
+
+            if split in ObjectConstants.OBJECTS_DICT.keys():
+                player_command_dict['object_item'] = split
+
+        return player_command_dict
+
+    def player_command_execute(self, player_choice):
+        is_single = True
+        player_command_dict = self.player_command_breakdown(player_choice=player_choice)
+        if player_command_dict['command']:
+            if player_command_dict['direction'] or player_command_dict['object_item'] or player_command_dict['move']:
+                is_single = False
+        self.player_commands(player_command=player_command_dict, is_single=is_single)
+
+    def player_commands(self, player_command, is_single):
+        command = player_command['command']
+
+        player_command_dict = {'LOOK':  {'template': self.cctemp.PLAYER_LOOK,
+                                     'command': self.ci.character_look
+                                     },
+                               'TURN': {'template': self.cctemp.PLAYER_DIRECTIONS,
+                                        'command': self.cn.get_player_direction
+                                        },
+                               'SEARCH': {'template': self.cctemp.PLAYER_SEARCH,
+                                        'command': self.ci.character_serach
+                                        },
+                               'MOVE': {'template': self.cn.move_player,
+                                     'command': self.cn.move_player
+                                     }}
+
+        if is_single is False:
+            return player_command_dict[command]['command'](player_command)
+        else:
+            template = player_command_dict[command]['template']
+            return player_command_dict[command]['command'](self.player_input(template=template))
+
+    def player_input(self, template):
+        player_input = input(template).upper()
+        return player_input

@@ -8,7 +8,7 @@ from templates.template_text import Templates, CharacterControlTemplates
 from constants import NavigationConstants, MapConstants, PlayerCommands, ObjectConstants
 from level_maps.map_model import MapTemplate, Maps
 from services_map_rendering import MapTileConstants, MapRenderer
-from services_navigation import CharacterServices, CharacterNavigation, CharacterInteraction, LookSearchMessages
+from services_navigation import CharacterServices, CharacterNavigation, CharacterInteraction, LookSearchMessages, CommandServices
 import curses
 
 
@@ -496,17 +496,16 @@ class MessageGen(object):
         print(tile_message)
 
 class PlayerCommandsDict(object):
+    pass
 
-    player_command = {'HELP': print(CharacterControlTemplates().PLAYER_HELP),
-                      'LOOK': CharacterInteraction().character_look(look_direction=input(CharacterControlTemplates().PLAYER_LOOK).upper()),
-                      'TURN': CharacterNavigation().get_player_direction(player_choice=input(CharacterControlTemplates().PLAYER_DIRECTIONS).upper()),
-                      'MOVE': CharacterNavigation().move_player(player_choice=input(CharacterControlTemplates().PLAYER_MOVE).upper())}
+
 
 class MoveInterpreter(object):
     def __init__(self):
         self.cn = CharacterNavigation()
         self.ch_interaction = CharacterInteraction()
         self.cctemp = CharacterControlTemplates()
+        self.command_services = CommandServices()
         self.gc = GetCharacter()
         self.map_render = MapRenderer()
 
@@ -530,16 +529,20 @@ class MoveInterpreter(object):
 
         return player_command_dict
 
-    def command_executor(self, player_choice):
+    def player_command_execute(self, player_choice):
+        is_single = True
         player_command_dict = self.player_command_breakdown(player_choice=player_choice)
-        if player_command_dict['command'] is not None and player_command_dict['direction'] is not None or player_command_dict['object_item'] is not None:
-            return PlayerCommandsDict().player_command[player_command_dict['command']]
-        pass
+        if player_command_dict['command']:
+            if player_command_dict['direction'] or player_command_dict['object_item'] or player_command_dict['move']:
+                is_single = False
+        return self.command_services.player_commands(player_command=player_command_dict, is_single=is_single)
+
 
 
 
 
 if __name__ == '__main__':
     nt = MoveInterpreter()
-    player_choice = 'EAST : >> 2 LOOK'
-    nt.player_command_breakdown(player_choice=player_choice)
+    # player_choice = 'EAST : >> 2 MOVE'
+    player_choice = input(">>>").upper()
+    nt.player_command_execute(player_choice=player_choice)

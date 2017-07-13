@@ -4,6 +4,7 @@ import os
 from character_pc import Species, HealthPoints, Stats, CharacterSkillsGenerator, MeritsFlawsGenerator, POCC, SOCC, CharacterStoreSession
 from templates.template_text import Templates, CharacterControlTemplates
 from services import PrinterServices, PrintCompletedCharacterSheet
+from services_navigation import CommandServices
 from services_navigation import CharacterNavigation, CharacterInteraction
 from services_get_character import GetCharacter
 from services_map_rendering import MapRenderer
@@ -202,11 +203,12 @@ class Gameplay(object):
 
     def __init__(self):
         self.cn = CharacterNavigation()
-        self.ch_interaction = CharacterInteraction()
+        # self.ch_interaction = CharacterInteraction()
         self.cctemp = CharacterControlTemplates()
         self.gc = GetCharacter()
         self.player_move_dict = self.retreive_character()
         self.map_render = MapRenderer()
+        self.command_services = CommandServices()
         self.setup()
         self.player_controls()
 
@@ -232,38 +234,41 @@ class Gameplay(object):
 
         while finished is False:
             return_menu = False
-            player_choice = input(self.cctemp.PLAYER_CHOICE).upper()
+
+            self.command_services.player_command_execute(player_choice=input(self.cctemp.PLAYER_CHOICE).upper())
+
+            # player_choice = input(self.cctemp.PLAYER_CHOICE).upper()
             # interpreter
-            if player_choice == 'HELP':
-                print(self.cctemp.PLAYER_HELP)
-            if player_choice == 'LOOK':
-                self.ch_interaction.character_look(look_direction=input(self.cctemp.PLAYER_LOOK).upper())
-            if player_choice == 'SEARCH':
-                self.ch_interaction.character_serach(search_object=input(self.cctemp.PLAYER_SEARCH.upper()))
-            if player_choice == 'USE':
-                pass
-            if player_choice == 'TAKE':
-                pass
-            if player_choice == 'TURN':
-                self.cn.get_player_direction(player_choice=input(self.cctemp.PLAYER_DIRECTIONS).upper())
-            if player_choice == 'MOVE':
-                self.cn.move_player(player_choice=input(self.cctemp.PLAYER_MOVE).lower())
-            if player_choice == 'CLIMB':
-                pass
-            if player_choice == 'JUMP':
-                pass
-            if player_choice == 'INVENTORY':
-                pass
-            if player_choice == 'EQUIP':
-                pass
-            if player_choice == 'UNEQUIP':
-                pass
-            if player_choice == 'ATTACK':
-                pass
-            if player_choice == 'BLOCK':
-                pass
-            if player_choice == 'FLEE':
-                pass
+            # if player_choice == 'HELP':
+            #     print(self.cctemp.PLAYER_HELP)
+            # if player_choice == 'LOOK':
+            #     self.ch_interaction.character_look(look_direction=input(self.cctemp.PLAYER_LOOK).upper())
+            # if player_choice == 'SEARCH':
+            #     self.ch_interaction.character_serach(search_object=input(self.cctemp.PLAYER_SEARCH.upper()))
+            # if player_choice == 'USE':
+            #     pass
+            # if player_choice == 'TAKE':
+            #     pass
+            # if player_choice == 'TURN':
+            #     self.cn.get_player_direction(player_choice=input(self.cctemp.PLAYER_DIRECTIONS).upper())
+            # if player_choice == 'MOVE':
+            #     self.cn.move_player(player_choice=input(self.cctemp.PLAYER_MOVE).lower())
+            # if player_choice == 'CLIMB':
+            #     pass
+            # if player_choice == 'JUMP':
+            #     pass
+            # if player_choice == 'INVENTORY':
+            #     pass
+            # if player_choice == 'EQUIP':
+            #     pass
+            # if player_choice == 'UNEQUIP':
+            #     pass
+            # if player_choice == 'ATTACK':
+            #     pass
+            # if player_choice == 'BLOCK':
+            #     pass
+            # if player_choice == 'FLEE':
+            #     pass
             self.clear_screen()
             self.map_render.draw_map(player_move_dict=self.player_move_dict)
 

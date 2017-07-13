@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from models import SpeciesDict, Character, CharacterMeritsFlaws, CharacterSkills, MeritsFlaws, PoccDb, SoccDb, MeritsFlawsDicts
 from database_service import db_session
+from models import SpeciesDict, Character, CharacterMeritsFlaws, CharacterSkills, MeritsFlaws, PoccDb, SoccDb, MeritsFlawsDicts
 
 
 class PrinterServices(SpeciesDict):
@@ -257,4 +257,5 @@ class FormServiecs(object):
     def generate_selectable_mf_list(self, mf_dict):
         for k, v in mf_dict:
             return
+
 
