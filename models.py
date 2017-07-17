@@ -18,6 +18,8 @@ class CharacterModels(object):
                         'direction': 'NORTH',
                         'current_level': MapConstants.LEVEL_00}
 
+    PLAYER_INVENTORY_DICT = {'equiped': {}, 'bag': {}, 'purse': {}}
+
 class Navigation(object):
     pass
 
@@ -492,6 +494,8 @@ class FloorModel(object):
     floor_dc = (5, 10)
     floor_soak = 3
     search_level = 0
+    keywords = {ObjectConstants.FLOOR, ObjectConstants.GROUND}
+    model = ObjectConstants.FLOOR
 
 class FloorStone(FloorModel):
     floor_type = 'stone'
@@ -504,6 +508,7 @@ class WallModel(object):
     wall_dc = (5, 10)
     wall_soak = 3
     search_level = 0
+    model = ObjectConstants.WALL
 
 
 class WallStone(WallModel):
@@ -535,8 +540,9 @@ class ContainerModel(object):
     container_dc = (1, 1)
     container_soak = 0
     container_inventory = {}
-    container_keywords = {}
+    keywords = {}
     search_level = 1
+    model = ObjectConstants.CONTAINER
 
 
     def get_description(self):
@@ -553,7 +559,7 @@ class ContainerCrate(ContainerModel):
     container_size = ObjectConstants.SMALL
     container_weight = 3
     container_inventory = {'knife': '0'}
-    container_keywords = {'crate', 'box', 'chest'}
+    keywords = {ObjectConstants.CRATE, ObjectConstants.CHEST, ObjectConstants.BOX}
     search_level = 0
 
 
@@ -567,6 +573,7 @@ class WeaponMeleeModel(object):
     weapon_dc = (3, 2)
     weapon_modifier = 0
     weapon_limiter = ''
+    model = WeaponConstant.WEAPON
 
     def get_description(self):
         return self.weapon_description
@@ -595,6 +602,7 @@ class WeaponRangedModel(object):
     weapon_ammo_capacity = 1
     weapon_modifier = 0
     weapon_limiter = ''
+    model = WeaponConstant.WEAPON
 
 
 class WeaponBow(WeaponRangedModel):

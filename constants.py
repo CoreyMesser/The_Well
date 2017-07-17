@@ -30,8 +30,8 @@ class NavigationConstants(object):
     DIRECTIONS_DICT = {NORTH: NORTH, SOUTH: SOUTH, EAST: EAST, WEST: WEST, 'N': NORTH, 'S': SOUTH, 'E':EAST, 'W': WEST}
     COMPASS_DIRECTIONS_INTERPRETER = {NORTH: {WEST: LEFT, EAST: RIGHT, SOUTH: BACKWARDS, RIGHT: EAST, LEFT: WEST, BACKWARDS: SOUTH, FORWARD: NORTH},
                                       EAST: {NORTH: LEFT, SOUTH: RIGHT, WEST: BACKWARDS, RIGHT: SOUTH, LEFT: NORTH, BACKWARDS: WEST, FORWARD:EAST},
-                                      SOUTH: {EAST: LEFT, WEST: RIGHT, NORTH: BACKWARDS},
-                                      WEST: {SOUTH: LEFT, NORTH: RIGHT, EAST: BACKWARDS},}
+                                      SOUTH: {EAST: LEFT, WEST: RIGHT, NORTH: BACKWARDS, RIGHT: WEST, LEFT: EAST, BACKWARDS: NORTH, FORWARD: SOUTH},
+                                      WEST: {SOUTH: LEFT, NORTH: RIGHT, EAST: BACKWARDS, RIGHT: NORTH, LEFT: SOUTH, BACKWARDS: EAST, FORWARD: WEST}}
     MOVE_CONVERTER_DICT = {'1': 1, '2': 2, '3': 3, '4': 4, '5': 5}
 
 class MapConstants(object):
@@ -71,6 +71,9 @@ class PlayerCommands(object):
     ATTACK = 'ATTACK'
     BLOCK = 'BLOCK'
     FLEE = 'FLEE'
+    CANCEL = 'CANCEL'
+    EXIT = 'EXIT'
+    PLAYER_EXIT = {CANCEL, EXIT}
     PLAYER_COMMANDS_SET = {MOVE, TURN, JUMP, LOOK, SEARCH, USE, TAKE,
                            INVENTORY, EQUIP, UNEQUIP, ATTACK, BLOCK, FLEE}
 
@@ -78,9 +81,20 @@ class ObjectConstants(object):
     SMALL = 'SMALL'
     MEDIUM = 'MEDIUM'
     LARGE = 'LARGE'
-    OBJECTS_DICT = {}
+    FLOOR = 'FLOOR'
+    GROUND = 'GROUND'
+    TILE = 'TILE'
+    WALL = 'WALL'
+    STONE = 'STONE'
+    ROCK = 'ROCK'
+    CONTAINER = 'CONTAINER'
+    CRATE = 'CRATE'
+    BOX = 'BOX'
+    CHEST = 'CHEST'
+    OBJECTS_SET = {FLOOR, GROUND, TILE, WALL, STONE, ROCK, CONTAINER, CHEST, CRATE}
 
 class WeaponConstant(object):
+    WEAPON = 'WEAPON'
     MELEE = 'MELEE'
     RANGED = 'RANGED'
     RANGE = 'range'

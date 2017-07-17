@@ -34,7 +34,10 @@ class CharacterNavigation(object):
         if player_choice in self.nav_constants.DIRECTIONS_LIST:
             self.player_move_dict['direction'] = player_choice
         else:
-            self.player_move_dict['direction'] = player_choice['direction']
+            turn = self.nav_constants.COMPASS_DIRECTIONS_INTERPRETER[self.player_move_dict['direction']][
+                player_choice['direction']]
+            self.player_move_dict['direction'] = self.nav_constants.COMPASS_DIRECTIONS_INTERPRETER[self.player_move_dict['direction']][
+                player_choice['direction']]
 
     def get_player_moves(self, player_choice):
         try:
@@ -129,8 +132,10 @@ class CharacterInteraction(object):
         self.character_services = CharacterServices()
         self.player_move_dict = CharacterModels.PLAYER_MOVE_DICT
         self.player_character_dict = PlayerCharacter.character_dict
+        self.
         self.player_skills_dict = PlayerCharacter.skills_dict
         self.nav_constants = NavigationConstants()
+        self.look_search = LookSearchServices()
 
 
     def character_look(self, player_choice, object_item=None):
@@ -139,13 +144,8 @@ class CharacterInteraction(object):
         else:
             look_direction = player_choice['direction']
 
-        # where am I
         location, direction = self.character_services.get_player_position_and_directon()
-
-        # what direction am I pointed
         look_direction = self.character_services.look_direction_interpreter(look_direction=look_direction, direction=direction)
-
-        # what is around me
         self.character_services.look_see(look_direction=look_direction, location=location, direction=direction)
 
         # detect if a hallway/room exists floor id 00 - basic hall, 01 - basic room 02 - basic nook/alcove
@@ -153,24 +153,30 @@ class CharacterInteraction(object):
 
 
     def character_serach(self, search_object):
-        # get_object = self.character_services.get_map_tile_ahead(tile_x_y=self.player_move_dict['location'])
         tile_center, _, _ = self.character_services.get_range_of_view(location=self.player_move_dict['location'],
                                                                       direction=self.player_move_dict['direction'])
-        object_message = self.character_services.search_object(object_tile=tile_center, search_object=search_object)
+        object_message, tile_key = self.character_services.search_object(object_tile=tile_center, search_object=search_object['object_item'])
+
+        self.character_services.open_container(tile_key=tile_key)
+
         print(object_message)
 
-        # keyword interpreter
+        # take subroutine
 
-        # does that object exist
-
-        # what am I searching
-
-        # proximity of object validator
 
     def character_use(self):
         pass
 
-    def character_take(self):
+    def character_take(self, player_choice, object_model=None):
+        if object_model:
+            if player_choice in object_model.container_inventory.keys():
+                self.player_character_dict
+
+        # single item vs all items
+
+        # keep a container open if container
+        # take an item
+        # detect object_item
         pass
 
 
@@ -180,7 +186,7 @@ class NPCNavigation(object):
 class CharacterServices(object):
     
     def __init__(self):
-        self.looksearchmsg = LookSearchMessages()
+        self.look_search = LookSearchServices()
         self.player_move_dict = CharacterModels.PLAYER_MOVE_DICT
         self.player_skills_dict = PlayerCharacter.skills_dict
         self.mpstemp = MapTemplate()
@@ -223,7 +229,7 @@ class CharacterServices(object):
         return tile_ahead
 
     def get_tile_message(self, tile_position, tile_key, object_item=None):
-        tile_message = self.looksearchmsg.build_message(tile_key=tile_key, tile_position=tile_position, object_item=object_item)
+        tile_message = self.look_search.build_message(tile_key=tile_key, tile_position=tile_position, object_item=object_item)
         return tile_message
 
     def look_direction_interpreter(self, look_direction, direction):
@@ -248,30 +254,28 @@ class CharacterServices(object):
 
     def search_object(self, object_tile, search_object=None):
         tile_key = self.get_map_tile(tile_x_y=object_tile)
-        tile_object = self.looksearchmsg.get_tile_object(tile_key=tile_key, object_item=search_object)
+        tile_object = self.look_search.get_tile_object(tile_key=tile_key, object_item=search_object)
         object_message = ("{}".format(tile_object))
-        return object_message
+        return object_message, tile_key
 
+    def open_container(self, tile_key):
+        object_model = self.look_search.get_object_model(tile_key=tile_key)
+        if object_model.model == ObjectConstants.CONTAINER:
+            is_open = True
+            while is_open is True:
+                # print inventory
 
-    def player_command_breakdown(self, player_choice):
-        # search command
-        if re.search(PlayerCommands.PLAYER_COMMANDS_SET, player_choice):
-            # search action, direction, object
-            if re.search([0-9], player_choice):
-                if re.search(NavigationConstants.COMPASS_DIRECTIONS_LIST, player_choice) or re.search(NavigationConstants.DIRECTIONS_LIST, player_choice):
-                    return 'move'
+                player_choice = input()
 
-        # regex to find pattern
-        # breaks up words
+                # take
+                if len(object_model.container_inventory) == 0:
+                    print('close')
+                    is_open = False
+                elif player_choice in PlayerCommands.PLAYER_EXIT:
+                    print('close')
+                    is_open = False
 
-        # choice_list = player_choice.split('')
-        # choice = [entry
-        #           for entry in choice_list
-        #           if entry in self.player_commands.PLAYER_COMMANDS_SET]
-        pass
-
-
-class LookSearchMessages(TileKeyConstants):
+class LookSearchServices(TileKeyConstants):
     def __init__(self):
         self.player_checks_dict = PlayerCharacter.checks_dict
 
@@ -294,7 +298,6 @@ class LookSearchMessages(TileKeyConstants):
                                          self.get_tile_object(tile_key=tile_key, object_item=object_item),
                                          self.get_message_color(tile_key=tile_key))
         return look_message
-
 
     def get_tile_object(self, tile_key, object_item=None):
         object_message_type = self.TILE_KEY_CONSTANTS_DICT[str(tile_key)]
@@ -329,6 +332,10 @@ class LookSearchMessages(TileKeyConstants):
             message_color = random.choice(object_message_type[MessagesConstants.COLOR][color_type])
         return message_color
 
+    def get_object_model(self, tile_key):
+        object_model = self.TILE_KEY_CONSTANTS_DICT[str(tile_key)][MessagesConstants.MODEL]
+        return object_model
+
 
 class CommandServices(object):
     cs = CharacterServices()
@@ -356,7 +363,7 @@ class CommandServices(object):
             if split in NavigationConstants.MOVE_CONVERTER_DICT.keys():
                 player_command_dict['move'] = NavigationConstants.MOVE_CONVERTER_DICT[split]
 
-            if split in ObjectConstants.OBJECTS_DICT.keys():
+            if split in ObjectConstants.OBJECTS_SET:
                 player_command_dict['object_item'] = split
 
         return player_command_dict

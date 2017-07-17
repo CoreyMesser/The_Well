@@ -8,7 +8,7 @@ from templates.template_text import Templates, CharacterControlTemplates
 from constants import NavigationConstants, MapConstants, PlayerCommands, ObjectConstants
 from level_maps.map_model import MapTemplate, Maps
 from services_map_rendering import MapTileConstants, MapRenderer
-from services_navigation import CharacterServices, CharacterNavigation, CharacterInteraction, LookSearchMessages, CommandServices
+from services_navigation import CharacterServices, CharacterNavigation, CharacterInteraction, LookSearchServices, CommandServices
 import curses
 
 
@@ -489,7 +489,7 @@ class CursesInitializer(object):
 
 class MessageGen(object):
     cs = CharacterServices()
-    ls = LookSearchMessages()
+    ls = LookSearchServices()
     def get_tile_message(self, tile_position, tile_x_y, object=None):
         tile_key = self.cs.get_map_tile(tile_x_y=tile_x_y)
         tile_message = self.ls.build_message(tile_key=tile_key, tile_position=tile_position)
@@ -524,7 +524,7 @@ class MoveInterpreter(object):
             if split in NavigationConstants.MOVE_CONVERTER_DICT.keys():
                 player_command_dict['move'] = NavigationConstants.MOVE_CONVERTER_DICT[split]
 
-            if split in ObjectConstants.OBJECTS_DICT.keys():
+            if split in ObjectConstants.OBJECTS_SET.keys():
                 player_command_dict['object_item'] = split
 
         return player_command_dict
@@ -537,12 +537,17 @@ class MoveInterpreter(object):
                 is_single = False
         return self.command_services.player_commands(player_command=player_command_dict, is_single=is_single)
 
+class ModelDetection(object):
+    def __init__(self):
+        self.look_search = LookSearchServices()
 
+    def detect_model(self, tile_key):
+        object_model = self.look_search.get_object_model(tile_key=tile_key)
+        return object_model
 
 
 
 if __name__ == '__main__':
-    nt = MoveInterpreter()
-    # player_choice = 'EAST : >> 2 MOVE'
-    player_choice = input(">>>").upper()
-    nt.player_command_execute(player_choice=player_choice)
+    nt = ModelDetection()
+    tile_key = 2
+    nt.detect_model(tile_key=tile_key)

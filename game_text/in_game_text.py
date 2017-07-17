@@ -1,4 +1,4 @@
-from constants import MessagesConstants
+from constants import MessagesConstants, ObjectConstants
 from models import ContainerCrate, WeaponKnife, FloorModel
 
 
@@ -60,7 +60,7 @@ class FloorMessages(InGameMessages):
                       "As if someone had designed the floor after hearing the description from a bedridden octogenarian."],
              'soft': ["You can't imagine staying upright on it for too long.", "You will never take boots for granted again."]}
 
-    search = {'keywords': 'floor, ground, tiles',
+    search = {'keywords': (ObjectConstants.FLOOR, ObjectConstants.GROUND, ObjectConstants.TILE),
               'contents': None,
               'default': {
         'stone': ["Only a geologist would search cold stone for answers...", "Perhaps erosion will unveil something within...",
@@ -78,7 +78,7 @@ class ContainerMessages(InGameMessages):
 
     color = {'crate': ["In a surrealists eye the shape generally resembles a box."]}
 
-    search = {'keywords': ContainerCrate.container_keywords, 'inventory': {WeaponKnife},
+    search = {'keywords': ContainerCrate.keywords, 'inventory': {WeaponKnife},
               'contents': [''.join(['{} Inside you find: [{}]: {}'.format(ContainerCrate().get_description(),
                                                                         WeaponKnife().get_name().upper(),
                                                                         WeaponKnife().get_description())])],
