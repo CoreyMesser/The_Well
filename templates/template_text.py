@@ -216,5 +216,7 @@ class CharacterControlTemplates(object):
 
     PLAYER_SEARCH = "ᗘᗘᗘ [OBJECT] ᗛᗛᗛ"
 
+    PLAYER_TAKE = "ᗘᗘᗘ [OBJECT] ᗛᗛᗛ"
+
 
 # ᗘᗘᗘᗛᗛᗛ

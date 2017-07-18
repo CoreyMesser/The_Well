@@ -488,6 +488,18 @@ class PlayerCharacter(object):
                    'move': 10}
 
 
+class ValuablesModel(object):
+
+    valuable_type  = 'all'
+    search_level = 0
+    amount = 0
+    keywords = {ObjectConstants.TARNISHED_COINS, ObjectConstants.OPALS}
+    model = ObjectConstants.VALUABLES
+
+class TarnishedCoinsModel(ValuablesModel):
+    valuable_type = ObjectConstants.TARNISHED_COINS
+    amount = 5
+
 class FloorModel(object):
     floor_type = 'all'
     breakable = False
@@ -558,7 +570,7 @@ class ContainerCrate(ContainerModel):
     container_description = 'This small rotten crate looks as if it was dropped into the well long ago.'
     container_size = ObjectConstants.SMALL
     container_weight = 3
-    container_inventory = {'knife': '0'}
+    container_inventory = {'KNIFE': '0'}
     keywords = {ObjectConstants.CRATE, ObjectConstants.CHEST, ObjectConstants.BOX}
     search_level = 0
 

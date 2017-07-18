@@ -1,7 +1,7 @@
 import random
 import re
 
-from constants import NavigationConstants, MapConstants, PlayerCommands, MessagesConstants, ObjectConstants
+from constants import NavigationConstants, MapConstants, PlayerCommands, MessagesConstants, ObjectConstants, WeaponConstant
 from game_text.in_game_text import GameMessages, TileKeyConstants
 from level_maps.map_model import MapTemplate, Maps
 from models import CharacterModels, PlayerCharacter
@@ -132,7 +132,6 @@ class CharacterInteraction(object):
         self.character_services = CharacterServices()
         self.player_move_dict = CharacterModels.PLAYER_MOVE_DICT
         self.player_character_dict = PlayerCharacter.character_dict
-        self.
         self.player_skills_dict = PlayerCharacter.skills_dict
         self.nav_constants = NavigationConstants()
         self.look_search = LookSearchServices()
@@ -170,14 +169,18 @@ class CharacterInteraction(object):
     def character_take(self, player_choice, object_model=None):
         if object_model:
             if player_choice in object_model.container_inventory.keys():
-                self.player_character_dict
-
+                self.character_services.take_object_item(player_choice=player_choice, object_model=object_model)
+            else:
+                # invalid selection
+                pass
+        else:
+            object_model = self.look_search.get_object_model(tile_key=self.character_services.get_map_tile_ahead(tile_x_y=self.player_move_dict['location']))
+            self.character_services.take_object_item(player_choice=player_choice, object_model=object_model)
         # single item vs all items
 
         # keep a container open if container
         # take an item
         # detect object_item
-        pass
 
 
 class NPCNavigation(object):
@@ -188,11 +191,25 @@ class CharacterServices(object):
     def __init__(self):
         self.look_search = LookSearchServices()
         self.player_move_dict = CharacterModels.PLAYER_MOVE_DICT
+        self.player_inventory_dict = CharacterModels.PLAYER_INVENTORY_DICT
         self.player_skills_dict = PlayerCharacter.skills_dict
         self.mpstemp = MapTemplate()
         self.player_commands = PlayerCommands()
         self.nav_constants = NavigationConstants()
         self.mpren = MapRenderer()
+
+    def take_object_item(self, player_choice, object_model):
+        if player_choice in object_model.container_inventory.keys():
+            if object_model.model == ObjectConstants.VALUABLES:
+                # adding algoritm for different valuable amounts
+                self.player_inventory_dict['purse'].update({player_choice: object_model.container_inventory[player_choice]})
+                del object_model.container_inventory[player_choice]
+            elif object_model.model == WeaponConstant.WEAPON:
+                #choice to equip
+                pass
+            else:
+                self.player_inventory_dict['bag'].update({player_choice: object_model.container_inventory[player_choice]})
+                del object_model.container_inventory[player_choice]
 
     def get_player_position_and_directon(self):
         player_position = self.player_move_dict['location']
@@ -224,7 +241,7 @@ class CharacterServices(object):
         direction_step = {NavigationConstants.NORTH: (0, -1), NavigationConstants.SOUTH: (0, +1),
                           NavigationConstants.EAST: (+1, 0), NavigationConstants.WEST: (-1, 0)}
 
-        xx, yy = direction_step[self.player_move_dict['direction'][0]], direction_step[self.player_move_dict['direction'][1]]
+        xx, yy = direction_step[self.player_move_dict['direction']][0], direction_step[self.player_move_dict['direction']][1]
         tile_ahead = self.get_map_tile(tile_x_y=((x + xx), (y + yy)))
         return tile_ahead
 
@@ -264,6 +281,7 @@ class CharacterServices(object):
             is_open = True
             while is_open is True:
                 # print inventory
+                self.print_inventory(object_model=object_model)
 
                 player_choice = input()
 
@@ -274,6 +292,14 @@ class CharacterServices(object):
                 elif player_choice in PlayerCommands.PLAYER_EXIT:
                     print('close')
                     is_open = False
+                else:
+                    #take
+                    pass
+
+    def print_inventory(self, object_model):
+        inventory = object_model['inventory']
+        for k, v in inventory.items():
+            print('[{}]: {}\n')
 
 class LookSearchServices(TileKeyConstants):
     def __init__(self):
@@ -390,7 +416,11 @@ class CommandServices(object):
                                         },
                                'MOVE': {'template': self.cn.move_player,
                                      'command': self.cn.move_player
-                                     }}
+                                     },
+                               'TAKE': {'template': self.cctemp.PLAYER_TAKE,
+                                        'command': self.ci.character_take
+                                        }
+                               }
 
         if is_single is False:
             return player_command_dict[command]['command'](player_command)

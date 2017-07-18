@@ -73,6 +73,8 @@ class PlayerCommands(object):
     FLEE = 'FLEE'
     CANCEL = 'CANCEL'
     EXIT = 'EXIT'
+    ALL = 'ALL'
+    DROP = 'DROP'
     PLAYER_EXIT = {CANCEL, EXIT}
     PLAYER_COMMANDS_SET = {MOVE, TURN, JUMP, LOOK, SEARCH, USE, TAKE,
                            INVENTORY, EQUIP, UNEQUIP, ATTACK, BLOCK, FLEE}
@@ -91,6 +93,9 @@ class ObjectConstants(object):
     CRATE = 'CRATE'
     BOX = 'BOX'
     CHEST = 'CHEST'
+    VALUABLES = 'VALUABLES'
+    TARNISHED_COINS = 'TARNISHED_COINS'
+    OPALS = 'OPALS'
     OBJECTS_SET = {FLOOR, GROUND, TILE, WALL, STONE, ROCK, CONTAINER, CHEST, CRATE}
 
 class WeaponConstant(object):
