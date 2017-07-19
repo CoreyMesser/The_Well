@@ -104,6 +104,7 @@ class WeaponConstant(object):
     RANGED = 'RANGED'
     RANGE = 'range'
     DMG = 'dmg'
+    KNIFE = 'KNIFE'
 
 
 class MessagesConstants(object):

@@ -218,5 +218,9 @@ class CharacterControlTemplates(object):
 
     PLAYER_TAKE = "ᗘᗘᗘ [OBJECT] ᗛᗛᗛ"
 
+    PLAYER_EXIT = "The Darkness is the only witness as you lay down quit struggling."
+
+    PLAYER_INVENTORY = "You gingerly open the rotting sack and peer into its stinking depths."
+
 
 # ᗘᗘᗘᗛᗛᗛ

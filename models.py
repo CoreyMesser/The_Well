@@ -490,13 +490,21 @@ class PlayerCharacter(object):
 
 class ValuablesModel(object):
 
+    valuables_descripton = ''
     valuable_type  = 'all'
     search_level = 0
     amount = 0
     keywords = {ObjectConstants.TARNISHED_COINS, ObjectConstants.OPALS}
     model = ObjectConstants.VALUABLES
 
+    def get_description(self):
+        return self.valuables_descripton
+
+    def get_name(self):
+        return self.model
+
 class TarnishedCoinsModel(ValuablesModel):
+    valuables_descripton = 'Coins long worn and almost unrecognizable as currency having been reduced to near featureless ragged disks.'
     valuable_type = ObjectConstants.TARNISHED_COINS
     amount = 5
 
@@ -564,15 +572,9 @@ class ContainerModel(object):
         for entry in self.container_inventory:
             print(entry, '\n')
 
+    def get_name(self):
+        return self.model
 
-class ContainerCrate(ContainerModel):
-
-    container_description = 'This small rotten crate looks as if it was dropped into the well long ago.'
-    container_size = ObjectConstants.SMALL
-    container_weight = 3
-    container_inventory = {'KNIFE': '0'}
-    keywords = {ObjectConstants.CRATE, ObjectConstants.CHEST, ObjectConstants.BOX}
-    search_level = 0
 
 
 class WeaponMeleeModel(object):
@@ -626,7 +628,15 @@ class WeaponBow(WeaponRangedModel):
     weapon_range = (5, 10, 15)
     
     
+class ContainerCrate(ContainerModel):
 
+    container_description = 'This small rotten crate looks as if it was dropped into the well long ago.'
+    container_size = ObjectConstants.SMALL
+    container_weight = 3
+    container_inventory = {WeaponConstant.KNIFE: WeaponKnife().weapon_description,
+                           ObjectConstants.TARNISHED_COINS: ValuablesModel().get_description()}
+    keywords = {ObjectConstants.CRATE, ObjectConstants.CHEST, ObjectConstants.BOX}
+    search_level = 0
 
 
 

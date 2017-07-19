@@ -6,6 +6,7 @@ from game_text.in_game_text import GameMessages, TileKeyConstants
 from level_maps.map_model import MapTemplate, Maps
 from models import CharacterModels, PlayerCharacter
 from services_map_rendering import MapRenderer
+from services_get_character import InventoryServices
 from templates.template_text import Templates, CharacterControlTemplates
 
 
@@ -20,6 +21,8 @@ class CharacterNavigation(object):
         self.mpren = MapRenderer()
         self.player_move_dict = CharacterModels.PLAYER_MOVE_DICT
         self.nav_constants = NavigationConstants()
+        self.look_search = LookSearchServices()
+        self.character_services = CharacterServices()
 
     def clear_screen(self):
         pass
@@ -33,9 +36,9 @@ class CharacterNavigation(object):
     def get_player_direction(self, player_choice):
         if player_choice in self.nav_constants.DIRECTIONS_LIST:
             self.player_move_dict['direction'] = player_choice
+        elif player_choice['direction'] in self.nav_constants.DIRECTIONS_LIST:
+            self.player_move_dict['direction'] = player_choice['direction']
         else:
-            turn = self.nav_constants.COMPASS_DIRECTIONS_INTERPRETER[self.player_move_dict['direction']][
-                player_choice['direction']]
             self.player_move_dict['direction'] = self.nav_constants.COMPASS_DIRECTIONS_INTERPRETER[self.player_move_dict['direction']][
                 player_choice['direction']]
 
@@ -90,7 +93,10 @@ class CharacterNavigation(object):
         vaild_move = self.valid_player_move(player_move=player_move)
         if vaild_move is True:
             self.update_player_location_and_path(location=player_move, path=player_move)
-            # self.mpren.draw_map(player_move_dict=self.player_move_dict)
+        else:
+            # incorrect use, currently pulls fromm the message generation system and should pull from the collissions messages
+            print(self.look_search.build_collission_message(
+                tile_key=self.character_services.get_map_tile_ahead(tile_x_y=self.player_move_dict['location'])))
 
     def update_player_location_and_path(self, location, path):
         """
@@ -156,9 +162,9 @@ class CharacterInteraction(object):
                                                                       direction=self.player_move_dict['direction'])
         object_message, tile_key = self.character_services.search_object(object_tile=tile_center, search_object=search_object['object_item'])
 
-        self.character_services.open_container(tile_key=tile_key)
-
         print(object_message)
+
+        self.character_services.open_container(tile_key=tile_key)
 
         # take subroutine
 
@@ -189,6 +195,7 @@ class NPCNavigation(object):
 class CharacterServices(object):
     
     def __init__(self):
+        self.cctemp = CharacterControlTemplates()
         self.look_search = LookSearchServices()
         self.player_move_dict = CharacterModels.PLAYER_MOVE_DICT
         self.player_inventory_dict = CharacterModels.PLAYER_INVENTORY_DICT
@@ -281,9 +288,9 @@ class CharacterServices(object):
             is_open = True
             while is_open is True:
                 # print inventory
-                self.print_inventory(object_model=object_model)
+                # self.print_inventory(object_model=object_model)
 
-                player_choice = input()
+                player_choice = input(self.cctemp.PLAYER_TAKE).upper()
 
                 # take
                 if len(object_model.container_inventory) == 0:
@@ -293,13 +300,13 @@ class CharacterServices(object):
                     print('close')
                     is_open = False
                 else:
-                    #take
-                    pass
+                    self.take_object_item(player_choice=player_choice, object_model=object_model)
+                    is_open = False
 
     def print_inventory(self, object_model):
-        inventory = object_model['inventory']
+        inventory = object_model.container_inventory
         for k, v in inventory.items():
-            print('[{}]: {}\n')
+            print('[{}]: {}\n'.format(k, v))
 
 class LookSearchServices(TileKeyConstants):
     def __init__(self):
@@ -325,6 +332,11 @@ class LookSearchServices(TileKeyConstants):
                                          self.get_message_color(tile_key=tile_key))
         return look_message
 
+    def build_collission_message(self, tile_key):
+        collission_message = "{} {}".format(self.get_tile_object(tile_key=tile_key),
+                                         self.get_message_color(tile_key=tile_key))
+        return collission_message
+
     def get_tile_object(self, tile_key, object_item=None):
         object_message_type = self.TILE_KEY_CONSTANTS_DICT[str(tile_key)]
         if object_item != None:
@@ -336,7 +348,7 @@ class LookSearchServices(TileKeyConstants):
                         item_type = random.choice(list(object_message_type[MessagesConstants.SEARCH][MessagesConstants.DEFAULT]))
                         item_message = random.choice(object_message_type[MessagesConstants.SEARCH][MessagesConstants.DEFAULT][item_type])
                     else:
-                        item_message = object_message_type[MessagesConstants.SEARCH][MessagesConstants.CONTENTS]
+                        item_message = object_message_type[MessagesConstants.SEARCH][MessagesConstants.CONTENTS](object_model=object_message_type['model'])
                 else:
                     item_message = random.choice(object_message_type[MessagesConstants.SEARCH][MessagesConstants.DEFAULT])
             else:
@@ -364,15 +376,13 @@ class LookSearchServices(TileKeyConstants):
 
 
 class CommandServices(object):
-    cs = CharacterServices()
-    ci = CharacterInteraction()
-    cn = CharacterNavigation()
-    cctemp = CharacterControlTemplates()
 
     def __init__(self):
         self.cn = CharacterNavigation()
         self.ch_interaction = CharacterInteraction()
         self.cctemp = CharacterControlTemplates()
+        self.templates = Templates()
+        self.inventory_services = InventoryServices()
 
     def player_command_breakdown(self, player_choice):
 
@@ -400,25 +410,33 @@ class CommandServices(object):
         if player_command_dict['command']:
             if player_command_dict['direction'] or player_command_dict['object_item'] or player_command_dict['move']:
                 is_single = False
-        self.player_commands(player_command=player_command_dict, is_single=is_single)
+            self.player_commands(player_command=player_command_dict, is_single=is_single)
+        else:
+            print(self.templates.VALID_ENTRY)
 
     def player_commands(self, player_command, is_single):
         command = player_command['command']
 
         player_command_dict = {'LOOK':  {'template': self.cctemp.PLAYER_LOOK,
-                                     'command': self.ci.character_look
+                                     'command': self.ch_interaction.character_look
                                      },
                                'TURN': {'template': self.cctemp.PLAYER_DIRECTIONS,
                                         'command': self.cn.get_player_direction
                                         },
                                'SEARCH': {'template': self.cctemp.PLAYER_SEARCH,
-                                        'command': self.ci.character_serach
+                                        'command': self.ch_interaction.character_serach
                                         },
                                'MOVE': {'template': self.cn.move_player,
                                      'command': self.cn.move_player
                                      },
                                'TAKE': {'template': self.cctemp.PLAYER_TAKE,
-                                        'command': self.ci.character_take
+                                        'command': self.ch_interaction.character_take
+                                        },
+                               'INVENTORY': {'template': self.cctemp.PLAYER_INVENTORY,
+                                        'command': self.inventory_services.print_inventory
+                                        },
+                               'EXIT': {'template': self.cctemp.PLAYER_EXIT,
+                                        'command': ''
                                         }
                                }
 

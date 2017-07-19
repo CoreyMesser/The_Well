@@ -24,6 +24,23 @@ class InGameMessages(object):
     color = {}
     search = {}
 
+    def print_inventory(self, object_model):
+        inventory = object_model.container_inventory
+        if len(object_model.container_inventory) > 0:
+            print(['{} Inside you find: \n'.format(ContainerCrate().get_description())])
+            for k, v in inventory.items():
+                print('[{}]: {}\n'.format(k.upper(), v))
+        else:
+            print('{}. But the {} is empty.'.format(ContainerCrate().get_description(), object_model.model))
+
+
+class CollissionMessages(InGameMessages):
+
+    messages = {'wall': ["Your face cracks hard against the unyeilding product of thousands of years of compression.",
+                         "You grunt as you rebound off the wall, flushed with momentary embarassment until you "
+                         "realize there is no one there to see your folly."]}
+    color = {'none': ['', ''], 'wall': ["You should probably consider walking around solid objects from now on.",
+                                        "Perhaps you need to pay a bit more attention to your surroundings."]}
 
 class WallMessages(InGameMessages):
     messages = {'stone': ["is a rough hewn stone wall marked with faint echos of chisel bits.",
@@ -79,9 +96,7 @@ class ContainerMessages(InGameMessages):
     color = {'crate': ["In a surrealists eye the shape generally resembles a box."]}
 
     search = {'keywords': ContainerCrate.keywords, 'inventory': {WeaponKnife},
-              'contents': [''.join(['{} Inside you find: [{}]: {}'.format(ContainerCrate().get_description(),
-                                                                        WeaponKnife().get_name().upper(),
-                                                                        WeaponKnife().get_description())])],
+              'contents': InGameMessages().print_inventory,
               'default': {'crate': ["You are not quite sure what you are looking at, but you can be sure your search yielded little results",
                           "You would have probably found something if you had been paying attention."]}}
 
