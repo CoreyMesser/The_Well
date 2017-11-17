@@ -9,95 +9,8 @@ from services_navigation import CharacterNavigation, CharacterInteraction
 from services_get_character import GetCharacter
 from services_map_rendering import MapRenderer
 from models import CharacterModels, User, PlayerCharacter
-from database_service import db_session
-from config import Config
-
-from flask import Flask
-from flask import Flask, render_template, g, redirect, flash, url_for
-from flask_login import LoginManager, login_user, logout_user, current_user, login_required
-from flask_bcrypt import generate_password_hash, check_password_hash
-from flask_wtf import Form
-
-from forms import CharacterForm, RegisterForm, LoginForm
-import models
-
-from app import get_app
 
 import curses
-
-app = get_app()
-db = db_session()
-
-login_manager = LoginManager()
-login_manager.init_app(app)
-login_manager.login_view = 'login'
-
-@app.route('/')
-def index():
-    return render_template('index.html')
-
-
-@app.route('/character_creation', methods=('GET', 'POST'))
-def character_creation_form():
-    form = CharacterForm()
-    if form.validate_on_submit():
-        pass
-    return render_template('character_creation.html', form=form)
-
-
-@login_manager.user_loader
-def load_user(userid):
-    try:
-        return db.query(User).filter_by(id=userid).first()
-    except models.DoesNotExist:
-        return None
-
-
-@app.route('/register', methods=('GET', 'POST'))
-def register():
-    form = RegisterForm()
-    if form.validate_on_submit():
-        models.User.create_user(
-            username=form.username.data,
-            email=form.email.data,
-            password=form.password.data
-        )
-        flash("Yay, you registered!", "success")
-        return redirect(url_for('index'))
-    return render_template('register.html', form=form)
-
-
-@app.route('/login', methods=('GET', 'POST'))
-def login():
-    form = LoginForm()
-    if form.validate_on_submit():
-        try:
-            user = db.query(User).filter_by(user_email=form.email.data).first()
-        except Exception as e:
-            flash("Soemthing went wrong {}".format(e))
-        else:
-            if user.password_hash == form.password.data:
-                login_user(user)
-                flash("You've been logged in!", "success")
-                return redirect(url_for('index'))
-            elif check_password_hash(user.password_hash, form.password.data):
-                login_user(user)
-                flash("You've been logged in!", "success")
-                return redirect(url_for('index'))
-            else:
-                flash("Your credentials are wrong.")
-        # flash('you have logged in', (form.email.data, form.password.data, form.remeber_me.data))
-        return redirect(url_for('index'))
-    return render_template('login.html', form=form)
-
-
-
-@app.route('/logout')
-@login_required
-def logout():
-    logout_user()
-    flash("You've been logged out! Come back soon!", "success")
-    return redirect(url_for('index'))
 
 
 class Introduction(object):
@@ -125,6 +38,7 @@ class CursesInitializer(object):
         self.myscreen.getch()
 
         # curses.endwin()
+
 
 class CharacterCreation(object):
 
@@ -237,27 +151,12 @@ class Gameplay(object):
 
             self.command_services.player_command_execute(player_choice=input(self.cctemp.PLAYER_CHOICE).upper())
 
-            # player_choice = input(self.cctemp.PLAYER_CHOICE).upper()
-            # interpreter
-            # if player_choice == 'HELP':
-            #     print(self.cctemp.PLAYER_HELP)
-            # if player_choice == 'LOOK':
-            #     self.ch_interaction.character_look(look_direction=input(self.cctemp.PLAYER_LOOK).upper())
-            # if player_choice == 'SEARCH':
-            #     self.ch_interaction.character_serach(search_object=input(self.cctemp.PLAYER_SEARCH.upper()))
+
             # if player_choice == 'USE':
             #     pass
-            # if player_choice == 'TAKE':
-            #     pass
-            # if player_choice == 'TURN':
-            #     self.cn.get_player_direction(player_choice=input(self.cctemp.PLAYER_DIRECTIONS).upper())
-            # if player_choice == 'MOVE':
-            #     self.cn.move_player(player_choice=input(self.cctemp.PLAYER_MOVE).lower())
             # if player_choice == 'CLIMB':
             #     pass
             # if player_choice == 'JUMP':
-            #     pass
-            # if player_choice == 'INVENTORY':
             #     pass
             # if player_choice == 'EQUIP':
             #     pass

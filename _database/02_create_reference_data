@@ -5,7 +5,7 @@ VALUES
   ('merits', 1),
   ('flaws', 2);
 
-INSERT INTO "user_roll"("name")
+INSERT INTO "user_role"("name")
     VALUES
       ('admin'),
       ('moderator'),
@@ -265,4 +265,15 @@ VALUES
 
 INSERT INTO "character_merits_flaws" ("character_id", "merits_01", "merits_02", "merits_03", "merits_04", "merits_05", "flaws_01", "flaws_02", "flaws_03", "flaws_04", "flaws_05")
 VALUES
-  (1, 95, 96, 156, NULL, NULL, 37, 3, NULL, NULL, NULL)
+  (1, 95, 96, 156, NULL, NULL, 37, 3, NULL, NULL, NULL);
+
+INSERT INTO "level_maps" ("level", "level_name", "nav_map", "items_map", "npc_map")
+    VALUES 
+      (0, 'Level 000',
+       '1 1 1 1 7 1 1 0 0 0 0 1 1 0 0 1 1 1 1 0 0 1 1 0 1 0 0 0 0 0 1 9 1 1 2 2',
+       '1 1 1 1 9 1 1 0 0 0 0 1 1 0 0 1 1 1 10 0 2 1 1 0 10 2 0 8 0 0 1 9 1 1 2 2',
+       '0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0'),
+      (1, 'Level 001',
+       '1 1 1 1 1 1 1 0 0 0 0 1 1 0 1 1 0 1 1 0 1 0 0 1 1 0 1 0 1 1 1 9 1 0 0 7',
+       ' 1 1 1 1 1 1 1 0 0 0 0 1 1 0 1 1 0 1 1 0 1 0 0 1 1 0 1 0 1 1 1 9 1 0 0 7',
+       '0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0')

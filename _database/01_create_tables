@@ -7,7 +7,7 @@ $$ LANGUAGE SQL;
 
 -- regular table structure
 
-CREATE TABLE user_roll
+CREATE TABLE user_role
 (
   id         SERIAL PRIMARY KEY       NOT NULL,
   name       TEXT                     NOT NULL,
@@ -31,7 +31,7 @@ CREATE TABLE users
   CHECK (EXTRACT(TIMEZONE FROM updated_at) = '0'),
   CHECK (EXTRACT(TIMEZONE FROM created_at) = '0'),
 
-  FOREIGN KEY (user_roll) REFERENCES user_roll(id)
+  FOREIGN KEY (user_roll) REFERENCES user_role(id)
 );
 
 CREATE TABLE login_result
@@ -273,4 +273,55 @@ CREATE TABLE inventory_pc
 
   CHECK (EXTRACT(TIMEZONE FROM updated_at) = '0'),
   CHECK (EXTRACT(TIMEZONE FROM created_at) = '0')
+);
+
+CREATE TABLE level_maps
+(
+  id         SERIAL PRIMARY KEY       NOT NULL,
+  code       TEXT                      NULL,
+  level      INT                      NOT NULL,
+  level_name TEXT                     NOT NULL,
+  nav_map    TEXT                     NOT NULL,
+  items_map  TEXT                     NOT NULL,
+  npc_map    TEXT                     NOT NULL,
+  updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now_utc(),
+  created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now_utc(),
+
+  CHECK (EXTRACT(TIMEZONE FROM updated_at) = '0'),
+  CHECK (EXTRACT(TIMEZONE FROM created_at) = '0')
+);
+
+CREATE TABLE session
+(
+  id                SERIAL PRIMARY KEY       NOT NULL,
+  session_id        TEXT                     NOT NULL,
+  session_hash      TEXT                     NOT NULL,
+  character_session TEXT                     NULL,
+  level_session     TEXT                     NULL,
+  npc_session       TEXT                     NULL,
+  updated_at        TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now_utc(),
+  created_at        TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now_utc(),
+
+  CHECK (EXTRACT(TIMEZONE FROM updated_at) = '0'),
+  CHECK (EXTRACT(TIMEZONE FROM created_at) = '0')
+);
+
+
+CREATE TABLE save_store
+(
+  id                      SERIAL PRIMARY KEY       NOT NULL,
+  code                    TEXT                     NOT NULL,
+  user_id                 INT                     NOT NULL,
+  character_id            INT                     NOT NULL,
+  saved_character_session TEXT                     NULL,
+  saved_level_session     TEXT                     NULL,
+  saved_npc_session       TEXT                     NULL,
+  updated_at              TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now_utc(),
+  created_at              TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now_utc(),
+
+  CHECK (EXTRACT(TIMEZONE FROM updated_at) = '0'),
+  CHECK (EXTRACT(TIMEZONE FROM created_at) = '0'),
+
+  FOREIGN KEY (user_id) REFERENCES users(id),
+  FOREIGN KEY (character_id) REFERENCES character(id)
 );

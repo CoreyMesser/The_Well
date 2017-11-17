@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="pb_db@localhost" uuid="84a15ae7-8b78-464a-a0a7-3aeb593645ac">
+    <data-source source="LOCAL" name="PB_DB - pb_db@localhost" uuid="9d7eef16-a5e5-4610-9339-3063d204840a">
       <driver-ref>postgresql</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.postgresql.Driver</jdbc-driver>
-      <jdbc-url>jdbc:postgresql://localhost:5432/pb_db</jdbc-url>
+      <jdbc-url>jdbc:postgresql://localhost:5432/postgres</jdbc-url>
       <vm-options>-Duser.timezone=UTC</vm-options>
+      <driver-properties>
+        <property name="ApplicationName" value="DataGrip" />
+      </driver-properties>
     </data-source>
   </component>
 </project>
