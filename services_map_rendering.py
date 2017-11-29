@@ -25,6 +25,9 @@ class MapRenderer(object):
             clean_map = self.mps.MAP_LEVEL_01
         return clean_map, items_map
 
+    def _map_parser(self, map):
+        pass
+
     def level_map_list(self, player_move_dict):
         level_map = []
         level_map_list, _ = self.get_map(player_move_dict=player_move_dict)

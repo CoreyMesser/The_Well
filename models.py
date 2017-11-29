@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import json
+
 from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, Numeric, Text, text, Time
 from sqlalchemy import CheckConstraint
 from sqlalchemy.orm import relationship
@@ -203,6 +205,45 @@ class InventoryPc(Base):
     created_at = Column(DateTime(True), nullable=False, server_default=text("now_utc()"))
 
 
+class LevelMap(Base):
+    __tablename__ = 'level_maps'
+    __table_args__ = (
+        CheckConstraint("date_part('timezone'::text, created_at) = '0'::double precision"),
+        CheckConstraint("date_part('timezone'::text, updated_at) = '0'::double precision")
+    )
+
+    id = Column(Integer, primary_key=True, server_default=text("nextval('level_maps_id_seq'::regclass)"))
+    code = Column(Text)
+    level = Column(Integer, nullable=False)
+    level_name = Column(Text, nullable=False)
+    nav_map = Column(Text, nullable=False)
+    items_map = Column(Text, nullable=False)
+    npc_map = Column(Text, nullable=False)
+    updated_at = Column(DateTime(True), nullable=False, server_default=text("now_utc()"))
+    created_at = Column(DateTime(True), nullable=False, server_default=text("now_utc()"))
+
+    def _fetch_maps(self, level):
+        nav_map = db_session.query(LevelMap).filter(LevelMap.level == level).filter(LevelMap.nav_map).first()
+        items_map = db_session.query(LevelMap).filter(LevelMap.level == level).filter(LevelMap.items_map).first()
+        npc_map = db_session.query(LevelMap).filter(LevelMap.level == level).filter(LevelMap.npc_map).first()
+
+        return nav_map, items_map, npc_map
+
+    def _parse_maps(self, map_str):
+        map_list = map_str.split(',')
+        return map_list
+
+    def build_level_session(self, level):
+        db_nav_map, db_items_map, db_npc_map = self._fetch_maps(level=level)
+        nav_map = self._parse_maps(map_str=db_nav_map)
+        items_map = self._parse_maps(map_str=db_items_map)
+        npc_map = self._parse_maps(map_str=db_npc_map)
+
+        level_session = {'nav_map': nav_map, 'pos_map': nav_map, 'items_map': items_map, 'npc_map': npc_map}
+
+        return level_session
+
+
 class LoginResult(Base):
     __tablename__ = 'login_result'
     __table_args__ = (
@@ -294,6 +335,53 @@ class SoccDb(Base):
     created_at = Column(DateTime(True), nullable=False, server_default=text("now_utc()"))
 
 
+class SaveStore(Base):
+    __tablename__ = 'save_store'
+    __table_args__ = (
+        CheckConstraint("date_part('timezone'::text, created_at) = '0'::double precision"),
+        CheckConstraint("date_part('timezone'::text, updated_at) = '0'::double precision")
+    )
+
+    id = Column(Integer, primary_key=True, server_default=text("nextval('save_store_id_seq'::regclass)"))
+    code = Column(Text, nullable=False)
+    user_id = Column(ForeignKey('users.id'), nullable=False)
+    character_id = Column(ForeignKey('character.id'), nullable=False)
+    saved_character_session = Column(Text)
+    saved_level_session = Column(Text)
+    saved_npc_session = Column(Text)
+    updated_at = Column(DateTime(True), nullable=False, server_default=text("now_utc()"))
+    created_at = Column(DateTime(True), nullable=False, server_default=text("now_utc()"))
+
+    character = relationship('Character')
+    user = relationship('User')
+
+
+class Session(Base):
+    __tablename__ = 'session'
+    __table_args__ = (
+        CheckConstraint("date_part('timezone'::text, created_at) = '0'::double precision"),
+        CheckConstraint("date_part('timezone'::text, updated_at) = '0'::double precision")
+    )
+
+    id = Column(Integer, primary_key=True, server_default=text("nextval('session_id_seq'::regclass)"))
+    session_id = Column(Text, nullable=False)
+    session_hash = Column(Text, nullable=False)
+    character_session = Column(Text)
+    level_session = Column(Text)
+    npc_session = Column(Text)
+    updated_at = Column(DateTime(True), nullable=False, server_default=text("now_utc()"))
+    created_at = Column(DateTime(True), nullable=False, server_default=text("now_utc()"))
+
+    @staticmethod
+    def _get_session_var(name, session_store=None, default=None):
+
+        if session_store.value is not None:
+            session_dict = json.loads(session_store.value)
+            return session_dict.get(name, default)
+        else:
+            return default
+
+
 class UserLogin(Base):
     __tablename__ = 'user_login'
     __table_args__ = (
@@ -316,14 +404,14 @@ class UserLogin(Base):
     user = relationship('User')
 
 
-class UserRoll(Base):
-    __tablename__ = 'user_roll'
+class UserRole(Base):
+    __tablename__ = 'user_role'
     __table_args__ = (
         CheckConstraint("date_part('timezone'::text, created_at) = '0'::double precision"),
         CheckConstraint("date_part('timezone'::text, updated_at) = '0'::double precision")
     )
 
-    id = Column(Integer, primary_key=True, server_default=text("nextval('user_roll_id_seq'::regclass)"))
+    id = Column(Integer, primary_key=True, server_default=text("nextval('user_role_id_seq'::regclass)"))
     name = Column(Text, nullable=False)
     updated_at = Column(DateTime(True), nullable=False, server_default=text("now_utc()"))
     created_at = Column(DateTime(True), nullable=False, server_default=text("now_utc()"))
@@ -342,11 +430,11 @@ class User(Base):
     password_hash = Column(Text)
     forgot_password_data = Column(Text)
     user_email = Column(Text, nullable=False)
-    user_roll = Column(ForeignKey('user_roll.id'), nullable=False)
+    user_roll = Column(ForeignKey('user_role.id'), nullable=False)
     updated_at = Column(DateTime(True), nullable=False, server_default=text("now_utc()"))
     created_at = Column(DateTime(True), nullable=False, server_default=text("now_utc()"))
 
-    user_roll1 = relationship('UserRoll')
+    user_role = relationship('UserRole')
 
     @property
     def is_authenticated(self):
@@ -396,6 +484,21 @@ class User(Base):
         user.user_roll = user_roll
         db.add(user)
         db.commit()
+
+    @staticmethod
+    def retrieve_user(user_name):
+        user = db_session.query(User) \
+            .filter(User.active == True) \
+            .filter(func.lower(User.user_name) == user_name.lower()).first()
+
+        return user
+
+    @staticmethod
+    def retrieve_all_users():
+        users = db_session.query(User) \
+            .filter(User.active == True).all()
+
+        return users
 
 
 class PlayerCharacter(object):
